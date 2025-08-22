@@ -1,5 +1,9 @@
 # MCP Excalidraw Server: Advanced Live Visual Diagramming with AI Integration
 
+> **🙏 Acknowledgments**  
+> This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).  
+> Special thanks to the original contributors for creating the foundation that made this enhanced version possible.
+
 A comprehensive system that combines **Excalidraw's powerful drawing capabilities** with **Model Context Protocol (MCP)** integration, enabling AI agents to create and manipulate diagrams in real-time on a live canvas.
 
 **Now available in both TypeScript and Python implementations for maximum flexibility!**
@@ -94,7 +98,7 @@ For the easiest setup and most maintainable experience, we recommend using the *
 
 #### **1. Clone and Navigate**
 ```bash
-git clone https://github.com/yctimlin/mcp_excalidraw.git
+git clone https://github.com/lesleslie/excalidraw-mcp.git
 cd excalidraw-mcp
 ```
 
@@ -145,8 +149,8 @@ http://localhost:3031
 
 #### **1. Clone the Repository**
 ```bash
-git clone https://github.com/yctimlin/mcp_excalidraw.git
-cd mcp_excalidraw
+git clone https://github.com/lesleslie/excalidraw-mcp.git
+cd excalidraw-mcp
 npm install
 ```
 
@@ -172,7 +176,7 @@ npm run dev
 #### **4. Access the Canvas**
 Open your browser and navigate to:
 ```
-http://localhost:3000
+http://localhost:3031
 ```
 
 ### **🔧 Alternative Installation Methods (In Development)**
@@ -206,7 +210,7 @@ docker run -p 3000:3000 mcp-excalidraw-server
 ## 🎯 Usage Guide
 
 ### **For End Users**
-1. Open the canvas at `http://localhost:3000`
+1. Open the canvas at `http://localhost:3031`
 2. Check connection status (should show "Connected")
 3. AI agents can now create diagrams that appear in real-time
 4. Use "Clear Canvas" to remove all elements
@@ -383,10 +387,10 @@ For VS Code MCP extension, add to your settings:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `EXPRESS_SERVER_URL` | `http://localhost:3000` | Canvas server URL for MCP sync |
+| `EXPRESS_SERVER_URL` | `http://localhost:3031` | Canvas server URL for MCP sync |
 | `ENABLE_CANVAS_SYNC` | `true` | Enable/disable canvas synchronization |
 | `DEBUG` | `false` | Enable debug logging |
-| `PORT` | `3000` | Canvas server port |
+| `PORT` | `3031` | Canvas server port |
 | `HOST` | `localhost` | Canvas server host |
 
 ## 📊 API Endpoints
@@ -465,7 +469,7 @@ The canvas server provides these REST endpoints:
 ### **Canvas Not Loading**
 - Ensure `npm run build` completed successfully
 - Check that `dist/index.html` exists
-- Verify canvas server is running on port 3000
+- Verify canvas server is running on port 3031
 
 ### **Elements Not Syncing**
 - Confirm MCP server is running (`npm start`)

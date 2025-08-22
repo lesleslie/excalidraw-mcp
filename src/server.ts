@@ -524,7 +524,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Start server
-const PORT = parseInt(process.env.PORT || '3000', 10);
+const PORT = parseInt(process.env.PORT || '3031', 10);
 const HOST = process.env.HOST || 'localhost';
 
 server.listen(PORT, HOST, () => {
