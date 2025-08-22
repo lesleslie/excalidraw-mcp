@@ -10,7 +10,7 @@ readme = "README.md"
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: BSD-3-CLAUSE License",
+    "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
@@ -25,6 +25,7 @@ dependencies = [
     "fastmcp>=2.11.3",
     "httpx>=0.28.1",
     "pydantic>=2.11.7",
+    "psutil>=6.1.1",
 ]
 license = {text = "BSD-3-CLAUSE"}
 

@@ -9,9 +9,15 @@ import json
 import uuid
 import asyncio
 import logging
+import subprocess
+import time
+import atexit
+import signal
+import psutil
 from typing import Dict, List, Optional, Any, Literal
 from dataclasses import dataclass, asdict
 from enum import Enum
+from pathlib import Path
 
 import httpx
 from fastmcp import FastMCP
@@ -24,6 +30,117 @@ logger = logging.getLogger(__name__)
 # Environment configuration
 EXPRESS_SERVER_URL = os.getenv("EXPRESS_SERVER_URL", "http://localhost:3031")
 ENABLE_CANVAS_SYNC = os.getenv("ENABLE_CANVAS_SYNC", "true").lower() != "false"
+CANVAS_AUTO_START = os.getenv("CANVAS_AUTO_START", "true").lower() != "false"
+
+# Canvas server process management
+canvas_process = None
+canvas_process_pid = None
+
+def get_project_root() -> Path:
+    """Get the project root directory"""
+    current_file = Path(__file__).resolve()
+    # Go up from excalidraw_mcp/server.py to project root
+    return current_file.parent.parent
+
+async def check_canvas_server_health() -> bool:
+    """Check if canvas server is running and healthy"""
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            response = await client.get(f"{EXPRESS_SERVER_URL}/health")
+            return response.status_code == 200
+    except Exception as e:
+        logger.debug(f"Canvas server health check failed: {e}")
+        return False
+
+def start_canvas_server() -> Optional[subprocess.Popen]:
+    """Start the canvas server process"""
+    global canvas_process, canvas_process_pid
+    
+    try:
+        project_root = get_project_root()
+        logger.info(f"Starting canvas server from: {project_root}")
+        
+        # Change to project directory and run npm run canvas
+        process = subprocess.Popen(
+            ["npm", "run", "canvas"],
+            cwd=project_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            preexec_fn=os.setsid if os.name != 'nt' else None
+        )
+        
+        canvas_process = process
+        canvas_process_pid = process.pid
+        logger.info(f"Canvas server started with PID: {canvas_process_pid}")
+        
+        # Give the server a moment to start
+        time.sleep(2)
+        
+        return process
+        
+    except Exception as e:
+        logger.error(f"Failed to start canvas server: {e}")
+        return None
+
+def stop_canvas_server():
+    """Stop the canvas server process"""
+    global canvas_process, canvas_process_pid
+    
+    if canvas_process and canvas_process_pid:
+        try:
+            if os.name == 'nt':
+                # Windows
+                canvas_process.terminate()
+            else:
+                # Unix-like systems
+                os.killpg(os.getpgid(canvas_process_pid), signal.SIGTERM)
+            
+            logger.info(f"Canvas server (PID: {canvas_process_pid}) stopped")
+            canvas_process = None
+            canvas_process_pid = None
+            
+        except Exception as e:
+            logger.error(f"Error stopping canvas server: {e}")
+
+def cleanup_on_exit():
+    """Cleanup function called on script exit"""
+    logger.info("MCP server shutting down, cleaning up canvas server...")
+    stop_canvas_server()
+
+# Register cleanup function
+atexit.register(cleanup_on_exit)
+
+async def ensure_canvas_server_running() -> bool:
+    """Ensure canvas server is running, start if necessary"""
+    if not CANVAS_AUTO_START:
+        logger.debug("Canvas auto-start disabled")
+        return await check_canvas_server_health()
+    
+    # Check if server is already healthy
+    is_healthy = await check_canvas_server_health()
+    if is_healthy:
+        logger.debug("Canvas server is already running and healthy")
+        return True
+    
+    logger.info("Canvas server not running, attempting to start...")
+    
+    # Try to start the server
+    process = start_canvas_server()
+    if not process:
+        logger.error("Failed to start canvas server")
+        return False
+    
+    # Wait for server to become healthy (max 30 seconds)
+    for attempt in range(30):
+        await asyncio.sleep(1)
+        if await check_canvas_server_health():
+            logger.info("Canvas server started successfully")
+            return True
+        logger.debug(f"Waiting for canvas server to start... (attempt {attempt + 1}/30)")
+    
+    logger.error("Canvas server failed to start within 30 seconds")
+    stop_canvas_server()
+    return False
 
 # Initialize FastMCP server
 mcp = FastMCP("Excalidraw MCP Server")
@@ -126,8 +243,13 @@ async def sync_to_canvas(operation: str, data: Any) -> Optional[Dict[str, Any]]:
         logger.debug("Canvas sync disabled")
         return None
 
+    # Ensure canvas server is running before attempting sync
+    if not await ensure_canvas_server_running():
+        logger.warning("Canvas server not available for sync operation")
+        return None
+
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             if operation == "create":
                 url = f"{EXPRESS_SERVER_URL}/api/elements"
                 response = await client.post(url, json=data)
@@ -447,8 +569,26 @@ async def unlock_elements(request: ElementIdsRequest) -> str:
     }
     return json.dumps(result, indent=2)
 
+async def startup_initialization():
+    """Initialize canvas server on startup"""
+    logger.info("Starting Excalidraw MCP Server...")
+    
+    if CANVAS_AUTO_START:
+        logger.info("Checking canvas server status...")
+        is_running = await ensure_canvas_server_running()
+        if is_running:
+            logger.info("Canvas server is ready")
+        else:
+            logger.warning("Canvas server failed to start - continuing without canvas sync")
+    else:
+        logger.info("Canvas auto-start disabled")
+
 def main():
     """Main entry point for the CLI"""
+    # Run startup initialization
+    asyncio.run(startup_initialization())
+    
+    # Start MCP server
     mcp.run()
 
 if __name__ == "__main__":
