@@ -1,6 +1,8 @@
 # MCP Excalidraw Server: Advanced Live Visual Diagramming with AI Integration
 
-A comprehensive **TypeScript-based** system that combines **Excalidraw's powerful drawing capabilities** with **Model Context Protocol (MCP)** integration, enabling AI agents to create and manipulate diagrams in real-time on a live canvas.
+A comprehensive system that combines **Excalidraw's powerful drawing capabilities** with **Model Context Protocol (MCP)** integration, enabling AI agents to create and manipulate diagrams in real-time on a live canvas.
+
+**Now available in both TypeScript and Python implementations for maximum flexibility!**
 
 ## 🚦 Current Status & Version Information
 
@@ -8,18 +10,20 @@ A comprehensive **TypeScript-based** system that combines **Excalidraw's powerfu
 
 | Version | Status | Recommended For |
 |---------|--------|----------------|
-| **Local Development** | ✅ **FULLY TESTED** | **🎯 RECOMMENDED** |
+| **Python FastMCP** | ✅ **FULLY TESTED** | **🎯 RECOMMENDED** |
+| **TypeScript Local** | ✅ **FULLY TESTED** | Development & Production |
 | **NPM Published** | 🔧 **DEBUGGING IN PROGRESS** | Development testing |
 | **Docker Version** | 🔧 **UNDER DEVELOPMENT** | Future deployment |
 
-### **Current Recommendation: Local Development**
+### **Current Recommendation: Python FastMCP**
 
-For the most stable experience, we recommend using the local development setup. We're actively working on improving the NPM package and Docker deployment options.
+For the easiest setup and most maintainable experience, we recommend using the **Python FastMCP implementation**. It provides the same functionality with simpler dependency management using `uv` and modern Python packaging.
 
 ### **Development Notes**
+- **Python FastMCP**: ✅ All features fully functional with modern Python packaging
+- **TypeScript Local**: ✅ All features fully functional
 - **NPM Package**: Currently debugging MCP tool registration issues
 - **Docker Version**: Improving canvas synchronization reliability
-- **Local Version**: ✅ All features fully functional
 
 ## 🚀 What This System Does
 
@@ -84,9 +88,60 @@ For the most stable experience, we recommend using the local development setup. 
 
 ## 📦 Installation & Setup
 
-### **✅ Recommended: Local Development Setup**
+### **✅ Recommended: Python FastMCP Setup**
 
-> **Most stable and feature-complete option**
+> **Easiest setup with complete feature parity**
+
+#### **1. Clone and Navigate**
+```bash
+git clone https://github.com/yctimlin/mcp_excalidraw.git
+cd excalidraw-mcp
+```
+
+#### **2. Install Python Dependencies**
+```bash
+# Using uv (recommended)
+uv sync
+
+# Or using pip
+pip install -e .
+```
+
+#### **3. Configure Environment**
+```bash
+# Copy example environment file
+cp .env.example .env
+
+# Edit .env to set your preferred port (default: 3031)
+echo "EXPRESS_SERVER_URL=http://localhost:3031" > .env
+```
+
+#### **4. Start the MCP Server**
+```bash
+# Start Python FastMCP server
+uv run python excalidraw_mcp/server.py
+
+# Or if using pip
+python excalidraw_mcp/server.py
+```
+
+#### **5. Start the Canvas Server (TypeScript)**
+```bash
+# In a separate terminal, start the Express canvas server
+npm install
+npm run build
+npm run canvas
+```
+
+#### **6. Access the Canvas**
+Open your browser and navigate to:
+```
+http://localhost:3031
+```
+
+### **Alternative: TypeScript Local Development Setup**
+
+> **Original implementation, fully functional**
 
 #### **1. Clone the Repository**
 ```bash
@@ -225,22 +280,42 @@ The MCP server provides these tools for creating visual diagrams:
 
 ## 🔌 Integration with Claude Desktop
 
-### **✅ Recommended: Using Local Installation**
+### **✅ Recommended: Python FastMCP Configuration**
 
-For the **local development version** (most stable), add this configuration to your `claude_desktop_config.json`:
+For the **Python FastMCP version** (easiest and most maintainable), add this configuration to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "excalidraw": {
+      "command": "uv",
+      "args": ["run", "--directory", "/absolute/path/to/excalidraw-mcp", "python", "excalidraw_mcp/server.py"],
+      "env": {
+        "EXPRESS_SERVER_URL": "http://localhost:3031"
+      }
+    }
+  }
+}
+```
+
+**Important**: Replace `/absolute/path/to/excalidraw-mcp` with the actual absolute path to your cloned repository.
+
+### **Alternative: TypeScript Configuration**
+
+For the **TypeScript version**, add this configuration to your `claude_desktop_config.json`:
 
 ```json
 {
   "mcpServers": {
     "excalidraw": {
       "command": "node",
-      "args": ["/absolute/path/to/mcp_excalidraw/dist/index.js"]
+      "args": ["/absolute/path/to/excalidraw-mcp/dist/index.js"]
     }
   }
 }
 ```
 
-**Important**: Replace `/absolute/path/to/mcp_excalidraw` with the actual absolute path to your cloned repository. Note that the path now points to `dist/index.js` (the compiled TypeScript output).
+**Important**: Replace `/absolute/path/to/excalidraw-mcp` with the actual absolute path to your cloned repository. Note that the path points to `dist/index.js` (the compiled TypeScript output).
 
 ### **🔧 Alternative Configurations (Beta)**
 

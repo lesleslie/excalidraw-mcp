@@ -1,14 +1,10 @@
 {
-  "name": "mcp-excalidraw-server",
-  "version": "1.0.2",
-  "description": "Advanced MCP server for Excalidraw with real-time canvas, WebSocket sync, and comprehensive diagram management",
-  "main": "dist/index.js",
+  "name": "excalidraw-mcp",
+  "version": "0.1.0",
+  "description": "Advanced real-time canvas server for Excalidraw with WebSocket sync and comprehensive diagram management",
+  "main": "dist/server.js",
   "type": "module",
-  "bin": {
-    "mcp-excalidraw-server": "dist/index.js"
-  },
   "scripts": {
-    "start": "npm run build:server && node dist/index.js",
     "canvas": "npm run build:server && node dist/server.js",
     "build": "npm run build:frontend && npm run build:server",
     "build:frontend": "vite build",
@@ -17,6 +13,10 @@
     "dev": "concurrently \"npm run dev:server\" \"vite\"",
     "dev:server": "npx tsc --watch",
     "production": "npm run build && npm run canvas",
+    "start-all": "./start-both.sh",
+    "canvas-bg": "npm run build:server && node dist/server.js &",
+    "start-canvas": "npm run build:server && node dist/server.js",
+    "canvas-for-npx": "./start-canvas-only.sh",
     "prepublishOnly": "npm run build",
     "type-check": "npx tsc --noEmit"
   },
@@ -62,17 +62,17 @@
     "ai-tools"
   ],
   "author": {
-    "name": "yctimlin",
-    "email": "c22647809@gmail.com"
+    "name": "lesleslie",
+    "email": "les@wedgwoodwebworks.com"
   },
-  "license": "MIT",
+  "license": "BSD-3-CLAUSE",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yctimlin/mcp_excalidraw.git"
+    "url": "https://github.com/lesleslie/excalidraw_mcp.git"
   },
-  "homepage": "https://github.com/yctimlin/mcp_excalidraw#readme",
+  "homepage": "https://github.com/lesleslie/excalidraw_mcp#readme",
   "bugs": {
-    "url": "https://github.com/yctimlin/mcp_excalidraw/issues"
+    "url": "https://github.com/lesleslie/excalidraw_mcp/issues"
   },
   "engines": {
     "node": ">=16.0.0"
