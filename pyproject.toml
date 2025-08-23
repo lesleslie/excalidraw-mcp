@@ -26,12 +26,19 @@ dependencies = [
     "httpx>=0.28.1",
     "pydantic>=2.11.7",
     "psutil>=6.1.1",
+    "pyjwt>=2.10.1",
+    "cryptography>=45.0.6",
 ]
 license = {text = "BSD-3-CLAUSE"}
 
 [dependency-groups]
 dev = [
     "crackerjack",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+    "respx>=0.22.0",
 ]
 
 [project.scripts]
@@ -43,5 +50,8 @@ excalidraw-mcp = "excalidraw_mcp.server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["excalidraw_mcp"]
+
+[tool.uv.sources]
+crackerjack = { path = "../crackerjack", editable = true }
 
 
