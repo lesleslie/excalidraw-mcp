@@ -54,4 +54,45 @@ packages = ["excalidraw_mcp"]
 [tool.uv.sources]
 crackerjack = { path = "../crackerjack", editable = true }
 
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+    "--cov=excalidraw_mcp",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-report=html:htmlcov",
+    "--cov-report=xml",
+    "--cov-fail-under=85",
+    "--junitxml=pytest-results.xml",
+    "--tb=short",
+    "-p", "no:warnings",
+]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "unit: Unit tests for individual components",
+    "integration: Integration tests between components",
+    "e2e: End-to-end tests with canvas server",
+    "slow: Slow tests (>1s)",
+    "security: Security-focused tests",
+    "performance: Performance and load tests",
+    "smoke: Quick smoke tests for basic functionality",
+    "regression: Regression tests for known issues",
+    "api: API endpoint tests",
+    "websocket: WebSocket communication tests",
+    "mcp: MCP protocol tests",
+    "canvas: Canvas server interaction tests",
+    "external: Tests requiring external services",
+]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+]
+
 

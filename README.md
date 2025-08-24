@@ -1,33 +1,12 @@
-# MCP Excalidraw Server: Advanced Live Visual Diagramming with AI Integration
+# Excalidraw MCP Server: AI-Powered Live Visual Diagramming
 
 > **🙏 Acknowledgments**  
 > This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).  
 > Special thanks to the original contributors for creating the foundation that made this enhanced version possible.
 
-A comprehensive system that combines **Excalidraw's powerful drawing capabilities** with **Model Context Protocol (MCP)** integration, enabling AI agents to create and manipulate diagrams in real-time on a live canvas.
+A **dual-language MCP (Model Context Protocol) server** that combines **Excalidraw's powerful drawing capabilities** with AI integration, enabling AI agents like Claude to create and manipulate diagrams in real-time on a live canvas.
 
-**Now available in both TypeScript and Python implementations for maximum flexibility!**
-
-## 🚦 Current Status & Version Information
-
-> **📋 Choose Your Installation Method**
-
-| Version | Status | Recommended For |
-|---------|--------|----------------|
-| **Python FastMCP** | ✅ **FULLY TESTED** | **🎯 RECOMMENDED** |
-| **TypeScript Local** | ✅ **FULLY TESTED** | Development & Production |
-| **NPM Published** | 🔧 **DEBUGGING IN PROGRESS** | Development testing |
-| **Docker Version** | 🔧 **UNDER DEVELOPMENT** | Future deployment |
-
-### **Current Recommendation: Python FastMCP**
-
-For the easiest setup and most maintainable experience, we recommend using the **Python FastMCP implementation**. It provides the same functionality with simpler dependency management using `uv` and modern Python packaging.
-
-### **Development Notes**
-- **Python FastMCP**: ✅ All features fully functional with modern Python packaging
-- **TypeScript Local**: ✅ All features fully functional
-- **NPM Package**: Currently debugging MCP tool registration issues
-- **Docker Version**: Improving canvas synchronization reliability
+**Features Python FastMCP server with TypeScript canvas server for optimal performance and maintainability.**
 
 ## 🚀 What This System Does
 
@@ -50,7 +29,7 @@ For the easiest setup and most maintainable experience, we recommend using the *
 ```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   AI Agent      │───▶│   MCP Server     │───▶│  Canvas Server  │
-│   (Claude)      │    │  (src/index.js) │    │ (src/server.js) │
+│   (Claude)      │    │    (Python)      │    │ (Express.js)    │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
                                                          │
                                                          ▼
@@ -59,6 +38,12 @@ For the easiest setup and most maintainable experience, we recommend using the *
                                                │  (React + WS)   │
                                                └─────────────────┘
 ```
+
+**Hybrid Architecture Benefits:**
+- **Python FastMCP**: Handles MCP protocol, tool registration, and auto-manages canvas server
+- **TypeScript Canvas**: Express.js API + WebSocket for real-time canvas synchronization  
+- **Auto-Management**: Python server monitors and restarts canvas server as needed
+- **Type Safety**: Comprehensive TypeScript definitions ensure consistency across the stack
 
 ## 🌟 Key Features
 
@@ -92,106 +77,44 @@ For the easiest setup and most maintainable experience, we recommend using the *
 
 ## 📦 Installation & Setup
 
-### **✅ Recommended: Python FastMCP Setup**
+### **✅ Quick Start (Recommended)**
 
-> **Easiest setup with complete feature parity**
-
-#### **1. Clone and Navigate**
+#### **1. Clone and Setup**
 ```bash
 git clone https://github.com/lesleslie/excalidraw-mcp.git
 cd excalidraw-mcp
-```
 
-#### **2. Install Python Dependencies**
-```bash
-# Using uv (recommended)
+# Install Python dependencies
 uv sync
 
-# Or using pip
-pip install -e .
+# Install Node.js dependencies and build
+npm install
+npm run build
 ```
 
-#### **3. Configure Environment**
+#### **2. Start the System**
 ```bash
-# Copy example environment file
-cp .env.example .env
-
-# Edit .env to set your preferred port (default: 3031)
-echo "EXPRESS_SERVER_URL=http://localhost:3031" > .env
-```
-
-#### **4. Start the MCP Server**
-```bash
-# Start Python FastMCP server
+# The Python MCP server auto-starts the canvas server
 uv run python excalidraw_mcp/server.py
 
-# Or if using pip
-python excalidraw_mcp/server.py
-```
-
-#### **5. Start the Canvas Server (TypeScript)**
-```bash
-# In a separate terminal, start the Express canvas server
-npm install
-npm run build
+# Or manually start canvas server (optional)
 npm run canvas
 ```
 
-#### **6. Access the Canvas**
+#### **3. Access the Canvas**
 Open your browser and navigate to:
 ```
 http://localhost:3031
 ```
 
-### **Alternative: TypeScript Local Development Setup**
+### **📋 Development Setup**
 
-> **Original implementation, fully functional**
-
-#### **1. Clone the Repository**
 ```bash
-git clone https://github.com/lesleslie/excalidraw-mcp.git
-cd excalidraw-mcp
-npm install
-```
-
-#### **2. Build the Frontend**
-```bash
-npm run build
-```
-
-#### **3. Start the System**
-
-##### **Option A: Production Mode (Recommended)**
-```bash
-# Start canvas server (serves frontend + API)
-npm run canvas
-```
-
-##### **Option B: Development Mode**
-```bash
-# Start both canvas server and Vite dev server
+# Development mode (TypeScript watch + Vite dev server)
 npm run dev
-```
 
-#### **4. Access the Canvas**
-Open your browser and navigate to:
-```
-http://localhost:3031
-```
-
-### **🔧 Alternative Installation Methods (In Development)**
-
-#### **NPM Package (Beta)**
-```bash
-# Currently debugging tool registration - feedback welcome!
-npm install -g mcp-excalidraw-server
-npx mcp-excalidraw-server
-```
-
-#### **Docker Version (Coming Soon)**
-```bash
-# Canvas sync improvements in progress
-docker run -p 3000:3000 mcp-excalidraw-server
+# Or production mode
+npm run production
 ```
 
 ## 🔧 Available Scripts
@@ -282,72 +205,44 @@ The MCP server provides these tools for creating visual diagrams:
 }
 ```
 
-## 🔌 Integration with Claude Desktop
+## 🔌 Integration with Claude Code
 
-### **✅ Recommended: Python FastMCP Configuration**
+### **✅ Recommended: uvx Configuration**
 
-For the **Python FastMCP version** (easiest and most maintainable), add this configuration to your `claude_desktop_config.json`:
+Add this configuration to your Claude Code `.mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "excalidraw": {
-      "command": "uv",
-      "args": ["run", "--directory", "/absolute/path/to/excalidraw-mcp", "python", "excalidraw_mcp/server.py"],
+      "command": "uvx",
+      "args": ["excalidraw-mcp"],
       "env": {
-        "EXPRESS_SERVER_URL": "http://localhost:3031"
+        "EXPRESS_SERVER_URL": "http://localhost:3031",
+        "ENABLE_CANVAS_SYNC": "true"
       }
     }
   }
 }
 ```
 
+### **Alternative: Local Development Configuration**
+
+For local development, use:
+
+```json
+{
+  "mcpServers": {
+    "excalidraw": {
+      "command": "uv",
+      "args": ["run", "python", "excalidraw_mcp/server.py"],
+      "cwd": "/absolute/path/to/excalidraw-mcp"
+    }
+  }
+}
+```
+
 **Important**: Replace `/absolute/path/to/excalidraw-mcp` with the actual absolute path to your cloned repository.
-
-### **Alternative: TypeScript Configuration**
-
-For the **TypeScript version**, add this configuration to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "excalidraw": {
-      "command": "node",
-      "args": ["/absolute/path/to/excalidraw-mcp/dist/index.js"]
-    }
-  }
-}
-```
-
-**Important**: Replace `/absolute/path/to/excalidraw-mcp` with the actual absolute path to your cloned repository. Note that the path points to `dist/index.js` (the compiled TypeScript output).
-
-### **🔧 Alternative Configurations (Beta)**
-
-#### **NPM Package (Beta Testing)**
-```json
-{
-  "mcpServers": {
-    "excalidraw": {
-      "command": "npx",
-      "args": ["-y", "mcp-excalidraw-server"]
-    }
-  }
-}
-```
-*Currently debugging tool registration - let us know if you encounter issues!*
-
-#### **Docker Version (Coming Soon)**
-```json
-{
-  "mcpServers": {
-    "excalidraw": {
-      "command": "docker",
-      "args": ["run", "-i", "--rm", "mcp-excalidraw-server"]
-    }
-  }
-}
-```
-*Canvas sync improvements in progress.*
 
 ## 🔧 Integration with Other Tools
 
@@ -359,8 +254,11 @@ Add to your `.cursor/mcp.json`:
 {
   "mcpServers": {
     "excalidraw": {
-      "command": "node",
-      "args": ["/absolute/path/to/mcp_excalidraw/dist/index.js"]
+      "command": "uvx",
+      "args": ["excalidraw-mcp"],
+      "env": {
+        "EXPRESS_SERVER_URL": "http://localhost:3031"
+      }
     }
   }
 }
@@ -375,8 +273,11 @@ For VS Code MCP extension, add to your settings:
   "mcp": {
     "servers": {
       "excalidraw": {
-        "command": "node",
-        "args": ["/absolute/path/to/mcp_excalidraw/dist/index.js"]
+        "command": "uvx",
+        "args": ["excalidraw-mcp"],
+        "env": {
+          "EXPRESS_SERVER_URL": "http://localhost:3031"
+        }
       }
     }
   }
@@ -389,9 +290,10 @@ For VS Code MCP extension, add to your settings:
 |----------|---------|-------------|
 | `EXPRESS_SERVER_URL` | `http://localhost:3031` | Canvas server URL for MCP sync |
 | `ENABLE_CANVAS_SYNC` | `true` | Enable/disable canvas synchronization |
-| `DEBUG` | `false` | Enable debug logging |
+| `CANVAS_AUTO_START` | `true` | Auto-start canvas server with MCP server |
 | `PORT` | `3031` | Canvas server port |
 | `HOST` | `localhost` | Canvas server host |
+| `DEBUG` | `false` | Enable debug logging |
 
 ## 📊 API Endpoints
 
@@ -456,25 +358,15 @@ The canvas server provides these REST endpoints:
 
 ## 🐛 Troubleshooting
 
-### **NPM Package Issues**
-- **Symptoms**: MCP tools not registering properly
-- **Temporary Solution**: Use local development setup
-- **Status**: Actively debugging - updates coming soon
-
-### **Docker Version Notes**
-- **Symptoms**: Elements may not sync to canvas immediately
-- **Temporary Solution**: Use local development setup
-- **Status**: Improving synchronization reliability
-
 ### **Canvas Not Loading**
 - Ensure `npm run build` completed successfully
-- Check that `dist/index.html` exists
 - Verify canvas server is running on port 3031
+- Python MCP server auto-starts canvas server - check console for errors
 
 ### **Elements Not Syncing**
-- Confirm MCP server is running (`npm start`)
+- Python server automatically manages canvas server
 - Check `ENABLE_CANVAS_SYNC=true` in environment
-- Verify canvas server is accessible at `EXPRESS_SERVER_URL`
+- Verify canvas server health at `http://localhost:3031/health`
 
 ### **WebSocket Connection Issues**  
 - Check browser console for WebSocket errors
@@ -484,50 +376,61 @@ The canvas server provides these REST endpoints:
 ### **Build Errors**
 - Delete `node_modules` and run `npm install`
 - Check Node.js version (requires 16+)
-- Ensure all dependencies are installed
 - Run `npm run type-check` to identify TypeScript issues
-- Verify `dist/` directory is created after `npm run build:server`
+- Run `uv sync` to update Python dependencies
+
+### **Python Dependencies**
+- Use `uv sync` to install/update Python dependencies
+- Ensure Python 3.13+ is installed
+- Check `uv --version` to verify uv installation
 
 ## 📋 Project Structure
 
 ```
-mcp_excalidraw/
-├── frontend/
+excalidraw-mcp/
+├── excalidraw_mcp/           # Python FastMCP server
+│   ├── server.py            # Main MCP server (Python)
+│   ├── config.py            # Configuration management
+│   ├── element_factory.py   # Element creation utilities
+│   ├── http_client.py       # HTTP client for canvas server
+│   └── process_manager.py   # Canvas server lifecycle management
+├── frontend/                # React frontend
 │   ├── src/
 │   │   ├── App.tsx          # Main React component (TypeScript)
 │   │   └── main.tsx         # React entry point (TypeScript)
 │   └── index.html           # HTML template
-├── src/ (TypeScript Source)
-│   ├── index.ts            # MCP server (TypeScript)
-│   ├── server.ts           # Canvas server (Express + WebSocket, TypeScript)
-│   ├── types.ts            # Comprehensive type definitions
+├── src/                     # TypeScript canvas server
+│   ├── server.ts            # Express server + WebSocket (TypeScript)
+│   ├── types.ts             # Type definitions
 │   └── utils/
-│       └── logger.ts       # Logging utility (TypeScript)
-├── dist/ (Compiled Output)
-│   ├── index.js            # Compiled MCP server
-│   ├── server.js           # Compiled Canvas server
-│   ├── types.js            # Compiled type definitions
-│   ├── utils/
-│   │   └── logger.js       # Compiled logging utility
-│   └── frontend/           # Built React frontend
-├── tsconfig.json          # TypeScript configuration
-├── vite.config.js         # Vite build configuration
-├── package.json           # Dependencies and scripts
-└── README.md              # This file
+│       └── logger.ts        # Logging utilities
+├── dist/                    # Compiled TypeScript output
+│   ├── server.js            # Compiled canvas server
+│   ├── types.js             # Compiled type definitions
+│   └── frontend/            # Built React frontend
+├── tests/                   # Python test suite
+│   ├── unit/                # Unit tests
+│   ├── integration/         # Integration tests
+│   ├── security/            # Security tests
+│   └── performance/         # Performance tests
+├── pyproject.toml           # Python project configuration
+├── package.json             # Node.js dependencies
+├── tsconfig.json            # TypeScript configuration
+└── README.md                # This file
 ```
 
 ## 🔮 Development Roadmap
 
-- ✅ **TypeScript Migration**: Complete type safety for enhanced development experience
-- **NPM Package**: Resolving MCP tool registration issues
-- **Docker Deployment**: Improving canvas synchronization
-- **Enhanced Features**: Additional MCP tools and capabilities
-- **Performance Optimization**: Real-time sync improvements
-- **Advanced TypeScript Features**: Stricter type checking and advanced type utilities
+- ✅ **Python FastMCP Architecture**: Modern hybrid implementation with auto-management
+- ✅ **TypeScript Canvas Server**: Complete type safety for enhanced development experience
+- ✅ **Comprehensive Testing**: Security, performance, and integration test suites
+- 🔧 **Enhanced Features**: Additional MCP tools and canvas capabilities
+- 🔧 **Performance Optimization**: Real-time sync improvements
+- 🔧 **Docker Deployment**: Containerized deployment options
 
 ## 🤝 Contributing
 
-We welcome contributions! If you're experiencing issues with the NPM package or Docker version, please:
+We welcome contributions! Please:
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)

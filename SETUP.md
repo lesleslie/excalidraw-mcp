@@ -1,51 +1,57 @@
 # Excalidraw MCP Server Setup
 
-This project provides both an MCP server for Claude Code integration and a visual canvas interface for Excalidraw diagrams.
+This project provides a dual-language MCP server for Claude Code integration with a live Excalidraw canvas interface.
 
 ## Architecture
 
-- **MCP Server** (`dist/index.js`): Provides tools for Claude Code to create/edit diagrams
-- **Express Canvas Server** (`dist/server.js`): Provides visual interface and REST API
-- **WebSocket Sync**: Real-time synchronization between MCP operations and canvas
+- **Python FastMCP Server** (`excalidraw_mcp/server.py`): Handles MCP protocol and tool registration
+- **TypeScript Canvas Server** (`src/server.ts`): Express.js server with WebSocket for canvas management
+- **React Frontend** (`frontend/src/App.tsx`): Live Excalidraw canvas interface
+- **Auto-Management**: Python server automatically manages TypeScript server lifecycle
 
 ## Quick Start
 
-### Option 1: Full Setup (Recommended)
+### Setup Dependencies
 ```bash
-# Start both MCP-compatible setup and canvas server
-cd ~/Projects/mcp_excalidraw
-npm run start-all
+# Install Python dependencies
+uv sync
+
+# Install Node.js dependencies
+npm install
+
+# Build TypeScript canvas server
+npm run build
 ```
 
-### Option 2: Canvas Only
+### Development Mode
 ```bash
-# Just start the visual canvas server
-cd ~/Projects/mcp_excalidraw
+# Start development servers (TypeScript watch + Vite dev)
+npm run dev
+
+# Or build and start canvas server
 npm run production
 ```
 
-### Option 3: Individual Services
+### Individual Services
 ```bash
-# Canvas server only (port 3001)
-npm run start-canvas
+# Canvas server only (port 3031)
+npm run canvas
 
-# MCP server only (stdio mode - for Claude Code)
-npm run mcp
-
-# Canvas server in background (returns immediately)
-npm run canvas-bg
+# Python MCP server (auto-manages canvas server)
+uv run python excalidraw_mcp/server.py
 ```
 
 ## Claude Code Integration
 
-### Option A: Portable npx Configuration (Recommended)
+### Option A: Published Package (Recommended)
 ```json
 {
   "excalidraw": {
-    "command": "npx",
-    "args": ["-y", "mcp-excalidraw-server@1.0.5"],
+    "command": "uvx",
+    "args": ["excalidraw-mcp"],
     "env": {
-      "EXPRESS_SERVER_URL": "http://localhost:3031"
+      "EXPRESS_SERVER_URL": "http://localhost:3031",
+      "ENABLE_CANVAS_SYNC": "true"
     }
   }
 }
@@ -55,16 +61,17 @@ npm run canvas-bg
 ```json
 {
   "excalidraw": {
-    "command": "npm",
-    "args": ["run", "mcp"],
-    "cwd": "~/Projects/mcp_excalidraw"
+    "command": "uv",
+    "args": ["run", "python", "excalidraw_mcp/server.py"],
+    "cwd": "/path/to/excalidraw-mcp"
   }
 }
 ```
 
 **Setup Steps:**
-1. **Canvas Server**: Run `npm run start-all` to start the companion canvas on port 3031
-2. **Environment**: The MCP server automatically connects to `http://localhost:3031` for canvas sync
+1. **Canvas Server**: The Python MCP server automatically starts the canvas server on first tool use
+2. **Environment**: Default connection to `http://localhost:3031` with auto-start enabled
+3. **Health Monitoring**: Python server continuously monitors and restarts canvas server if needed
 
 ## Available MCP Tools
 
@@ -87,19 +94,45 @@ npm run canvas-bg
 
 ## Configuration
 
-Environment variables (in `.env`):
-```
+Environment variables:
+```bash
+# Canvas server configuration
 PORT=3031
 HOST=localhost
 EXPRESS_SERVER_URL=http://localhost:3031
 ENABLE_CANVAS_SYNC=true
+CANVAS_AUTO_START=true
+
+# Development settings
+DEBUG=false
+```
+
+## Development Commands
+
+```bash
+# Python testing
+pytest                              # Run all Python tests
+pytest --cov=excalidraw_mcp         # With coverage report
+pytest -m "not slow"               # Skip slow performance tests
+
+# TypeScript testing
+npm test                           # Run all TypeScript tests
+npm run test:coverage              # With coverage report
+
+# Type checking and linting
+npm run type-check                 # TypeScript type validation
+
+# Build commands
+npm run build                      # Build frontend + canvas server
+npm run build:frontend             # Build React frontend only
+npm run build:server               # Build Express server only
 ```
 
 ## Troubleshooting
 
-- **Port conflicts**: Change `PORT` in `.env`
-- **MCP not connecting**: Verify `.mcp.json` has correct npm configuration with `cwd` parameter
-- **Canvas sync issues**: Ensure Express server is running and `EXPRESS_SERVER_URL` is correct
+- **Port conflicts**: Change `PORT` environment variable
+- **MCP not connecting**: Verify `.mcp.json` uses `uvx excalidraw-mcp` configuration
+- **Canvas sync issues**: Python server auto-starts canvas server - check logs for errors
 - **Build issues**: Run `npm run build` to rebuild TypeScript sources
-- **npm permission errors**: Ensure npm is properly installed and accessible from Claude Code
-- **Path issues**: Use absolute paths in MCP configuration or ensure correct `cwd` parameter
+- **Python dependencies**: Run `uv sync` to update dependencies
+- **Auto-start failures**: Canvas server is automatically managed - check health endpoint at `/health`

@@ -170,10 +170,71 @@ The system provides these MCP tools for diagram creation:
 - **Error Handling**: Failed MCP operations include detailed error messages and suggestions
 - **Concurrent Safety**: In-memory storage uses JavaScript Map for thread-safe operations
 
+## Testing Infrastructure
+
+### Test Execution Commands
+```bash
+# Python tests with pytest
+pytest                              # Run all Python tests
+pytest --cov=excalidraw_mcp         # With coverage report
+pytest --cov-report=html            # HTML coverage report
+pytest tests/unit/                  # Unit tests only
+pytest tests/integration/           # Integration tests only
+pytest -m "not slow"               # Skip slow performance tests
+pytest -m security                 # Security tests only
+pytest -m performance              # Performance benchmarks
+
+# TypeScript tests with Jest
+npm test                           # Run all TypeScript tests
+npm run test:coverage              # With coverage report
+npm run test:unit                  # Unit tests only
+npm run test:integration           # Integration tests only
+
+# Type checking
+npm run type-check                 # TypeScript type validation
+```
+
+### Test Categories and Structure
+- **Unit Tests** (`tests/unit/`, `test/unit/`) - Component isolation testing
+- **Integration Tests** (`tests/integration/`) - MCP tools and HTTP client integration
+- **Security Tests** (`tests/security/`) - Input validation, XSS prevention, injection attacks
+- **Performance Tests** (`tests/performance/`) - Load testing, memory profiling, benchmarks
+- **End-to-End Tests** - Full system integration with real canvas server
+
+### Test Infrastructure Features
+- **85% Python coverage requirement** with comprehensive fixtures and mocking
+- **70% TypeScript coverage requirement** with jsdom environment for DOM testing
+- **Performance monitoring** with memory usage tracking and execution time assertions
+- **Security testing** including prototype pollution, overflow, and injection prevention
+- **Mock infrastructure** for HTTP clients, WebSocket connections, and canvas server simulation
+
+## Configuration Architecture
+
+### Centralized Configuration System (`excalidraw_mcp/config.py`)
+- **Environment-based configuration** with validation and type conversion
+- **Security settings**: JWT authentication, CORS policies, rate limiting
+- **Server settings**: Health check timeouts, auto-start behavior, graceful shutdown
+- **Performance settings**: Connection pooling, caching, WebSocket batching
+- **Logging configuration**: Audit trails, sensitive field filtering, file rotation
+
+### Modular Python Architecture
+- **Element Factory** (`excalidraw_mcp/element_factory.py`) - Standardized element creation with validation
+- **HTTP Client** (`excalidraw_mcp/http_client.py`) - Connection pooling and async HTTP management  
+- **Process Manager** (`excalidraw_mcp/process_manager.py`) - Canvas server lifecycle management
+- **MCP Tools** (`excalidraw_mcp/mcp_tools.py`) - Tool implementations with error handling
+
 ## Testing and Debugging
 
+### Development Testing
 - Canvas server health check: `GET /health`
 - API endpoints: `GET /api/elements`, `POST /api/elements`, etc.
 - WebSocket connection: `ws://localhost:3031`
 - Debug mode: Set `DEBUG=true` environment variable
 - Canvas access: `http://localhost:3031` (after running canvas server)
+
+### Test Data and Fixtures
+- **Element factory fixtures** for consistent test element creation
+- **Mock HTTP clients** with async context manager support
+- **Security test data** for XSS, injection, and overflow testing  
+- **Performance monitoring** with memory and execution time tracking
+- **WebSocket mocks** with message queue simulation for real-time testing
