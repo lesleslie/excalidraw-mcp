@@ -419,6 +419,91 @@ excalidraw-mcp/
 └── README.md                # This file
 ```
 
+## 📦 Package Naming
+
+This project uses consistent naming across different contexts:
+
+- **Python Package**: `excalidraw_mcp` (underscore) - used in imports and Python module references
+- **PyPI Distribution**: `excalidraw-mcp` (hyphen) - used for `uvx excalidraw-mcp` and pip installation
+- **npm Package**: `excalidraw-mcp` (hyphen) - used for Node.js dependencies
+- **MCP Server Name**: `excalidraw` - used in .mcp.json configuration
+
+**Example Usage:**
+```python
+# Python imports (underscore)
+from excalidraw_mcp.server import main
+
+# Shell commands (hyphen)
+uvx excalidraw-mcp
+pip install excalidraw-mcp
+```
+
+## 🧪 Testing & Quality Assurance
+
+### Coverage Requirements
+
+- **Python**: 85% minimum test coverage (enforced by pytest)
+- **TypeScript**: 70% minimum test coverage (enforced by Jest)
+
+### Running Tests
+
+```bash
+# Python tests with coverage
+pytest --cov=excalidraw_mcp --cov-report=html
+pytest --cov=excalidraw_mcp --cov-report=term-missing
+
+# TypeScript tests with coverage  
+npm run test:coverage
+
+# Run all tests
+pytest && npm test
+
+# Specific test categories
+pytest tests/unit/                  # Python unit tests
+pytest tests/integration/           # Python integration tests
+pytest -m security                 # Security tests
+pytest -m performance              # Performance benchmarks
+
+npm run test:unit                   # TypeScript unit tests
+npm run test:integration            # TypeScript integration tests
+```
+
+### Quality Standards
+
+This project enforces strict quality standards:
+- All code must pass type checking (Pyright for Python, TSC for TypeScript)
+- Security scanning with Bandit for Python
+- Linting and formatting with Ruff (Python) and built-in TypeScript rules
+- Comprehensive test coverage as specified above
+
+## 📦 Publishing & Distribution
+
+### PyPI Distribution
+The Python package is published to PyPI as `excalidraw-mcp`:
+```bash
+# Install from PyPI
+pip install excalidraw-mcp
+
+# Use with uvx (recommended)
+uvx excalidraw-mcp
+```
+
+### Local Development
+For local development and testing:
+```bash
+# Install in editable mode
+pip install -e .
+
+# Or use UV for development
+uv sync
+uv run python excalidraw_mcp/server.py
+```
+
+### Version Management
+- Semantic versioning (SemVer) is used
+- Version is managed in both `pyproject.toml` and `package.json`
+- Releases are tagged in git with version numbers
+
 ## 🔮 Development Roadmap
 
 - ✅ **Python FastMCP Architecture**: Modern hybrid implementation with auto-management

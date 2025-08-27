@@ -1,33 +1,33 @@
 /** @type {import('jest').Config} */
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
+  preset: 'ts-jest',                                      // Use TypeScript Jest preset
+  testEnvironment: 'jsdom',                               // DOM environment for React testing
   roots: ['<rootDir>/src', '<rootDir>/test', '<rootDir>/frontend/src'],
   testMatch: [
-    '**/__tests__/**/*.+(ts|tsx|js)',
-    '**/*.(test|spec).+(ts|tsx|js)'
+    '**/__tests__/**/*.+(ts|tsx|js)',                    // Tests in __tests__ directories
+    '**/*.(test|spec).+(ts|tsx|js)'                     // Files ending with .test or .spec
   ],
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest'
+    '^.+\\.(ts|tsx)$': 'ts-jest'                        // Transform TypeScript files
   },
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
-    'frontend/src/**/*.{ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/types.ts', // Types file doesn't need coverage
-    '!src/**/*.config.ts',
-    '!frontend/src/**/*.config.ts',
-    '!**/node_modules/**',
-    '!**/dist/**'
+    'src/**/*.{ts,tsx}',                                 // Include canvas server source
+    'frontend/src/**/*.{ts,tsx}',                        // Include React frontend source
+    '!src/**/*.d.ts',                                    // Exclude TypeScript definition files
+    '!src/types.ts',                                     // Types file doesn't need coverage
+    '!src/**/*.config.ts',                               // Exclude configuration files
+    '!frontend/src/**/*.config.ts',                      // Exclude frontend config files
+    '!**/node_modules/**',                               // Exclude dependencies
+    '!**/dist/**'                                        // Exclude built files
   ],
-  coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov', 'html'],
-  coverageThreshold: {
+  coverageDirectory: 'coverage',                          // Output directory for coverage reports
+  coverageReporters: ['text', 'lcov', 'html'],          // Multiple coverage report formats
+  coverageThreshold: {                                    // Enforce 70% minimum coverage requirement
     global: {
-      branches: 70,
-      functions: 70,
-      lines: 70,
-      statements: 70
+      branches: 70,                                       // 70% branch coverage minimum
+      functions: 70,                                      // 70% function coverage minimum
+      lines: 70,                                          // 70% line coverage minimum
+      statements: 70                                      // 70% statement coverage minimum
     }
   },
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],

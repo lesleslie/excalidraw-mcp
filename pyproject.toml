@@ -1,5 +1,7 @@
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
 
 [project]
@@ -15,10 +17,10 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
     "Topic :: Software Development :: Libraries :: Python Modules",
-    "Topic :: System :: Monitoring"
+    "Topic :: System :: Monitoring",
 ]
 authors = [
-    { name = "Les Leslie", email = "les@wedgwoodwebworks.com" }
+    { name = "Les Leslie", email = "les@wedgwoodwebworks.com" },
 ]
 requires-python = ">=3.13"
 dependencies = [
@@ -29,7 +31,16 @@ dependencies = [
     "pyjwt>=2.10.1",
     "cryptography>=45.0.6",
 ]
-license = {text = "BSD-3-CLAUSE"}
+
+[project.license]
+text = "BSD-3-CLAUSE"
+
+[project.scripts]
+excalidraw-mcp = "excalidraw_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/lesleslie/excalidraw-mcp"
+Repository = "https://github.com/lesleslie/excalidraw-mcp"
 
 [dependency-groups]
 dev = [
@@ -41,38 +52,43 @@ dev = [
     "respx>=0.22.0",
 ]
 
-[project.scripts]
-excalidraw-mcp = "excalidraw_mcp.server:main"
-
-[project.urls]
-"Homepage" = "https://github.com/lesleslie/excalidraw-mcp"
-"Repository" = "https://github.com/lesleslie/excalidraw-mcp"
-
 [tool.hatch.build.targets.wheel]
-packages = ["excalidraw_mcp"]
+packages = [
+    "excalidraw_mcp",
+]
 
-[tool.uv.sources]
-crackerjack = { path = "../crackerjack", editable = true }
+[tool.uv.sources.crackerjack]
+path = "../crackerjack"
+editable = true
 
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = [
-    "-ra",
-    "--strict-markers",
-    "--strict-config",
-    "--cov=excalidraw_mcp",
-    "--cov-report=term-missing:skip-covered",
-    "--cov-report=html:htmlcov",
-    "--cov-report=xml",
-    "--cov-fail-under=85",
-    "--junitxml=pytest-results.xml",
-    "--tb=short",
-    "-p", "no:warnings",
+    "-ra",                                          # Show extra test summary info
+    "--strict-markers",                             # Require markers to be defined
+    "--strict-config",                              # Fail on unknown config options
+    "--cov=excalidraw_mcp",                         # Enable coverage for excalidraw_mcp package
+    "--cov-report=term-missing:skip-covered",       # Show missing lines in terminal
+    "--cov-report=html:htmlcov",                    # Generate HTML coverage report
+    "--cov-report=xml",                             # Generate XML coverage for CI
+    "--cov-fail-under=85",                          # Enforce 85% minimum coverage requirement
+    "--junitxml=pytest-results.xml",               # Generate JUnit XML for CI integration
+    "--tb=short",                                   # Use short traceback format
+    "-p",
+    "no:warnings",                                  # Disable warnings plugin
 ]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
+testpaths = [
+    "tests",
+]
+python_files = [
+    "test_*.py",
+]
+python_classes = [
+    "Test*",
+]
+python_functions = [
+    "test_*",
+]
 markers = [
     "unit: Unit tests for individual components",
     "integration: Integration tests between components",
@@ -87,6 +103,9 @@ markers = [
     "mcp: MCP protocol tests",
     "canvas: Canvas server interaction tests",
     "external: Tests requiring external services",
+    "benchmark: mark test as a benchmark",
+    "database: marks test as database test",
+    "no_leaks: detect asyncio task leaks",
 ]
 filterwarnings = [
     "error",
@@ -95,4 +114,147 @@ filterwarnings = [
     "ignore::pytest.PytestUnraisableExceptionWarning",
 ]
 
+[tool.ruff]
+target-version = "py313"
+line-length = 88
+fix = true
+unsafe-fixes = true
+show-fixes = true
+output-format = "full"
 
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+extend-select = [
+    "C901",
+    "F",
+    "I",
+    "UP",
+]
+ignore = [
+    "E402",
+    "F821",
+]
+fixable = [
+    "ALL",
+]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 13
+
+[tool.pyright]
+verboseOutput = true
+include = [
+    "crackerjack",
+]
+exclude = [
+    "scratch",
+    ".venv",
+    "build",
+    "dist",
+    "tests/*",
+    "examples/*",
+    "crackerjack/mcp/*",
+    "crackerjack/plugins/*",
+]
+extraPaths = [
+    ".venv/lib/python3.13/site-packages/",
+]
+typeCheckingMode = "strict"
+reportMissingTypeStubs = false
+reportOptionalMemberAccess = "warning"
+reportOptionalCall = "warning"
+reportUnknownMemberType = "warning"
+reportUnknownVariableType = false
+reportUnknownArgumentType = "warning"
+reportInvalidTypeForm = "warning"
+reportUnknownLambdaType = "warning"
+reportUnknownParameterType = "warning"
+reportPrivateUsage = "warning"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportUnnecessaryComparison = "warning"
+reportConstantRedefinition = "warning"
+pythonVersion = "3.13"
+
+[tool.bandit]
+target = [
+    "crackerjack",
+]
+skips = [
+    "B101",
+    "B110",
+    "B112",
+    "B404",
+    "B603",
+    "B607",
+]
+exclude_dirs = [
+    "tests/data",
+]
+
+[tool.vulture]
+min_confidence = 86
+paths = [
+    "crackerjack",
+]
+ignore_names = [
+    "cls",
+]
+
+[tool.refurb]
+enable_all = true
+quiet = true
+python_version = "3.13"
+
+[tool.complexipy]
+default_pattern = "**/*.py"
+exclude_patterns = [
+    "**/tests/**",
+    "**/test_*.py",
+]
+max_complexity = 15
+
+[tool.codespell]
+skip = "*/data/*"
+quiet-level = 3
+ignore-words-list = "crate,uptodate,nd,nin"
+
+[tool.creosote]
+paths = [
+    "crackerjack",
+]
+deps-file = "pyproject.toml"
+exclude-deps = [
+    "hatchling",
+    "pre-commit",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-xdist",
+    "pytest-benchmark",
+    "pyfiglet",
+    "pyyaml",
+    "uv",
+    "tomli-w",
+    "google-crc32c",
+    "pytest-timeout",
+    "keyring",
+    "inflection",
+    "pydantic-settings",
+    "pyleak",
+    "bandit",
+    "vulture",
+    "pyright",
+    "creosote",
+    "refurb",
+    "complexipy",
+    "codespell",
+    "fastapi",
+    "fastmcp",
+    "uvicorn",
+    "websockets",
+    "watchdog",
+    "ruff",
+]
