@@ -4,20 +4,20 @@
     "target": "ES2022",                                  // Use ES2022 features for modern Node.js
     "module": "ESNext",                                  // Use ESNext modules for tree-shaking
     "moduleResolution": "node",                          // Use Node.js module resolution
-    
+
     // JavaScript Settings
     "allowJs": false,                                    // Only allow TypeScript files
     "checkJs": false,                                    // Don't type-check JavaScript files
-    
+
     // Declaration and Source Map Settings
     "declaration": true,                                 // Generate .d.ts declaration files
     "declarationMap": true,                              // Generate declaration source maps
     "sourceMap": true,                                   // Generate source maps for debugging
-    
+
     // Output Settings
     "outDir": "./dist",                                  // Output directory for compiled files
     "rootDir": "./src",                                  // Root directory of source files
-    
+
     // Strict Type Checking
     "strict": true,                                      // Enable all strict type checking options
     "noImplicitAny": true,                              // Error on expressions with 'any' type
@@ -30,7 +30,7 @@
     "noFallthroughCasesInSwitch": true,                 // Error on switch case fallthrough
     "noUncheckedIndexedAccess": true,                   // Add undefined to index access types
     "noImplicitOverride": true,                         // Ensure override keyword is used
-    
+
     // Module and Interop Settings
     "esModuleInterop": true,                            // Enable ES module interoperability
     "allowSyntheticDefaultImports": true,               // Allow default imports from modules
@@ -38,7 +38,7 @@
     "skipLibCheck": true,                               // Skip type checking of declaration files
     "resolveJsonModule": true,                          // Allow importing JSON modules
     "isolatedModules": true,                            // Ensure each file is a separate module
-    
+
     // Emit Settings
     "noEmitOnError": false,                             // Still emit files even with errors
     "preserveConstEnums": true,                         // Don't erase const enum declarations
@@ -62,4 +62,4 @@
   "ts-node": {
     "esm": true
   }
-} 
+}

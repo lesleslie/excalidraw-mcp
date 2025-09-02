@@ -41,9 +41,9 @@ export class MessageBatcher {
       subscriptions: new Set(),
       lastActivity: Date.now()
     };
-    
+
     this.clients.set(ws, client);
-    
+
     ws.on('close', () => {
       this.removeClient(ws);
     });
@@ -93,21 +93,21 @@ export class MessageBatcher {
    */
   queueMessage(message: WebSocketMessage, targetClients?: WebSocket[]): void {
     const clients = targetClients || Array.from(this.clients.keys());
-    
+
     for (const ws of clients) {
       if (this.shouldReceiveMessage(ws, message)) {
         const clientId = this.getClientId(ws);
-        
+
         if (!this.messageQueue.has(clientId)) {
           this.messageQueue.set(clientId, []);
         }
-        
+
         const queue = this.messageQueue.get(clientId)!;
-        
+
         // Check for duplicate messages (e.g., same element update)
         if (!this.isDuplicateMessage(queue, message)) {
           queue.push(message);
-          
+
           // Limit queue size per client
           if (queue.length > config.performance.websocketBatchSize) {
             queue.shift(); // Remove oldest message
@@ -122,7 +122,7 @@ export class MessageBatcher {
    */
   sendImmediate(message: WebSocketMessage, targetClients?: WebSocket[]): void {
     const clients = targetClients || Array.from(this.clients.keys());
-    
+
     for (const ws of clients) {
       if (this.shouldReceiveMessage(ws, message) && ws.readyState === WebSocket.OPEN) {
         this.sendToClient(ws, message);
@@ -144,7 +144,7 @@ export class MessageBatcher {
     const targetClients = Array.from(this.clients.entries())
       .filter(([ws, client]) => client.subscriptions.has(canvasId))
       .map(([ws]) => ws);
-    
+
     this.queueMessage(message, targetClients);
   }
 
@@ -160,7 +160,7 @@ export class MessageBatcher {
     const clients = Array.from(this.clients.values());
     const queuedMessages = Array.from(this.messageQueue.values())
       .reduce((total, queue) => total + queue.length, 0);
-    const averageSubscriptions = clients.length > 0 ? 
+    const averageSubscriptions = clients.length > 0 ?
       clients.reduce((total, client) => total + client.subscriptions.size, 0) / clients.length : 0;
 
     return {
@@ -270,16 +270,16 @@ export class MessageBatcher {
   private isDuplicateMessage(queue: WebSocketMessage[], newMessage: WebSocketMessage): boolean {
     // Check for duplicate element updates
     if (newMessage.type === 'element_updated' && newMessage.data?.id) {
-      return queue.some(msg => 
-        msg.type === 'element_updated' && 
+      return queue.some(msg =>
+        msg.type === 'element_updated' &&
         msg.data?.id === newMessage.data?.id
       );
     }
 
     // Check for duplicate element deletions
     if (newMessage.type === 'element_deleted' && newMessage.data?.id) {
-      return queue.some(msg => 
-        msg.type === 'element_deleted' && 
+      return queue.some(msg =>
+        msg.type === 'element_deleted' &&
         msg.data?.id === newMessage.data?.id
       );
     }
@@ -310,7 +310,7 @@ export class MessageBatcher {
       clearInterval(this.batchTimer);
       this.batchTimer = null;
     }
-    
+
     this.messageQueue.clear();
     this.clients.clear();
   }

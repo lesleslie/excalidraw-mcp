@@ -36,8 +36,8 @@ export function authenticateToken(req: AuthenticatedRequest, res: Response, next
   const token = authHeader && authHeader.split(' ')[1]; // Bearer TOKEN
 
   if (!token) {
-    res.status(401).json({ 
-      success: false, 
+    res.status(401).json({
+      success: false,
       error: 'Access token required',
       code: 'AUTH_TOKEN_MISSING'
     });
@@ -54,20 +54,20 @@ export function authenticateToken(req: AuthenticatedRequest, res: Response, next
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ 
-        success: false, 
+      res.status(401).json({
+        success: false,
         error: 'Token expired',
         code: 'AUTH_TOKEN_EXPIRED'
       });
     } else if (error instanceof jwt.JsonWebTokenError) {
-      res.status(403).json({ 
-        success: false, 
+      res.status(403).json({
+        success: false,
         error: 'Invalid token',
         code: 'AUTH_TOKEN_INVALID'
       });
     } else {
-      res.status(500).json({ 
-        success: false, 
+      res.status(500).json({
+        success: false,
         error: 'Authentication error',
         code: 'AUTH_ERROR'
       });
@@ -113,8 +113,8 @@ export function optionalAuth(req: AuthenticatedRequest, res: Response, next: Nex
 export function requireRole(role: string) {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      res.status(401).json({ 
-        success: false, 
+      res.status(401).json({
+        success: false,
         error: 'Authentication required',
         code: 'AUTH_REQUIRED'
       });
@@ -122,8 +122,8 @@ export function requireRole(role: string) {
     }
 
     if (!req.user.roles || !req.user.roles.includes(role)) {
-      res.status(403).json({ 
-        success: false, 
+      res.status(403).json({
+        success: false,
         error: `Role '${role}' required`,
         code: 'AUTH_INSUFFICIENT_ROLE'
       });

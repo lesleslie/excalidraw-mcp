@@ -36,12 +36,12 @@ export function validateSchema<T>(schema: z.ZodSchema<T>) {
         query: req.query,
         params: req.params
       });
-      
+
       // Replace request data with validated data
       req.body = validated.body || req.body;
       req.query = validated.query || req.query;
       req.params = validated.params || req.params;
-      
+
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -64,7 +64,7 @@ export function validateSchema<T>(schema: z.ZodSchema<T>) {
 
 // Zod schemas for validation
 export const ElementTypeSchema = z.enum([
-  'rectangle', 'ellipse', 'diamond', 'text', 'line', 'arrow', 'draw', 
+  'rectangle', 'ellipse', 'diamond', 'text', 'line', 'arrow', 'draw',
   'image', 'frame', 'embeddable', 'magicframe'
 ]);
 
@@ -238,6 +238,6 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction): 
 
   req.body = sanitizeObject(req.body);
   req.query = sanitizeObject(req.query);
-  
+
   next();
 }

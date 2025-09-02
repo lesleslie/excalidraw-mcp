@@ -1,7 +1,7 @@
 # Excalidraw MCP Server: AI-Powered Live Visual Diagramming
 
-> **🙏 Acknowledgments**  
-> This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).  
+> **🙏 Acknowledgments**
+> This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).
 > Special thanks to the original contributors for creating the foundation that made this enhanced version possible.
 
 A **dual-language MCP (Model Context Protocol) server** that combines **Excalidraw's powerful drawing capabilities** with AI integration, enabling AI agents like Claude to create and manipulate diagrams in real-time on a live canvas.
@@ -40,36 +40,42 @@ A **dual-language MCP (Model Context Protocol) server** that combines **Excalidr
 ```
 
 **Hybrid Architecture Benefits:**
+
 - **Python FastMCP**: Handles MCP protocol, tool registration, and auto-manages canvas server
-- **TypeScript Canvas**: Express.js API + WebSocket for real-time canvas synchronization  
+- **TypeScript Canvas**: Express.js API + WebSocket for real-time canvas synchronization
 - **Auto-Management**: Python server monitors and restarts canvas server as needed
 - **Type Safety**: Comprehensive TypeScript definitions ensure consistency across the stack
 
 ## 🌟 Key Features
 
 ### **Modern TypeScript Architecture**
+
 - **Full TypeScript Migration**: Complete type safety for backend and frontend
 - **Comprehensive Type Definitions**: Excalidraw elements, API responses, WebSocket messages
 - **Strict Type Checking**: Enhanced development experience and compile-time error detection
 - **Type-Safe React Components**: TSX components with proper props typing
 
 ### **Real-time Canvas Integration**
+
 - Elements created via MCP appear instantly on the live canvas
 - WebSocket-based real-time synchronization
 - Multi-client support with live updates
 
 ### **Production-Ready Interface**
+
 - Clean, minimal UI with connection status
 - Simple "Clear Canvas" functionality
 - No development clutter or debug information
 
 ### **Comprehensive MCP API**
+
 - **Element Creation**: rectangles, ellipses, diamonds, arrows, text, lines
 - **Element Management**: update, delete, query with filters
 - **Batch Operations**: create multiple elements in one call
 - **Advanced Features**: grouping, alignment, distribution, locking
 
 ### **Robust Architecture**
+
 - TypeScript-based Express.js backend with REST API + WebSocket
 - React frontend with official Excalidraw package and TypeScript
 - Dual-path element loading for reliability
@@ -80,6 +86,7 @@ A **dual-language MCP (Model Context Protocol) server** that combines **Excalidr
 ### **✅ Quick Start (Recommended)**
 
 #### **1. Clone and Setup**
+
 ```bash
 git clone https://github.com/lesleslie/excalidraw-mcp.git
 cd excalidraw-mcp
@@ -93,6 +100,7 @@ npm run build
 ```
 
 #### **2. Start the System**
+
 ```bash
 # The Python MCP server auto-starts the canvas server
 uv run python excalidraw_mcp/server.py
@@ -102,7 +110,9 @@ npm run canvas
 ```
 
 #### **3. Access the Canvas**
+
 Open your browser and navigate to:
+
 ```
 http://localhost:3031
 ```
@@ -133,21 +143,24 @@ npm run production
 ## 🎯 Usage Guide
 
 ### **For End Users**
+
 1. Open the canvas at `http://localhost:3031`
-2. Check connection status (should show "Connected")
-3. AI agents can now create diagrams that appear in real-time
-4. Use "Clear Canvas" to remove all elements
+1. Check connection status (should show "Connected")
+1. AI agents can now create diagrams that appear in real-time
+1. Use "Clear Canvas" to remove all elements
 
 ### **For AI Agents (via MCP)**
+
 The MCP server provides these tools for creating visual diagrams:
 
 #### **Basic Element Creation**
+
 ```javascript
 // Create a rectangle
 {
   "type": "rectangle",
   "x": 100,
-  "y": 100, 
+  "y": 100,
   "width": 200,
   "height": 100,
   "backgroundColor": "#e3f2fd",
@@ -157,6 +170,7 @@ The MCP server provides these tools for creating visual diagrams:
 ```
 
 #### **Create Text Elements**
+
 ```javascript
 {
   "type": "text",
@@ -169,6 +183,7 @@ The MCP server provides these tools for creating visual diagrams:
 ```
 
 #### **Create Arrows & Lines**
+
 ```javascript
 {
   "type": "arrow",
@@ -182,6 +197,7 @@ The MCP server provides these tools for creating visual diagrams:
 ```
 
 #### **Batch Creation for Complex Diagrams**
+
 ```javascript
 {
   "elements": [
@@ -195,7 +211,7 @@ The MCP server provides these tools for creating visual diagrams:
       "strokeColor": "#ff9800"
     },
     {
-      "type": "text", 
+      "type": "text",
       "x": 130,
       "y": 125,
       "text": "Start",
@@ -311,15 +327,18 @@ The canvas server provides these REST endpoints:
 ## 🎨 MCP Tools Available
 
 ### **Element Management**
+
 - `create_element` - Create any type of Excalidraw element
 - `update_element` - Modify existing elements
 - `delete_element` - Remove elements
 - `query_elements` - Search elements with filters
 
 ### **Batch Operations**
+
 - `batch_create_elements` - Create complex diagrams in one call
 
-### **Element Organization**  
+### **Element Organization**
+
 - `group_elements` - Group multiple elements
 - `ungroup_elements` - Ungroup element groups
 - `align_elements` - Align elements (left, center, right, top, middle, bottom)
@@ -327,11 +346,13 @@ The canvas server provides these REST endpoints:
 - `lock_elements` / `unlock_elements` - Lock/unlock elements
 
 ### **Resource Access**
+
 - `get_resource` - Access scene, library, theme, or elements data
 
 ## 🏗️ Development Architecture
 
 ### **Frontend** (`frontend/src/`)
+
 - **React + TypeScript**: Modern TSX components with full type safety
 - **Vite Build System**: Fast development and optimized production builds
 - **Official Excalidraw**: `@excalidraw/excalidraw` package with TypeScript types
@@ -339,18 +360,21 @@ The canvas server provides these REST endpoints:
 - **Clean UI**: Production-ready interface with proper TypeScript typing
 
 ### **Canvas Server** (`src/server.ts` → `dist/server.js`)
+
 - **TypeScript + Express.js**: Fully typed REST API + static file serving
-- **WebSocket**: Type-safe real-time client communication  
+- **WebSocket**: Type-safe real-time client communication
 - **Element Storage**: In-memory with comprehensive type definitions
 - **CORS**: Cross-origin support with proper typing
 
 ### **MCP Server** (`src/index.ts` → `dist/index.js`)
+
 - **TypeScript MCP Protocol**: Type-safe Model Context Protocol implementation
 - **Canvas Sync**: Strongly typed HTTP requests to canvas server
 - **Element Management**: Full CRUD operations with comprehensive type checking
 - **Batch Support**: Type-safe complex diagram creation
 
 ### **Type System** (`src/types.ts`)
+
 - **Excalidraw Element Types**: Complete type definitions for all element types
 - **API Response Types**: Strongly typed REST API interfaces
 - **WebSocket Message Types**: Type-safe real-time communication
@@ -359,27 +383,32 @@ The canvas server provides these REST endpoints:
 ## 🐛 Troubleshooting
 
 ### **Canvas Not Loading**
+
 - Ensure `npm run build` completed successfully
 - Verify canvas server is running on port 3031
 - Python MCP server auto-starts canvas server - check console for errors
 
 ### **Elements Not Syncing**
+
 - Python server automatically manages canvas server
 - Check `ENABLE_CANVAS_SYNC=true` in environment
 - Verify canvas server health at `http://localhost:3031/health`
 
-### **WebSocket Connection Issues**  
+### **WebSocket Connection Issues**
+
 - Check browser console for WebSocket errors
 - Ensure no firewall blocking WebSocket connections
 - Try refreshing the browser page
 
 ### **Build Errors**
+
 - Delete `node_modules` and run `npm install`
 - Check Node.js version (requires 16+)
 - Run `npm run type-check` to identify TypeScript issues
 - Run `uv sync` to update Python dependencies
 
 ### **Python Dependencies**
+
 - Use `uv sync` to install/update Python dependencies
 - Ensure Python 3.13+ is installed
 - Check `uv --version` to verify uv installation
@@ -429,6 +458,7 @@ This project uses consistent naming across different contexts:
 - **MCP Server Name**: `excalidraw` - used in .mcp.json configuration
 
 **Example Usage:**
+
 ```python
 # Python imports (underscore)
 from excalidraw_mcp.server import main
@@ -452,7 +482,7 @@ pip install excalidraw-mcp
 pytest --cov=excalidraw_mcp --cov-report=html
 pytest --cov=excalidraw_mcp --cov-report=term-missing
 
-# TypeScript tests with coverage  
+# TypeScript tests with coverage
 npm run test:coverage
 
 # Run all tests
@@ -471,6 +501,7 @@ npm run test:integration            # TypeScript integration tests
 ### Quality Standards
 
 This project enforces strict quality standards:
+
 - All code must pass type checking (Pyright for Python, TSC for TypeScript)
 - Security scanning with Bandit for Python
 - Linting and formatting with Ruff (Python) and built-in TypeScript rules
@@ -479,7 +510,9 @@ This project enforces strict quality standards:
 ## 📦 Publishing & Distribution
 
 ### PyPI Distribution
+
 The Python package is published to PyPI as `excalidraw-mcp`:
+
 ```bash
 # Install from PyPI
 pip install excalidraw-mcp
@@ -489,7 +522,9 @@ uvx excalidraw-mcp
 ```
 
 ### Local Development
+
 For local development and testing:
+
 ```bash
 # Install in editable mode
 pip install -e .
@@ -500,6 +535,7 @@ uv run python excalidraw_mcp/server.py
 ```
 
 ### Version Management
+
 - Semantic versioning (SemVer) is used
 - Version is managed in both `pyproject.toml` and `package.json`
 - Releases are tagged in git with version numbers
@@ -518,10 +554,10 @@ uv run python excalidraw_mcp/server.py
 We welcome contributions! Please:
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+1. Commit your changes (`git commit -m 'Add amazing feature'`)
+1. Push to the branch (`git push origin feature/amazing-feature`)
+1. Open a Pull Request
 
 ## 📝 License
 

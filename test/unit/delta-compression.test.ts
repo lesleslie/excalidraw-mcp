@@ -44,7 +44,7 @@ describe('Delta Compression', () => {
   describe('calculateElementDelta', () => {
     it('should return full element when no old element exists', () => {
       const result = calculateElementDelta(undefined, mockNewElement);
-      
+
       expect(result.hasDelta).toBe(false);
       expect(result.fullElement).toEqual(mockNewElement);
       expect(result.delta).toBeUndefined();
@@ -52,7 +52,7 @@ describe('Delta Compression', () => {
 
     it('should return delta when elements differ', () => {
       const result = calculateElementDelta(mockOldElement, mockNewElement);
-      
+
       expect(result.hasDelta).toBe(true);
       expect(result.delta).toBeDefined();
       expect(result.delta!.id).toBe('test-123');
@@ -82,14 +82,14 @@ describe('Delta Compression', () => {
       };
 
       const result = calculateElementDelta(mockOldElement, extensiveChanges);
-      
+
       expect(result.hasDelta).toBe(false);
       expect(result.fullElement).toEqual(extensiveChanges);
     });
 
     it('should handle identical elements', () => {
       const result = calculateElementDelta(mockOldElement, mockOldElement);
-      
+
       // Should still include version and timestamp in changes
       expect(result.hasDelta).toBe(true);
       expect(result.delta!.changes).toMatchObject({

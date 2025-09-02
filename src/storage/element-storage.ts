@@ -245,17 +245,17 @@ export class ElementStorage {
    */
   getAll(options: QueryOptions = {}): ServerElement[] {
     const elements = Array.from(this.cache.values());
-    
+
     // Sort elements
     if (options.sortBy) {
       elements.sort((a, b) => {
         const aVal = a[options.sortBy!];
         const bVal = b[options.sortBy!];
-        
+
         let comparison = 0;
         if (aVal < bVal) comparison = -1;
         else if (aVal > bVal) comparison = 1;
-        
+
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
     }
@@ -263,7 +263,7 @@ export class ElementStorage {
     // Apply pagination
     const offset = options.offset || 0;
     const limit = options.limit || elements.length;
-    
+
     return elements.slice(offset, offset + limit);
   }
 
@@ -281,13 +281,13 @@ export class ElementStorage {
     // Use spatial index if spatial bounds are specified
     if (filter.spatialBounds && config.performance.enableSpatialIndexing) {
       const spatialIds = new Set(this.spatialIndex.query(filter.spatialBounds));
-      candidateIds = candidateIds ? 
-        new Set([...candidateIds].filter(id => spatialIds.has(id))) : 
+      candidateIds = candidateIds ?
+        new Set([...candidateIds].filter(id => spatialIds.has(id))) :
         spatialIds;
     }
 
     // Get elements to check
-    const elementsToCheck = candidateIds ? 
+    const elementsToCheck = candidateIds ?
       Array.from(candidateIds).map(id => this.cache.get(id)).filter(Boolean) as ServerElement[] :
       Array.from(this.cache.values());
 
@@ -304,11 +304,11 @@ export class ElementStorage {
       filteredElements.sort((a, b) => {
         const aVal = a[options.sortBy!];
         const bVal = b[options.sortBy!];
-        
+
         let comparison = 0;
         if (aVal < bVal) comparison = -1;
         else if (aVal > bVal) comparison = 1;
-        
+
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
     }
@@ -316,7 +316,7 @@ export class ElementStorage {
     // Apply pagination
     const offset = options.offset || 0;
     const limit = Math.min(options.limit || filteredElements.length, config.performance.queryResultLimit);
-    
+
     return filteredElements.slice(offset, offset + limit);
   }
 
@@ -407,7 +407,7 @@ export class ElementStorage {
     setInterval(() => {
       const now = Date.now();
       const interval = config.performance.memoryCleanupIntervalMinutes * 60 * 1000;
-      
+
       if (now - this.lastCleanup >= interval) {
         this.forceCleanup();
       }

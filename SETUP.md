@@ -12,6 +12,7 @@ This project provides a dual-language MCP server for Claude Code integration wit
 ## Quick Start
 
 ### Setup Dependencies
+
 ```bash
 # Install Python dependencies
 uv sync
@@ -24,6 +25,7 @@ npm run build
 ```
 
 ### Development Mode
+
 ```bash
 # Start development servers (TypeScript watch + Vite dev)
 npm run dev
@@ -33,6 +35,7 @@ npm run production
 ```
 
 ### Individual Services
+
 ```bash
 # Canvas server only (port 3031)
 npm run canvas
@@ -44,6 +47,7 @@ uv run python excalidraw_mcp/server.py
 ## Claude Code Integration
 
 ### Option A: Published Package (Recommended)
+
 ```json
 {
   "excalidraw": {
@@ -58,6 +62,7 @@ uv run python excalidraw_mcp/server.py
 ```
 
 ### Option B: Local Development Configuration
+
 ```json
 {
   "excalidraw": {
@@ -69,9 +74,10 @@ uv run python excalidraw_mcp/server.py
 ```
 
 **Setup Steps:**
+
 1. **Canvas Server**: The Python MCP server automatically starts the canvas server on first tool use
-2. **Environment**: Default connection to `http://localhost:3031` with auto-start enabled
-3. **Health Monitoring**: Python server continuously monitors and restarts canvas server if needed
+1. **Environment**: Default connection to `http://localhost:3031` with auto-start enabled
+1. **Health Monitoring**: Python server continuously monitors and restarts canvas server if needed
 
 ## Available MCP Tools
 
@@ -95,6 +101,7 @@ uv run python excalidraw_mcp/server.py
 ## Configuration
 
 Environment variables:
+
 ```bash
 # Canvas server configuration
 PORT=3031
@@ -110,6 +117,7 @@ DEBUG=false
 ## Testing & Quality Assurance
 
 ### Coverage Requirements
+
 - **Python**: 85% minimum coverage (enforced by pyproject.toml)
 - **TypeScript**: 70% minimum coverage (enforced by jest.config.cjs)
 
@@ -186,6 +194,7 @@ npm run canvas                     # Start canvas server only
 #### MCP Server Connection Problems
 
 **Issue**: MCP server not connecting or tools not available in Claude Code
+
 ```bash
 # Check MCP configuration
 cat .mcp.json  # Verify "excalidraw" server configuration
@@ -198,6 +207,7 @@ uvx excalidraw-mcp --help
 ```
 
 **Solution**: Ensure `.mcp.json` contains:
+
 ```json
 {
   "mcpServers": {
@@ -216,6 +226,7 @@ uvx excalidraw-mcp --help
 #### Canvas Server Issues
 
 **Issue**: Canvas not loading or elements not syncing
+
 ```bash
 # Check canvas server health
 curl http://localhost:3031/health
@@ -231,7 +242,8 @@ curl -i -N -H "Connection: Upgrade" \
      http://localhost:3031
 ```
 
-**Solution**: 
+**Solution**:
+
 - Python MCP server automatically manages canvas server
 - Check console logs for startup errors
 - Verify port 3031 is not in use by other services
@@ -240,6 +252,7 @@ curl -i -N -H "Connection: Upgrade" \
 #### Build and Development Issues
 
 **Issue**: TypeScript compilation errors or build failures
+
 ```bash
 # Clean and rebuild
 rm -rf dist/ node_modules/ && npm install && npm run build
@@ -252,6 +265,7 @@ npm ls --depth=0
 ```
 
 **Issue**: Python import errors or module not found
+
 ```bash
 # Reinstall Python dependencies
 uv sync --reinstall
@@ -352,7 +366,7 @@ pytest tests/unit/ -v
 export DEBUG=true                    # Enable debug logging
 export PYTHONPATH=$PWD               # Ensure module imports work
 
-# Canvas server debugging  
+# Canvas server debugging
 export DEBUG=express:*               # Express.js debug logging
 export NODE_ENV=development          # Enable development features
 
@@ -364,18 +378,21 @@ export JEST_VERBOSE=true             # Verbose Jest output
 ### Log Analysis
 
 #### Python MCP Server Logs
+
 - Server startup and health check status
 - HTTP client connection attempts
 - MCP tool execution results
 - Process management events (canvas server start/stop)
 
 #### TypeScript Canvas Server Logs
+
 - Express server startup on port 3031
 - WebSocket connection events
 - Element CRUD operations
 - CORS and middleware activity
 
 #### WebSocket Communication Logs
+
 - Client connection/disconnection events
 - Element synchronization messages
 - Error handling and retry attempts

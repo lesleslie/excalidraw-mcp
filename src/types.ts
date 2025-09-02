@@ -85,7 +85,7 @@ export interface ExcalidrawFreedrawElement extends ExcalidrawElementBase {
   lastCommittedPoint?: readonly [number, number] | null;
 }
 
-export type ExcalidrawElement = 
+export type ExcalidrawElement =
   | ExcalidrawTextElement
   | ExcalidrawRectangleElement
   | ExcalidrawEllipseElement
@@ -168,7 +168,7 @@ export interface WebSocketMessage {
   [key: string]: any;
 }
 
-export type WebSocketMessageType = 
+export type WebSocketMessageType =
   | 'initial_elements'
   | 'element_created'
   | 'element_updated'
@@ -215,7 +215,7 @@ export const elements = new Map<string, ServerElement>();
 export function validateElement(element: Partial<ServerElement>): element is ServerElement {
   const requiredFields: (keyof ServerElement)[] = ['type', 'x', 'y'];
   const hasRequiredFields = requiredFields.every(field => field in element);
-  
+
   if (!hasRequiredFields) {
     throw new Error(`Missing required fields: ${requiredFields.join(', ')}`);
   }

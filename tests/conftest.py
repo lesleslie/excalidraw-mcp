@@ -2,12 +2,12 @@
 
 import asyncio
 import os
-import pytest
 import tempfile
-from unittest.mock import Mock, AsyncMock
-from typing import AsyncGenerator, Generator
+from unittest.mock import AsyncMock, Mock
 
 import httpx
+import pytest
+
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.http_client import CanvasHTTPClient
 
@@ -25,9 +25,9 @@ def test_config():
     """Create a test configuration."""
     # Create temporary directories for test logs
     temp_dir = tempfile.mkdtemp()
-    
+
     config = Config()
-    
+
     # Override with test settings
     config.server.express_url = "http://localhost:3032"  # Different port for tests
     config.server.canvas_auto_start = False  # Don't auto-start in tests
@@ -35,7 +35,7 @@ def test_config():
     config.logging.file_path = os.path.join(temp_dir, "test.log")
     config.logging.audit_file_path = os.path.join(temp_dir, "audit.log")
     config.performance.max_elements_per_canvas = 100  # Lower limit for tests
-    
+
     return config
 
 
@@ -43,7 +43,7 @@ def test_config():
 async def mock_http_client():
     """Create a mock HTTP client for testing."""
     client = Mock(spec=CanvasHTTPClient)
-    
+
     # Mock async methods
     client.check_health = AsyncMock(return_value=True)
     client.post_json = AsyncMock(return_value={"success": True})
@@ -51,11 +51,11 @@ async def mock_http_client():
     client.delete = AsyncMock(return_value=True)
     client.get_json = AsyncMock(return_value={"elements": []})
     client.close = AsyncMock()
-    
+
     # Mock context manager
     client.__aenter__ = AsyncMock(return_value=client)
     client.__aexit__ = AsyncMock(return_value=None)
-    
+
     return client
 
 
@@ -108,7 +108,7 @@ async def mock_canvas_server():
         "update": {"success": True},
         "delete": {"success": True},
     }
-    
+
     async def mock_request(method: str, url: str, **kwargs):
         # Simulate different responses based on URL
         if url.endswith("/health"):
@@ -123,7 +123,7 @@ async def mock_canvas_server():
             return httpx.Response(204, json=responses["delete"])
         else:
             return httpx.Response(404, json={"error": "Not found"})
-    
+
     return mock_request
 
 
@@ -134,7 +134,7 @@ def mock_subprocess():
     mock_process.pid = 12345
     mock_process.returncode = None
     mock_process.poll.return_value = None
-    
+
     return mock_process
 
 
@@ -142,7 +142,7 @@ def mock_subprocess():
 def environment_variables():
     """Set up test environment variables."""
     original_env = os.environ.copy()
-    
+
     # Set test environment variables
     test_env = {
         "ENVIRONMENT": "test",
@@ -152,11 +152,11 @@ def environment_variables():
         "JWT_SECRET": "test-secret-key",
         "LOG_LEVEL": "DEBUG",
     }
-    
+
     os.environ.update(test_env)
-    
+
     yield test_env
-    
+
     # Restore original environment
     os.environ.clear()
     os.environ.update(original_env)
@@ -176,7 +176,8 @@ def pytest_configure(config):
         "markers", "unit: marks tests as unit tests (deselect with '-m \"not unit\"')"
     )
     config.addinivalue_line(
-        "markers", "integration: marks tests as integration tests (deselect with '-m \"not integration\"')"
+        "markers",
+        "integration: marks tests as integration tests (deselect with '-m \"not integration\"')",
     )
     config.addinivalue_line(
         "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
@@ -191,34 +192,34 @@ def pytest_configure(config):
 def performance_monitor():
     """Monitor performance during tests."""
     import time
+
     import psutil
-    
+
     start_time = time.time()
     start_memory = psutil.Process().memory_info().rss
-    
-    yield {
-        'start_time': start_time,
-        'start_memory': start_memory
-    }
-    
+
+    yield {"start_time": start_time, "start_memory": start_memory}
+
     end_time = time.time()
     end_memory = psutil.Process().memory_info().rss
-    
+
     duration = end_time - start_time
     memory_delta = end_memory - start_memory
-    
+
     # Log performance metrics for slow tests
     if duration > 1.0:  # More than 1 second
-        print(f"\nSlow test detected: {duration:.2f}s, Memory delta: {memory_delta / 1024 / 1024:.2f}MB")
+        print(
+            f"\nSlow test detected: {duration:.2f}s, Memory delta: {memory_delta / 1024 / 1024:.2f}MB"
+        )
 
 
 @pytest.fixture
 def element_factory():
     """Factory for creating test elements."""
     from excalidraw_mcp.element_factory import ElementFactory
-    
+
     factory = ElementFactory()
-    
+
     def create_test_element(element_type="rectangle", **kwargs):
         base_data = {
             "type": element_type,
@@ -231,7 +232,7 @@ def element_factory():
         }
         base_data.update(kwargs)
         return factory.create_element(base_data)
-    
+
     return create_test_element
 
 
@@ -240,16 +241,17 @@ async def integration_test_server():
     """Set up a real canvas server for integration tests."""
     import subprocess
     import time
+
     import httpx
-    
+
     # Start canvas server in test mode
     process = subprocess.Popen(
         ["npm", "run", "canvas"],
         env={**os.environ, "PORT": "3033", "NODE_ENV": "test"},
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
+        stderr=subprocess.PIPE,
     )
-    
+
     # Wait for server to be ready
     client = httpx.AsyncClient()
     max_retries = 30
@@ -264,9 +266,9 @@ async def integration_test_server():
     else:
         process.terminate()
         raise RuntimeError("Integration test server failed to start")
-    
+
     yield "http://localhost:3033"
-    
+
     # Cleanup
     await client.aclose()
     process.terminate()
@@ -276,17 +278,17 @@ async def integration_test_server():
 @pytest.fixture
 def websocket_mock():
     """Mock WebSocket for testing real-time features."""
-    from unittest.mock import Mock, AsyncMock
-    
+    from unittest.mock import AsyncMock, Mock
+
     ws_mock = Mock()
     ws_mock.send = AsyncMock()
     ws_mock.recv = AsyncMock()
     ws_mock.close = AsyncMock()
     ws_mock.closed = False
-    
+
     # Simulate message queue
     ws_mock._message_queue = []
-    
+
     async def mock_recv():
         if ws_mock._message_queue:
             return ws_mock._message_queue.pop(0)
@@ -294,34 +296,37 @@ def websocket_mock():
             # Simulate waiting
             await asyncio.sleep(0.1)
             return '{"type": "heartbeat"}'
-    
+
     ws_mock.recv = mock_recv
-    
+
     def add_message(message):
         ws_mock._message_queue.append(message)
-    
+
     ws_mock.add_message = add_message
-    
+
     return ws_mock
 
 
 @pytest.fixture
 def batch_element_data():
     """Generate batch test data for multiple elements."""
+
     def generate_batch(count=5, element_type="rectangle"):
         elements = []
         for i in range(count):
-            elements.append({
-                "type": element_type,
-                "x": 100 + i * 50,
-                "y": 200 + i * 30,
-                "width": 100,
-                "height": 80,
-                "strokeColor": f"#00{i:02d}000",
-                "backgroundColor": "#ffffff",
-            })
+            elements.append(
+                {
+                    "type": element_type,
+                    "x": 100 + i * 50,
+                    "y": 200 + i * 30,
+                    "width": 100,
+                    "height": 80,
+                    "strokeColor": f"#00{i:02d}000",
+                    "backgroundColor": "#ffffff",
+                }
+            )
         return elements
-    
+
     return generate_batch
 
 
@@ -332,7 +337,7 @@ def security_test_data():
         "xss_text": "<script>alert('xss')</script>",
         "sql_injection": "'; DROP TABLE elements; --",
         "oversized_data": "A" * 1000000,  # 1MB string
-        "invalid_coords": {"x": float('inf'), "y": float('nan')},
+        "invalid_coords": {"x": float("inf"), "y": float("nan")},
         "negative_dimensions": {"width": -100, "height": -50},
         "invalid_colors": ["javascript:alert(1)", "#GGGGGG", "rgb(300,300,300)"],
         "malformed_json": '{"incomplete": json data',
@@ -352,53 +357,53 @@ def delta_compression_test_data():
         "height": 100,
         "strokeColor": "#000000",
         "version": 1,
-        "updatedAt": "2025-01-01T00:00:00.000Z"
+        "updatedAt": "2025-01-01T00:00:00.000Z",
     }
-    
+
     new_element = {
         **old_element,
         "x": 120,  # Small change
         "strokeColor": "#ff0000",  # Color change
         "version": 2,
-        "updatedAt": "2025-01-01T00:01:00.000Z"
+        "updatedAt": "2025-01-01T00:01:00.000Z",
     }
-    
+
     return {"old": old_element, "new": new_element}
 
 
 @pytest.fixture
 async def rate_limiter_mock():
     """Mock rate limiter for testing rate limiting functionality."""
-    from collections import defaultdict, deque
     import time
-    
+    from collections import defaultdict, deque
+
     class MockRateLimiter:
         def __init__(self, max_requests=100, window_minutes=15):
             self.max_requests = max_requests
             self.window_seconds = window_minutes * 60
             self.requests = defaultdict(deque)
-        
+
         async def is_allowed(self, identifier: str) -> bool:
             now = time.time()
             user_requests = self.requests[identifier]
-            
+
             # Remove old requests outside the window
             while user_requests and user_requests[0] < now - self.window_seconds:
                 user_requests.popleft()
-            
+
             # Check if under limit
             if len(user_requests) < self.max_requests:
                 user_requests.append(now)
                 return True
-            
+
             return False
-        
+
         def reset(self, identifier: str = None):
             if identifier:
                 self.requests[identifier].clear()
             else:
                 self.requests.clear()
-    
+
     return MockRateLimiter()
 
 
@@ -408,9 +413,9 @@ def setup_test_environment():
     """Automatically set up test environment for all tests."""
     # Ensure we're in test mode
     os.environ["ENVIRONMENT"] = "test"
-    
+
     yield
-    
+
     # Cleanup after test
     # Remove any temporary files, etc.
     pass
@@ -431,7 +436,9 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker(pytest.mark.performance)
         elif "security" in item.fspath.dirname:
             item.add_marker(pytest.mark.security)
-        
+
         # Add slow marker for tests taking more than expected time
-        if hasattr(item, 'function') and getattr(item.function, '__name__', '').startswith('test_slow_'):
+        if hasattr(item, "function") and getattr(
+            item.function, "__name__", ""
+        ).startswith("test_slow_"):
             item.add_marker(pytest.mark.slow)

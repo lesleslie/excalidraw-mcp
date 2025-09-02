@@ -6,9 +6,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import logger from './utils/logger.js';
-import { 
+import {
   elements,
-  generateId, 
+  generateId,
   EXCALIDRAW_ELEMENT_TYPES,
   ServerElement,
   ExcalidrawElementType,
@@ -60,14 +60,14 @@ function broadcast(message: WebSocketMessage): void {
 wss.on('connection', (ws: WebSocket) => {
   clients.add(ws);
   logger.info('New WebSocket connection established');
-  
+
   // Send current elements to new client
   const initialMessage: InitialElementsMessage = {
     type: 'initial_elements',
     elements: Array.from(elements.values())
   };
   ws.send(JSON.stringify(initialMessage));
-  
+
   // Send sync status to new client
   const syncMessage: SyncStatusMessage = {
     type: 'sync_status',
@@ -75,12 +75,12 @@ wss.on('connection', (ws: WebSocket) => {
     timestamp: new Date().toISOString()
   };
   ws.send(JSON.stringify(syncMessage));
-  
+
   ws.on('close', () => {
     clients.delete(ws);
     logger.info('WebSocket connection closed');
   });
-  
+
   ws.on('error', (error) => {
     logger.error('WebSocket error:', error);
     clients.delete(ws);
@@ -165,14 +165,14 @@ app.post('/api/elements', (req: Request, res: Response) => {
     };
 
     elements.set(id, element);
-    
+
     // Broadcast to all connected clients
     const message: ElementCreatedMessage = {
       type: 'element_created',
       element: element
     };
     broadcast(message);
-    
+
     res.json({
       success: true,
       element: element
@@ -191,14 +191,14 @@ app.put('/api/elements/:id', (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const updates = UpdateElementSchema.parse({ id, ...req.body });
-    
+
     if (!id) {
       return res.status(400).json({
         success: false,
         error: 'Element ID is required'
       });
     }
-    
+
     const existingElement = elements.get(id);
     if (!existingElement) {
       return res.status(404).json({
@@ -215,14 +215,14 @@ app.put('/api/elements/:id', (req: Request, res: Response) => {
     };
 
     elements.set(id, updatedElement);
-    
+
     // Broadcast to all connected clients
     const message: ElementUpdatedMessage = {
       type: 'element_updated',
       element: updatedElement
     };
     broadcast(message);
-    
+
     res.json({
       success: true,
       element: updatedElement
@@ -240,30 +240,30 @@ app.put('/api/elements/:id', (req: Request, res: Response) => {
 app.delete('/api/elements/:id', (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    
+
     if (!id) {
       return res.status(400).json({
         success: false,
         error: 'Element ID is required'
       });
     }
-    
+
     if (!elements.has(id)) {
       return res.status(404).json({
         success: false,
         error: `Element with ID ${id} not found`
       });
     }
-    
+
     elements.delete(id);
-    
+
     // Broadcast to all connected clients
     const message: ElementDeletedMessage = {
       type: 'element_deleted',
       elementId: id!
     };
     broadcast(message);
-    
+
     res.json({
       success: true,
       message: `Element ${id} deleted successfully`
@@ -282,12 +282,12 @@ app.get('/api/elements/search', (req: Request, res: Response) => {
   try {
     const { type, ...filters } = req.query;
     let results = Array.from(elements.values());
-    
+
     // Filter by type if specified
     if (type && typeof type === 'string') {
       results = results.filter(element => element.type === type);
     }
-    
+
     // Apply additional filters
     if (Object.keys(filters).length > 0) {
       results = results.filter(element => {
@@ -296,7 +296,7 @@ app.get('/api/elements/search', (req: Request, res: Response) => {
         });
       });
     }
-    
+
     res.json({
       success: true,
       elements: results,
@@ -315,23 +315,23 @@ app.get('/api/elements/search', (req: Request, res: Response) => {
 app.get('/api/elements/:id', (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    
+
     if (!id) {
       return res.status(400).json({
         success: false,
         error: 'Element ID is required'
       });
     }
-    
+
     const element = elements.get(id);
-    
+
     if (!element) {
       return res.status(404).json({
         success: false,
         error: `Element with ID ${id} not found`
       });
     }
-    
+
     res.json({
       success: true,
       element: element
@@ -349,16 +349,16 @@ app.get('/api/elements/:id', (req: Request, res: Response) => {
 app.post('/api/elements/batch', (req: Request, res: Response) => {
   try {
     const { elements: elementsToCreate } = req.body;
-    
+
     if (!Array.isArray(elementsToCreate)) {
       return res.status(400).json({
         success: false,
         error: 'Expected an array of elements'
       });
     }
-    
+
     const createdElements: ServerElement[] = [];
-    
+
     elementsToCreate.forEach(elementData => {
       const params = CreateElementSchema.parse(elementData);
       const id = generateId();
@@ -369,18 +369,18 @@ app.post('/api/elements/batch', (req: Request, res: Response) => {
         updatedAt: new Date().toISOString(),
         version: 1
       };
-      
+
       elements.set(id, element);
       createdElements.push(element);
     });
-    
+
     // Broadcast to all connected clients
     const message: BatchCreatedMessage = {
       type: 'elements_batch_created',
       elements: createdElements
     };
     broadcast(message);
-    
+
     res.json({
       success: true,
       elements: createdElements,
@@ -399,12 +399,12 @@ app.post('/api/elements/batch', (req: Request, res: Response) => {
 app.post('/api/elements/sync', (req: Request, res: Response) => {
   try {
     const { elements: frontendElements, timestamp } = req.body;
-    
+
     logger.info(`Sync request received: ${frontendElements.length} elements`, {
       timestamp,
       elementCount: frontendElements.length
     });
-    
+
     // Validate input data
     if (!Array.isArray(frontendElements)) {
       return res.status(400).json({
@@ -412,23 +412,23 @@ app.post('/api/elements/sync', (req: Request, res: Response) => {
         error: 'Expected elements to be an array'
       });
     }
-    
+
     // Record element count before sync
     const beforeCount = elements.size;
-    
+
     // 1. Clear existing memory storage
     elements.clear();
     logger.info(`Cleared existing elements: ${beforeCount} elements removed`);
-    
+
     // 2. Batch write new data
     let successCount = 0;
     const processedElements: ServerElement[] = [];
-    
+
     frontendElements.forEach((element: any, index: number) => {
       try {
         // Ensure element has ID, generate one if missing
         const elementId = element.id || generateId();
-        
+
         // Add server metadata
         const processedElement: ServerElement = {
           ...element,
@@ -438,19 +438,19 @@ app.post('/api/elements/sync', (req: Request, res: Response) => {
           syncTimestamp: timestamp,
           version: 1
         };
-        
+
         // Store to memory
         elements.set(elementId, processedElement);
         processedElements.push(processedElement);
         successCount++;
-        
+
       } catch (elementError) {
         logger.warn(`Failed to process element ${index}:`, elementError);
       }
     });
-    
+
     logger.info(`Sync completed: ${successCount}/${frontendElements.length} elements synced`);
-    
+
     // 3. Broadcast sync event to all WebSocket clients
     broadcast({
       type: 'elements_synced',
@@ -458,7 +458,7 @@ app.post('/api/elements/sync', (req: Request, res: Response) => {
       timestamp: new Date().toISOString(),
       source: 'manual_sync'
     });
-    
+
     // 4. Return sync results
     res.json({
       success: true,
@@ -468,7 +468,7 @@ app.post('/api/elements/sync', (req: Request, res: Response) => {
       beforeCount,
       afterCount: elements.size
     });
-    
+
   } catch (error) {
     logger.error('Sync error:', error);
     res.status(500).json({

@@ -38,25 +38,25 @@ export const securityHeaders = helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: [
-        "'self'", 
+        "'self'",
         "'unsafe-inline'", // Required for Excalidraw
         "'unsafe-eval'",   // Required for some canvas operations
         "blob:"
       ],
       styleSrc: [
-        "'self'", 
+        "'self'",
         "'unsafe-inline'", // Required for Excalidraw styling
         "https://fonts.googleapis.com"
       ],
       imgSrc: [
-        "'self'", 
-        "data:", 
+        "'self'",
+        "data:",
         "blob:",
         "https:"
       ],
       connectSrc: [
-        "'self'", 
-        "ws:", 
+        "'self'",
+        "ws:",
         "wss:",
         config.server.environment === 'development' ? 'http://localhost:*' : ''
       ].filter(Boolean),
@@ -120,7 +120,7 @@ export const authRateLimitMiddleware = rateLimit({
 export function requestSizeLimit(req: Request, res: Response, next: NextFunction): void {
   const contentLength = req.get('content-length');
   const maxSize = 10 * 1024 * 1024; // 10MB limit
-  
+
   if (contentLength && parseInt(contentLength, 10) > maxSize) {
     res.status(413).json({
       success: false,
@@ -129,7 +129,7 @@ export function requestSizeLimit(req: Request, res: Response, next: NextFunction
     });
     return;
   }
-  
+
   next();
 }
 
@@ -143,7 +143,7 @@ export function auditLog(req: Request, res: Response, next: NextFunction): void 
   }
 
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     const auditEntry = {
@@ -156,13 +156,13 @@ export function auditLog(req: Request, res: Response, next: NextFunction): void 
       duration,
       userId: (req as any).user?.id || 'anonymous'
     };
-    
+
     // Log suspicious activities
     if (res.statusCode >= 400 || duration > 5000) {
       console.log('[AUDIT]', JSON.stringify(auditEntry));
     }
   });
-  
+
   next();
 }
 
@@ -172,16 +172,16 @@ export function auditLog(req: Request, res: Response, next: NextFunction): void 
 export function secureErrorHandler(error: any, req: Request, res: Response, next: NextFunction): void {
   // Log the full error for debugging
   console.error('Server error:', error);
-  
+
   // Don't leak error details in production
   const isDevelopment = config.server.environment === 'development';
-  
+
   const errorResponse = {
     success: false,
     error: isDevelopment ? error.message : 'Internal server error',
     code: error.code || 'INTERNAL_ERROR',
     ...(isDevelopment && { stack: error.stack })
   };
-  
+
   res.status(error.status || 500).json(errorResponse);
 }

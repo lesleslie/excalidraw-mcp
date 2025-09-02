@@ -20,6 +20,7 @@ public/dist/
 *.excalidraw
 
 docs/
-/excalidraw_mcp/__pycache__/
+*/__pycache__/
 /.benchmarks/
-/tests/__pycache__/
+/.mcp.json
+/.envrc

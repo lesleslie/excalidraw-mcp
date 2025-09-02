@@ -7,8 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a dual-language MCP (Model Context Protocol) server for Excalidraw that enables AI agents to create and manipulate diagrams in real-time on a live canvas. The system uses a hybrid architecture:
 
 1. **Python FastMCP Server** (`excalidraw_mcp/server.py`) - Handles MCP protocol communication and tool registration
-2. **TypeScript Canvas Server** (`src/server.ts`) - Manages canvas state, WebSocket connections, and HTTP API
-3. **React Frontend** (`frontend/src/App.tsx`) - Provides the live Excalidraw canvas interface
+1. **TypeScript Canvas Server** (`src/server.ts`) - Manages canvas state, WebSocket connections, and HTTP API
+1. **React Frontend** (`frontend/src/App.tsx`) - Provides the live Excalidraw canvas interface
 
 The Python server automatically manages the TypeScript server lifecycle, including health monitoring, auto-start, and graceful shutdown.
 
@@ -28,6 +28,7 @@ The Python server automatically manages the TypeScript server lifecycle, includi
 ```
 
 **Data Flow Architecture:**
+
 - **MCP Tools** (Python) → **HTTP API** (TypeScript) → **WebSocket** → **Canvas** (React)
 - Canvas server maintains in-memory element storage with versioning and timestamp tracking
 - Real-time synchronization via WebSocket broadcasts to all connected clients
@@ -37,6 +38,7 @@ The Python server automatically manages the TypeScript server lifecycle, includi
 ## Development Commands
 
 ### Setup
+
 ```bash
 # Install Python dependencies
 uv sync
@@ -54,6 +56,7 @@ npm run canvas
 ```
 
 ### Build and Development Commands
+
 ```bash
 # Build project (frontend + canvas server)
 npm run build
@@ -72,6 +75,7 @@ npm run type-check      # TypeScript type checking without compilation
 ```
 
 ### Process Management Commands
+
 ```bash
 # Python MCP server (auto-manages canvas server)
 uv run python excalidraw_mcp/server.py
@@ -83,6 +87,7 @@ npm run canvas          # Start canvas server independently
 ## Environment Configuration
 
 Key environment variables:
+
 - `EXPRESS_SERVER_URL`: Canvas server URL (default: `http://localhost:3031`)
 - `ENABLE_CANVAS_SYNC`: Enable/disable canvas synchronization (default: `true`)
 - `CANVAS_AUTO_START`: Enable/disable automatic canvas server startup (default: `true`)
@@ -94,26 +99,31 @@ Key environment variables:
 The system provides these MCP tools for diagram creation:
 
 ### Element Management
+
 - `create_element`: Create rectangles, ellipses, diamonds, arrows, text, lines
 - `update_element`: Modify existing elements
 - `delete_element`: Remove elements
 - `query_elements`: Search elements with filters
 
 ### Batch Operations
+
 - `batch_create_elements`: Create multiple elements in one call
 
 ### Element Organization
+
 - `group_elements` / `ungroup_elements`: Group/ungroup elements
 - `align_elements`: Align elements (left, center, right, top, middle, bottom)
 - `distribute_elements`: Distribute elements evenly
 - `lock_elements` / `unlock_elements`: Lock/unlock elements
 
 ### Resource Access
+
 - `get_resource`: Access scene, library, theme, or elements data
 
 ## Critical Architecture Components
 
 ### Python MCP Server (`excalidraw_mcp/server.py`)
+
 - **FastMCP Integration**: Uses `fastmcp` library for MCP protocol handling
 - **Process Management**: Automatically starts/stops/monitors canvas server via subprocess
 - **Health Monitoring**: Polls canvas server `/health` endpoint with 5-second timeout
@@ -121,6 +131,7 @@ The system provides these MCP tools for diagram creation:
 - **Element Validation**: Pydantic models for request/response validation
 
 ### TypeScript Canvas Server (`src/server.ts`)
+
 - **Express.js API**: REST endpoints for CRUD operations on elements
 - **WebSocket Server**: Real-time broadcasting using `ws` library
 - **In-Memory Storage**: `Map<string, ServerElement>` for element persistence
@@ -128,12 +139,14 @@ The system provides these MCP tools for diagram creation:
 - **CORS Enabled**: Cross-origin requests supported for development
 
 ### React Frontend (`frontend/src/App.tsx`)
+
 - **Excalidraw Integration**: Official `@excalidraw/excalidraw` package
 - **WebSocket Client**: Auto-reconnecting WebSocket for real-time updates
 - **Element Conversion**: Server elements converted to Excalidraw format
 - **Dual Loading**: Initial HTTP fetch + ongoing WebSocket updates
 
 ### Type System (`src/types.ts`)
+
 - **Element Interfaces**: Complete Excalidraw element type definitions
 - **WebSocket Messages**: Typed message interfaces for real-time communication
 - **Server Extensions**: Additional fields for versioning and metadata
@@ -142,12 +155,14 @@ The system provides these MCP tools for diagram creation:
 ## Development Workflow
 
 ### Standard Development Cycle
+
 1. **Initial Setup**: `uv sync && npm install && npm run build`
-2. **Development**: `npm run dev` (starts TypeScript watch + Vite dev server)
-3. **MCP Testing**: Python server runs automatically via Claude Code's `.mcp.json` configuration
-4. **Canvas Access**: Navigate to `http://localhost:3031` to see live diagram updates
+1. **Development**: `npm run dev` (starts TypeScript watch + Vite dev server)
+1. **MCP Testing**: Python server runs automatically via Claude Code's `.mcp.json` configuration
+1. **Canvas Access**: Navigate to `http://localhost:3031` to see live diagram updates
 
 ### Process Lifecycle Management
+
 - **Auto-start**: Python MCP server automatically launches canvas server on first tool use
 - **Health Monitoring**: Python server continuously monitors canvas server via `/health` endpoint
 - **Auto-recovery**: Failed canvas server is automatically restarted by Python server
@@ -155,11 +170,12 @@ The system provides these MCP tools for diagram creation:
 - **Process Isolation**: Canvas server runs in separate process group for clean termination
 
 ### Element Synchronization Flow
+
 1. **MCP Tool Call** → Python server validates and processes request
-2. **HTTP API Call** → Python server sends element data to TypeScript server
-3. **Element Storage** → TypeScript server stores element with version/timestamp metadata
-4. **WebSocket Broadcast** → All connected clients receive real-time updates
-5. **Canvas Update** → React frontend converts and renders elements in Excalidraw
+1. **HTTP API Call** → Python server sends element data to TypeScript server
+1. **Element Storage** → TypeScript server stores element with version/timestamp metadata
+1. **WebSocket Broadcast** → All connected clients receive real-time updates
+1. **Canvas Update** → React frontend converts and renders elements in Excalidraw
 
 ## Important Implementation Details
 
@@ -173,6 +189,7 @@ The system provides these MCP tools for diagram creation:
 ## Testing Infrastructure
 
 ### Test Execution Commands
+
 ```bash
 # Python tests with pytest
 pytest                              # Run all Python tests
@@ -195,6 +212,7 @@ npm run type-check                 # TypeScript type validation
 ```
 
 ### Test Categories and Structure
+
 - **Unit Tests** (`tests/unit/`, `test/unit/`) - Component isolation testing
 - **Integration Tests** (`tests/integration/`) - MCP tools and HTTP client integration
 - **Security Tests** (`tests/security/`) - Input validation, XSS prevention, injection attacks
@@ -202,8 +220,9 @@ npm run type-check                 # TypeScript type validation
 - **End-to-End Tests** - Full system integration with real canvas server
 
 ### Test Infrastructure Features
-- **85% Python coverage requirement** with comprehensive fixtures and mocking
-- **70% TypeScript coverage requirement** with jsdom environment for DOM testing
+
+- **85% Python coverage requirement** (enforced by pyproject.toml) with comprehensive fixtures and mocking
+- **70% TypeScript coverage requirement** (enforced by jest.config.cjs) with jsdom environment for DOM testing
 - **Performance monitoring** with memory usage tracking and execution time assertions
 - **Security testing** including prototype pollution, overflow, and injection prevention
 - **Mock infrastructure** for HTTP clients, WebSocket connections, and canvas server simulation
@@ -211,6 +230,7 @@ npm run type-check                 # TypeScript type validation
 ## Configuration Architecture
 
 ### Centralized Configuration System (`excalidraw_mcp/config.py`)
+
 - **Environment-based configuration** with validation and type conversion
 - **Security settings**: JWT authentication, CORS policies, rate limiting
 - **Server settings**: Health check timeouts, auto-start behavior, graceful shutdown
@@ -218,14 +238,16 @@ npm run type-check                 # TypeScript type validation
 - **Logging configuration**: Audit trails, sensitive field filtering, file rotation
 
 ### Modular Python Architecture
+
 - **Element Factory** (`excalidraw_mcp/element_factory.py`) - Standardized element creation with validation
-- **HTTP Client** (`excalidraw_mcp/http_client.py`) - Connection pooling and async HTTP management  
+- **HTTP Client** (`excalidraw_mcp/http_client.py`) - Connection pooling and async HTTP management
 - **Process Manager** (`excalidraw_mcp/process_manager.py`) - Canvas server lifecycle management
 - **MCP Tools** (`excalidraw_mcp/mcp_tools.py`) - Tool implementations with error handling
 
 ## Testing and Debugging
 
 ### Development Testing
+
 - Canvas server health check: `GET /health`
 - API endpoints: `GET /api/elements`, `POST /api/elements`, etc.
 - WebSocket connection: `ws://localhost:3031`
@@ -233,8 +255,9 @@ npm run type-check                 # TypeScript type validation
 - Canvas access: `http://localhost:3031` (after running canvas server)
 
 ### Test Data and Fixtures
+
 - **Element factory fixtures** for consistent test element creation
 - **Mock HTTP clients** with async context manager support
-- **Security test data** for XSS, injection, and overflow testing  
+- **Security test data** for XSS, injection, and overflow testing
 - **Performance monitoring** with memory and execution time tracking
 - **WebSocket mocks** with message queue simulation for real-time testing

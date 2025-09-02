@@ -38,8 +38,8 @@ export function calculateElementDelta(
 
   // Check each property for changes
   const properties: (keyof ServerElement)[] = [
-    'type', 'x', 'y', 'width', 'height', 'text', 'strokeColor', 
-    'backgroundColor', 'strokeWidth', 'opacity', 'roughness', 
+    'type', 'x', 'y', 'width', 'height', 'text', 'strokeColor',
+    'backgroundColor', 'strokeWidth', 'opacity', 'roughness',
     'fontSize', 'fontFamily', 'locked'
   ];
 
@@ -172,7 +172,7 @@ export function mergeDeltas(deltas: ElementDelta[]): ElementDelta | null {
 
   // Sort deltas by version
   const sortedDeltas = deltas.sort((a, b) => a.version - b.version);
-  
+
   // Verify deltas are sequential
   for (let i = 1; i < sortedDeltas.length; i++) {
     if (sortedDeltas[i]?.version !== (sortedDeltas[i - 1]?.version ?? 0) + 1) {
@@ -190,7 +190,7 @@ export function mergeDeltas(deltas: ElementDelta[]): ElementDelta | null {
 
   const firstDelta = sortedDeltas[0];
   const lastDelta = sortedDeltas[sortedDeltas.length - 1];
-  
+
   if (!firstDelta || !lastDelta) {
     throw new Error('Cannot merge empty deltas');
   }
@@ -227,11 +227,11 @@ export function serializeDelta(delta: ElementDelta): string {
 export function deserializeDelta(deltaString: string): ElementDelta {
   try {
     const delta = JSON.parse(deltaString) as ElementDelta;
-    
+
     if (!validateDelta(delta)) {
       throw new Error('Invalid delta format');
     }
-    
+
     return delta;
   } catch (error) {
     throw new Error(`Failed to deserialize delta: ${error instanceof Error ? error.message : String(error)}`);
@@ -246,14 +246,14 @@ export function reconstructElement(
   deltas: ElementDelta[]
 ): ServerElement {
   let currentElement = baseElement;
-  
+
   // Sort deltas by version
   const sortedDeltas = deltas.sort((a, b) => a.version - b.version);
-  
+
   for (const delta of sortedDeltas) {
     currentElement = applyElementDelta(currentElement, delta);
   }
-  
+
   return currentElement;
 }
 

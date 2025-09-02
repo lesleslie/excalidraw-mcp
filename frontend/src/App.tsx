@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { 
-  Excalidraw, 
-  convertToExcalidrawElements, 
+import {
+  Excalidraw,
+  convertToExcalidrawElements,
   CaptureUpdateAction,
   ExcalidrawAPIRefValue,
   ExcalidrawElement
@@ -81,10 +81,10 @@ const cleanElementForExcalidraw = (element: ServerElement): Partial<ExcalidrawEl
 // Helper function to validate and fix element binding data
 const validateAndFixBindings = (elements: Partial<ExcalidrawElement>[]): Partial<ExcalidrawElement>[] => {
   const elementMap = new Map(elements.map(el => [el.id!, el]));
-  
+
   return elements.map(element => {
     const fixedElement = { ...element };
-    
+
     // Validate and fix boundElements
     if (fixedElement.boundElements) {
       if (Array.isArray(fixedElement.boundElements)) {
@@ -92,17 +92,17 @@ const validateAndFixBindings = (elements: Partial<ExcalidrawElement>[]): Partial
           // Ensure binding has required properties
           if (!binding || typeof binding !== 'object') return false;
           if (!binding.id || !binding.type) return false;
-          
+
           // Ensure the referenced element exists
           const referencedElement = elementMap.get(binding.id);
           if (!referencedElement) return false;
-          
+
           // Validate binding type
           if (!['text', 'arrow'].includes(binding.type)) return false;
-          
+
           return true;
         });
-        
+
         // Remove boundElements if empty
         if (fixedElement.boundElements.length === 0) {
           fixedElement.boundElements = null;
@@ -112,7 +112,7 @@ const validateAndFixBindings = (elements: Partial<ExcalidrawElement>[]): Partial
         fixedElement.boundElements = null;
       }
     }
-    
+
     // Validate and fix containerId
     if (fixedElement.containerId) {
       const containerElement = elementMap.get(fixedElement.containerId);
@@ -121,7 +121,7 @@ const validateAndFixBindings = (elements: Partial<ExcalidrawElement>[]): Partial
         fixedElement.containerId = null;
       }
     }
-    
+
     return fixedElement;
   });
 }
@@ -130,7 +130,7 @@ function App(): JSX.Element {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawAPIRefValue | null>(null)
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const websocketRef = useRef<WebSocket | null>(null)
-  
+
   // Sync state management
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
@@ -149,7 +149,7 @@ function App(): JSX.Element {
   useEffect(() => {
     if (excalidrawAPI) {
       loadExistingElements()
-      
+
       // Ensure WebSocket is connected for real-time updates
       if (!isConnected) {
         connectWebSocket()
@@ -161,7 +161,7 @@ function App(): JSX.Element {
     try {
       const response = await fetch('/api/elements')
       const result: ApiResponse = await response.json()
-      
+
       if (result.success && result.elements && result.elements.length > 0) {
         const cleanedElements = result.elements.map(cleanElementForExcalidraw)
         const convertedElements = convertToExcalidrawElements(cleanedElements, { regenerateIds: false })
@@ -179,17 +179,17 @@ function App(): JSX.Element {
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const wsUrl = `${protocol}//${window.location.host}`
-    
+
     websocketRef.current = new WebSocket(wsUrl)
-    
+
     websocketRef.current.onopen = () => {
       setIsConnected(true)
-      
+
       if (excalidrawAPI) {
         setTimeout(loadExistingElements, 100)
       }
     }
-    
+
     websocketRef.current.onmessage = (event: MessageEvent) => {
       try {
         const data: WebSocketMessage = JSON.parse(event.data)
@@ -198,16 +198,16 @@ function App(): JSX.Element {
         console.error('Error parsing WebSocket message:', error, event.data)
       }
     }
-    
+
     websocketRef.current.onclose = (event: CloseEvent) => {
       setIsConnected(false)
-      
+
       // Reconnect after 3 seconds if not a clean close
       if (event.code !== 1000) {
         setTimeout(connectWebSocket, 3000)
       }
     }
-    
+
     websocketRef.current.onerror = (error: Event) => {
       console.error('WebSocket error:', error)
       setIsConnected(false)
@@ -229,70 +229,70 @@ function App(): JSX.Element {
             const cleanedElements = data.elements.map(cleanElementForExcalidraw)
             const validatedElements = validateAndFixBindings(cleanedElements)
             const convertedElements = convertToExcalidrawElements(validatedElements)
-            excalidrawAPI.updateScene({ 
+            excalidrawAPI.updateScene({
               elements: convertedElements,
               captureUpdate: CaptureUpdateAction.NEVER
             })
           }
           break
-          
+
         case 'element_created':
           if (data.element) {
             const cleanedNewElement = cleanElementForExcalidraw(data.element)
             const newElement = convertToExcalidrawElements([cleanedNewElement])
             const updatedElementsAfterCreate = [...currentElements, ...newElement]
-            excalidrawAPI.updateScene({ 
+            excalidrawAPI.updateScene({
               elements: updatedElementsAfterCreate,
               captureUpdate: CaptureUpdateAction.NEVER
             })
           }
           break
-          
+
         case 'element_updated':
           if (data.element) {
             const cleanedUpdatedElement = cleanElementForExcalidraw(data.element)
             const convertedUpdatedElement = convertToExcalidrawElements([cleanedUpdatedElement])[0]
-            const updatedElements = currentElements.map(el => 
+            const updatedElements = currentElements.map(el =>
               el.id === data.element!.id ? convertedUpdatedElement : el
             )
-            excalidrawAPI.updateScene({ 
+            excalidrawAPI.updateScene({
               elements: updatedElements,
               captureUpdate: CaptureUpdateAction.NEVER
             })
           }
           break
-          
+
         case 'element_deleted':
           if (data.elementId) {
             const filteredElements = currentElements.filter(el => el.id !== data.elementId)
-            excalidrawAPI.updateScene({ 
+            excalidrawAPI.updateScene({
               elements: filteredElements,
               captureUpdate: CaptureUpdateAction.NEVER
             })
           }
           break
-          
+
         case 'elements_batch_created':
           if (data.elements) {
             const cleanedBatchElements = data.elements.map(cleanElementForExcalidraw)
             const batchElements = convertToExcalidrawElements(cleanedBatchElements)
             const updatedElementsAfterBatch = [...currentElements, ...batchElements]
-            excalidrawAPI.updateScene({ 
+            excalidrawAPI.updateScene({
               elements: updatedElementsAfterBatch,
               captureUpdate: CaptureUpdateAction.NEVER
             })
           }
           break
-          
+
         case 'elements_synced':
           console.log(`Sync confirmed by server: ${data.count} elements`)
           // Sync confirmation already handled by HTTP response
           break
-          
+
         case 'sync_status':
           console.log(`Server sync status: ${data.count} elements`)
           break
-          
+
         default:
           console.log('Unknown WebSocket message type:', data.type)
       }
@@ -324,20 +324,20 @@ function App(): JSX.Element {
       console.warn('Excalidraw API not available')
       return
     }
-    
+
     setSyncStatus('syncing')
-    
+
     try {
       // 1. Get current elements
       const currentElements = excalidrawAPI.getSceneElements()
       console.log(`Syncing ${currentElements.length} elements to backend`)
-      
+
       // 2. Filter out deleted elements
       const activeElements = currentElements.filter(el => !el.isDeleted)
-      
+
       // 3. Convert to backend format
       const backendElements = activeElements.map(convertToBackendFormat)
-      
+
       // 4. Send to backend
       const response = await fetch('/api/elements/sync', {
         method: 'POST',
@@ -349,13 +349,13 @@ function App(): JSX.Element {
           timestamp: new Date().toISOString()
         })
       })
-      
+
       if (response.ok) {
         const result: ApiResponse = await response.json()
         setSyncStatus('success')
         setLastSyncTime(new Date())
         console.log(`Sync successful: ${result.count} elements synced`)
-        
+
         // Reset status after 2 seconds
         setTimeout(() => setSyncStatus('idle'), 2000)
       } else {
@@ -375,23 +375,23 @@ function App(): JSX.Element {
         // Get all current elements and delete them from backend
         const response = await fetch('/api/elements')
         const result: ApiResponse = await response.json()
-        
+
         if (result.success && result.elements) {
-          const deletePromises = result.elements.map(element => 
+          const deletePromises = result.elements.map(element =>
             fetch(`/api/elements/${element.id}`, { method: 'DELETE' })
           )
           await Promise.all(deletePromises)
         }
-        
+
         // Clear the frontend canvas
-        excalidrawAPI.updateScene({ 
+        excalidrawAPI.updateScene({
           elements: [],
           captureUpdate: CaptureUpdateAction.IMMEDIATELY
         })
       } catch (error) {
         console.error('Error clearing canvas:', error)
         // Still clear frontend even if backend fails
-        excalidrawAPI.updateScene({ 
+        excalidrawAPI.updateScene({
           elements: [],
           captureUpdate: CaptureUpdateAction.IMMEDIATELY
         })
@@ -409,10 +409,10 @@ function App(): JSX.Element {
             <div className={`status-dot ${isConnected ? 'status-connected' : 'status-disconnected'}`}></div>
             <span>{isConnected ? 'Connected' : 'Disconnected'}</span>
           </div>
-          
+
           {/* Sync Controls */}
           <div className="sync-controls">
-            <button 
+            <button
               className={`btn-primary ${syncStatus === 'syncing' ? 'btn-loading' : ''}`}
               onClick={syncToBackend}
               disabled={syncStatus === 'syncing' || !excalidrawAPI}
@@ -420,7 +420,7 @@ function App(): JSX.Element {
               {syncStatus === 'syncing' && <span className="spinner"></span>}
               {syncStatus === 'syncing' ? 'Syncing...' : 'Sync to Backend'}
             </button>
-            
+
             {/* Sync Status */}
             <div className="sync-status">
               {syncStatus === 'success' && (
@@ -436,7 +436,7 @@ function App(): JSX.Element {
               )}
             </div>
           </div>
-          
+
           <button className="btn-secondary" onClick={clearCanvas}>Clear Canvas</button>
         </div>
       </div>

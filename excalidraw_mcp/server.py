@@ -7,10 +7,8 @@ Provides MCP tools for creating and managing Excalidraw diagrams with canvas syn
 import asyncio
 import atexit
 import logging
-from typing import Literal
 
 from fastmcp import FastMCP
-from pydantic import BaseModel, Field
 
 from .config import config
 from .mcp_tools import MCPToolsManager
@@ -30,26 +28,29 @@ mcp = FastMCP("Excalidraw MCP Server")
 async def startup_initialization():
     """Initialize canvas server on startup"""
     logger.info("Starting Excalidraw MCP Server...")
-    
+
     if config.server.canvas_auto_start:
         logger.info("Checking canvas server status...")
         is_running = await process_manager.ensure_running()
         if is_running:
             logger.info("Canvas server is ready")
         else:
-            logger.warning("Canvas server failed to start - continuing without canvas sync")
+            logger.warning(
+                "Canvas server failed to start - continuing without canvas sync"
+            )
     else:
         logger.info("Canvas auto-start disabled")
-    
+
     # Initialize MCP tools manager
-    tools_manager = MCPToolsManager(mcp)
+    MCPToolsManager(mcp)
+
 
 def main():
     """Main entry point for the CLI"""
     try:
         # Run startup initialization
         asyncio.run(startup_initialization())
-        
+
         # Start MCP server
         mcp.run()
     except KeyboardInterrupt:
@@ -60,6 +61,7 @@ def main():
     finally:
         # Cleanup is handled by atexit and signal handlers
         pass
+
 
 if __name__ == "__main__":
     main()

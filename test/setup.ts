@@ -33,7 +33,7 @@ expect.extend({
   toBeValidUUID(received: string) {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     const pass = uuidRegex.test(received);
-    
+
     if (pass) {
       return {
         message: () => `expected ${received} not to be a valid UUID`,
@@ -46,11 +46,11 @@ expect.extend({
       };
     }
   },
-  
+
   toBeValidElement(received: any) {
     const requiredFields = ['id', 'type', 'x', 'y', 'version', 'createdAt', 'updatedAt'];
     const missingFields = requiredFields.filter(field => !(field in received));
-    
+
     if (missingFields.length === 0) {
       return {
         message: () => `expected element not to have all required fields`,
@@ -63,11 +63,11 @@ expect.extend({
       };
     }
   },
-  
+
   toBeValidWebSocketMessage(received: any) {
     const hasType = 'type' in received && typeof received.type === 'string';
     const hasTimestamp = 'timestamp' in received || 'data' in received;
-    
+
     if (hasType && hasTimestamp) {
       return {
         message: () => `expected WebSocket message not to be valid`,
@@ -87,33 +87,33 @@ class MockWebSocket {
   public readyState = 1; // OPEN
   public url?: string;
   private listeners: { [event: string]: Function[] } = {};
-  
+
   constructor(url?: string) {
     this.url = url;
   }
-  
+
   send(data: string): void {
     // Mock send - could be extended to simulate responses
   }
-  
+
   close(code?: number, reason?: string): void {
     this.readyState = 3; // CLOSED
     this.emit('close', { code, reason });
   }
-  
+
   on(event: string, listener: Function): void {
     if (!this.listeners[event]) {
       this.listeners[event] = [];
     }
     this.listeners[event].push(listener);
   }
-  
+
   emit(event: string, data?: any): void {
     if (this.listeners[event]) {
       this.listeners[event].forEach(listener => listener(data));
     }
   }
-  
+
   ping(): void {
     // Mock ping
   }
