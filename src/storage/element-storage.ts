@@ -168,7 +168,7 @@ export class ElementStorage {
   private spatialIndex: QuadTreeNode;
   private lastCleanup: number = Date.now();
 
-  constructor() {
+  constructor(startCleanupInterval = true) {
     // Initialize LRU cache
     this.cache = new LRUCache<string, ServerElement>({
       max: config.performance.maxElementsPerCanvas,
@@ -193,8 +193,10 @@ export class ElementStorage {
       this.typeIndex.set(type, new Set());
     }
 
-    // Start cleanup interval
-    this.startCleanupInterval();
+    // Start cleanup interval (unless disabled for tests)
+    if (startCleanupInterval) {
+      this.startCleanupInterval();
+    }
   }
 
   /**
@@ -280,7 +282,14 @@ export class ElementStorage {
 
     // Use spatial index if spatial bounds are specified
     if (filter.spatialBounds && config.performance.enableSpatialIndexing) {
-      const spatialIds = new Set(this.spatialIndex.query(filter.spatialBounds));
+      // Convert from {minX, maxX, minY, maxY} to {x, y, width, height}
+      const bounds = {
+        x: filter.spatialBounds.minX,
+        y: filter.spatialBounds.minY,
+        width: filter.spatialBounds.maxX - filter.spatialBounds.minX,
+        height: filter.spatialBounds.maxY - filter.spatialBounds.minY
+      };
+      const spatialIds = new Set(this.spatialIndex.query(bounds));
       candidateIds = candidateIds ?
         new Set([...candidateIds].filter(id => spatialIds.has(id))) :
         spatialIds;
@@ -403,8 +412,10 @@ export class ElementStorage {
     }
   }
 
+  private cleanupInterval: NodeJS.Timeout | null = null;
+
   private startCleanupInterval(): void {
-    setInterval(() => {
+    this.cleanupInterval = setInterval(() => {
       const now = Date.now();
       const interval = config.performance.memoryCleanupIntervalMinutes * 60 * 1000;
 
@@ -413,7 +424,17 @@ export class ElementStorage {
       }
     }, 60000); // Check every minute
   }
+
+  /**
+   * Destroy the storage instance and clean up resources
+   */
+  destroy(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
+  }
 }
 
 // Global storage instance
-export const elementStorage = new ElementStorage();
+export const elementStorage = new ElementStorage(false);

@@ -180,7 +180,7 @@ class TestConfig:
         os.environ["EXPRESS_SERVER_URL"] = "http://localhost:70000"
 
         try:
-            with pytest.raises(ValueError, match="Express port must be between"):
+            with pytest.raises(ValueError, match="Express port must be between 1 and 65535"):
                 Config()
         finally:
             os.environ.pop("EXPRESS_SERVER_URL", None)
@@ -199,22 +199,36 @@ class TestConfig:
 
     def test_is_development_mode(self):
         """Test development mode detection."""
-        # Default should be development
-        config = Config()
-        assert config.is_development is True
-        assert config.is_production is False
-
-        # Test explicit development
-        os.environ["ENVIRONMENT"] = "development"
+        # Clear any existing ENVIRONMENT variable
+        original_env = os.environ.get("ENVIRONMENT")
+        if original_env is not None:
+            del os.environ["ENVIRONMENT"]
+        
         try:
+            # Default should be development
             config = Config()
+            print(f"Default config.is_development: {config.is_development}")
+            print(f"Default ENVIRONMENT: {os.environ.get('ENVIRONMENT', 'NOT SET')}")
+            assert config.is_development is True
+            assert config.is_production is False
+
+            # Test explicit development
+            os.environ["ENVIRONMENT"] = "development"
+            config = Config()
+            print(f"Explicit development config.is_development: {config.is_development}")
             assert config.is_development is True
             assert config.is_production is False
         finally:
-            os.environ.pop("ENVIRONMENT", None)
+            # Restore original environment
+            if original_env is not None:
+                os.environ["ENVIRONMENT"] = original_env
+            elif "ENVIRONMENT" in os.environ:
+                del os.environ["ENVIRONMENT"]
 
     def test_is_production_mode(self):
         """Test production mode detection."""
+        original_env = os.environ.get("ENVIRONMENT")
+        
         os.environ["ENVIRONMENT"] = "production"
 
         try:
@@ -222,7 +236,11 @@ class TestConfig:
             assert config.is_production is True
             assert config.is_development is False
         finally:
-            os.environ.pop("ENVIRONMENT", None)
+            # Restore original environment
+            if original_env is not None:
+                os.environ["ENVIRONMENT"] = original_env
+            else:
+                del os.environ["ENVIRONMENT"]
 
     @pytest.mark.security
     def test_sensitive_data_not_exposed(self):
@@ -263,6 +281,7 @@ class TestConfig:
         """Test that environment variables are properly typed."""
         test_env = {
             "AUTH_ENABLED": "true",
+            "JWT_SECRET": "test-secret-key",
             "CANVAS_AUTO_START": "false",
             "MAX_ELEMENTS": "2500",
         }

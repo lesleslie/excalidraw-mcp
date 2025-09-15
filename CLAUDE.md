@@ -88,11 +88,21 @@ npm run canvas          # Start canvas server independently
 
 Key environment variables:
 
+### Server Configuration
 - `EXPRESS_SERVER_URL`: Canvas server URL (default: `http://localhost:3031`)
 - `ENABLE_CANVAS_SYNC`: Enable/disable canvas synchronization (default: `true`)
 - `CANVAS_AUTO_START`: Enable/disable automatic canvas server startup (default: `true`)
 - `PORT`: Canvas server port (default: `3031`)
 - `HOST`: Canvas server host (default: `localhost`)
+
+### Monitoring Configuration
+- `MONITORING_ENABLED`: Enable/disable monitoring system (default: `true`)
+- `HEALTH_CHECK_INTERVAL`: Health check interval in seconds (default: `10`)
+- `CPU_THRESHOLD`: CPU usage alert threshold percentage (default: `80`)
+- `MEMORY_THRESHOLD`: Memory usage alert threshold percentage (default: `85`)
+- `CIRCUIT_BREAKER_ENABLED`: Enable circuit breaker protection (default: `true`)
+- `METRICS_ENABLED`: Enable Prometheus-compatible metrics collection (default: `true`)
+- `ALERTING_ENABLED`: Enable alert notifications (default: `true`)
 
 ## MCP Tools Available
 
@@ -126,9 +136,10 @@ The system provides these MCP tools for diagram creation:
 
 - **FastMCP Integration**: Uses `fastmcp` library for MCP protocol handling
 - **Process Management**: Automatically starts/stops/monitors canvas server via subprocess
-- **Health Monitoring**: Polls canvas server `/health` endpoint with 5-second timeout
-- **HTTP Client**: Uses `httpx.AsyncClient` for canvas server communication
+- **Health Monitoring**: Continuous monitoring with MonitoringSupervisor and automatic recovery
+- **HTTP Client**: Uses `httpx.AsyncClient` with connection pooling and request tracing
 - **Element Validation**: Pydantic models for request/response validation
+- **Production Monitoring**: Full observability stack with metrics, alerts, and circuit breakers
 
 ### TypeScript Canvas Server (`src/server.ts`)
 
@@ -164,10 +175,13 @@ The system provides these MCP tools for diagram creation:
 ### Process Lifecycle Management
 
 - **Auto-start**: Python MCP server automatically launches canvas server on first tool use
-- **Health Monitoring**: Python server continuously monitors canvas server via `/health` endpoint
-- **Auto-recovery**: Failed canvas server is automatically restarted by Python server
+- **Continuous Monitoring**: MonitoringSupervisor provides background health monitoring with configurable intervals
+- **Multi-Point Health Checks**: Validates `/health` and `/api/elements` endpoints plus resource usage
+- **Automatic Recovery**: Failed canvas server is automatically restarted after consecutive failure threshold
+- **Circuit Breaker Protection**: Prevents cascading failures during prolonged outages
 - **Graceful Shutdown**: Canvas server is terminated when Python MCP server exits
 - **Process Isolation**: Canvas server runs in separate process group for clean termination
+- **Event Hooks**: Process lifecycle events trigger monitoring callbacks for observability
 
 ### Element Synchronization Flow
 
@@ -185,6 +199,10 @@ The system provides these MCP tools for diagram creation:
 - **CORS Support**: Development-friendly CORS configuration for cross-origin requests
 - **Error Handling**: Failed MCP operations include detailed error messages and suggestions
 - **Concurrent Safety**: In-memory storage uses JavaScript Map for thread-safe operations
+- **Request Tracing**: All HTTP requests include correlation IDs for debugging and monitoring
+- **Circuit Protection**: Automatic circuit breaker prevents cascading failures during outages
+- **Automatic Recovery**: Failed canvas server automatically restarts after consecutive failures
+- **Resource Monitoring**: CPU and memory usage tracked with configurable alert thresholds
 
 ## Testing Infrastructure
 
@@ -200,6 +218,12 @@ pytest tests/integration/           # Integration tests only
 pytest -m "not slow"               # Skip slow performance tests
 pytest -m security                 # Security tests only
 pytest -m performance              # Performance benchmarks
+
+# Monitoring-specific tests
+pytest tests/unit/test_monitoring_supervisor.py     # Monitoring supervisor tests (16 cases)
+pytest tests/unit/test_health_checker.py           # Health checker tests (15 cases)
+pytest tests/unit/test_circuit_breaker.py          # Circuit breaker tests (17 cases)
+pytest tests/integration/test_monitoring_integration.py # Full monitoring integration (15 cases)
 
 # TypeScript tests with Jest
 npm test                           # Run all TypeScript tests
@@ -240,9 +264,77 @@ npm run type-check                 # TypeScript type validation
 ### Modular Python Architecture
 
 - **Element Factory** (`excalidraw_mcp/element_factory.py`) - Standardized element creation with validation
-- **HTTP Client** (`excalidraw_mcp/http_client.py`) - Connection pooling and async HTTP management
-- **Process Manager** (`excalidraw_mcp/process_manager.py`) - Canvas server lifecycle management
+- **HTTP Client** (`excalidraw_mcp/http_client.py`) - Connection pooling, async HTTP management, and request tracing
+- **Process Manager** (`excalidraw_mcp/process_manager.py`) - Canvas server lifecycle management with event hooks
 - **MCP Tools** (`excalidraw_mcp/mcp_tools.py`) - Tool implementations with error handling
+- **Monitoring System** (`excalidraw_mcp/monitoring/`) - Production-ready monitoring infrastructure
+
+## Production Monitoring System
+
+The system includes a comprehensive monitoring infrastructure with automatic recovery, metrics collection, and alerting.
+
+### Monitoring Architecture
+
+```
+┌─────────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│ MonitoringSupervisor│───▶│   HealthChecker  │───▶│ Canvas Server   │
+│  (Orchestration)    │    │   (Multi-check)  │    │   (Health API)  │
+└─────────────────────┘    └──────────────────┘    └─────────────────┘
+           │                          │
+           ▼                          ▼
+┌─────────────────────┐    ┌──────────────────┐
+│  Circuit Breaker    │    │  Metrics & Alerts│
+│ (Failure Protection)│    │   (Observability) │
+└─────────────────────┘    └──────────────────┘
+```
+
+### Core Components
+
+#### MonitoringSupervisor (`excalidraw_mcp/monitoring/supervisor.py`)
+- **Continuous Health Monitoring**: Background monitoring loop with configurable intervals
+- **Automatic Recovery**: Restarts canvas server after consecutive failures
+- **Process Lifecycle Integration**: Hooks into process start/stop/restart events
+- **Circuit Breaker Integration**: Prevents cascading failures during outages
+
+#### HealthChecker (`excalidraw_mcp/monitoring/health_checker.py`)
+- **Multi-Endpoint Validation**: Checks `/health` and `/api/elements` endpoints
+- **Resource Monitoring**: CPU, memory, and thread usage tracking via psutil
+- **Health Status Levels**: HEALTHY, DEGRADED, UNHEALTHY, RECOVERING states
+- **Failure Count Tracking**: Progressive failure detection with reset capability
+
+#### Circuit Breaker (`excalidraw_mcp/monitoring/circuit_breaker.py`)
+- **Three States**: CLOSED (normal), OPEN (failing), HALF_OPEN (recovery testing)
+- **Exponential Backoff**: Progressive timeout increases during failures
+- **Automatic Recovery**: Attempts to restore service after timeout periods
+- **Request Protection**: Prevents system overload during outages
+
+#### Metrics Collection (`excalidraw_mcp/monitoring/metrics.py`)
+- **Prometheus Compatibility**: Standard Counter, Gauge, and Histogram metrics
+- **15+ Built-in Metrics**: Request rates, response times, error rates, resource usage
+- **Real-time Tracking**: Automatic metric updates for all HTTP operations
+- **Export Ready**: Formatted for Prometheus scraping or logging
+
+#### Alert Management (`excalidraw_mcp/monitoring/alerts.py`)
+- **6 Built-in Alert Rules**: Health failures, high resource usage, circuit breaker trips
+- **Multiple Channels**: Log, webhook, email notification support
+- **Deduplication**: Prevents alert spam with configurable windows
+- **Throttling**: Rate limiting to prevent notification overload
+
+### Monitoring Development Commands
+
+```bash
+# View monitoring system status
+python -c "from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor; import asyncio; asyncio.run(MonitoringSupervisor().get_status())"
+
+# Test circuit breaker functionality
+python -c "from excalidraw_mcp.monitoring.circuit_breaker import CircuitBreaker; cb = CircuitBreaker('test', 3, 30); print(cb.call(lambda: 1/0))"
+
+# Check health status manually
+python -c "from excalidraw_mcp.monitoring.health_checker import HealthChecker; import asyncio; hc = HealthChecker(); asyncio.run(hc.check_health())"
+
+# View current metrics
+python -c "from excalidraw_mcp.monitoring.metrics import MetricsCollector; mc = MetricsCollector(); print(mc.get_all_metrics())"
+```
 
 ## Testing and Debugging
 

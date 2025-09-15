@@ -54,8 +54,19 @@ export function calculateElementDelta(
   changes.version = newElement.version;
   changes.updatedAt = newElement.updatedAt;
 
-  // If significant changes, send delta; otherwise send full element
+  // If there are actual changes AND they're not extensive, send delta; otherwise send full element
   if (hasChanges && Object.keys(changes).length < properties.length / 2) {
+    return {
+      hasDelta: true,
+      delta: {
+        id: newElement.id,
+        version: newElement.version ?? 1,
+        changes,
+        timestamp: newElement.updatedAt ?? new Date().toISOString()
+      }
+    };
+  } else if (!hasChanges && Object.keys(changes).length >= 2) {
+    // For identical elements, we still want to send version/timestamp updates
     return {
       hasDelta: true,
       delta: {
@@ -150,7 +161,10 @@ export function validateDelta(delta: ElementDelta): boolean {
 
   // Check timestamp format
   try {
-    new Date(delta.timestamp);
+    const date = new Date(delta.timestamp);
+    if (isNaN(date.getTime())) {
+      return false;
+    }
   } catch {
     return false;
   }

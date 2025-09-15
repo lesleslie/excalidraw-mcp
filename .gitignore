@@ -24,3 +24,7 @@ docs/
 /.benchmarks/
 /.mcp.json
 /.envrc
+/pytest-results.xml
+/coverage.xml
+/.coverage
+/coverage/

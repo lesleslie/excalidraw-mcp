@@ -1,5 +1,33 @@
 repos:
-  # File structure and format validators
+  - repo: local
+    hooks:
+      - id: validate-regex-patterns
+        name: validate-regex-patterns
+        entry: uv run python -m crackerjack.tools.validate_regex_patterns
+        language: system
+        files: \.py$
+        exclude: ^\.venv/
+      - id: skylos
+        name: skylos-dead-code-detection
+        entry: skylos
+        language: system
+        args: ["crackerjack"]
+        pass_filenames: false
+        stages: ["pre-push", "manual"]
+      - id: zuban
+        name: zuban-type-checking
+        entry: uv run zuban check
+        language: system
+        args: ["--config-file", "mypy.ini", "./crackerjack"]
+        pass_filenames: false
+        stages: ["pre-push", "manual"]
+      - id: pyright
+        name: pyright-type-checking
+        entry: uv run pyright
+        language: system
+        files: ^crackerjack/.*\.py$
+        exclude: ^crackerjack/(mcp|plugins)/.*\.py$|crackerjack/code_cleaner\.py$
+        stages: ["pre-push", "manual"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
@@ -19,17 +47,15 @@ repos:
         name: check-added-large-files
         exclude: ^\.venv/
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.8.14
+    rev: 0.8.15
     hooks:
       - id: uv-lock
-        files: ^pyproject\.toml$
-  # Security checks
+        files: ^ pyproject\.toml$
   - repo: https://github.com/gitleaks/gitleaks
     rev: v8.28.0
     hooks:
       - id: gitleaks
         exclude: uv\.lock|pyproject\.toml|tests/.*|docs/.*|.*\.md
-  # Security checks
   - repo: https://github.com/PyCQA/bandit
     rev: 1.8.6
     hooks:
@@ -37,34 +63,25 @@ repos:
         args: ["-c", "pyproject.toml", "-r", "-ll"]
         files: ^crackerjack/.*\.py$
         stages: ["pre-push", "manual"]
-  # Code formatting and quality
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
     hooks:
       - id: codespell
         exclude: ^\.venv/
         additional_dependencies: ["tomli"]
-  # Code formatting and quality
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.12.11
+    rev: v0.12.12
     hooks:
       - id: ruff-check
         exclude: ^\.venv/
       - id: ruff-format
         exclude: ^\.venv/
-  # Code formatting and quality
   - repo: https://github.com/executablebooks/mdformat
     rev: 0.7.22
     hooks:
       - id: mdformat
         exclude: ^\.venv/
         additional_dependencies: ["mdformat-ruff"]
-  - repo: https://github.com/jendrikseipp/vulture
-    rev: v2.14
-    hooks:
-      - id: vulture
-        files: ^crackerjack/.*\.py$
-        stages: ["pre-push", "manual"]
   - repo: https://github.com/fredrikaverpil/creosote
     rev: v4.1.0
     hooks:
@@ -75,7 +92,7 @@ repos:
     rev: v3.3.0
     hooks:
       - id: complexipy
-        args: ["-d", "low"]
+        args: ["-d", "low", "--max-complexity-allowed", "15"]
         files: ^crackerjack/.*\.py$
         exclude: ^(\.venv/|tests/)
         stages: ["pre-push", "manual"]
@@ -86,11 +103,4 @@ repos:
         args: ["--ignore", "FURB184", "--ignore", "FURB120"]
         files: ^crackerjack/.*\.py$
         exclude: ^tests/.*\.py$
-        stages: ["pre-push", "manual"]
-  - repo: https://github.com/RobertCraigie/pyright-python
-    rev: v1.1.404
-    hooks:
-      - id: pyright
-        files: ^crackerjack/.*\.py$
-        exclude: ^crackerjack/(mcp|plugins)/.*\.py$|crackerjack/code_cleaner\.py$
         stages: ["pre-push", "manual"]

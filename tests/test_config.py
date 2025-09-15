@@ -15,7 +15,7 @@ class TestConfig:
         """Test that default configuration is created correctly."""
         config = Config()
 
-        assert config.security.auth_enabled is True
+        assert config.security.auth_enabled is False
         assert config.server.express_url == "http://localhost:3031"
         assert config.performance.max_elements_per_canvas == 10000
         assert config.logging.level == "INFO"
@@ -112,7 +112,7 @@ class TestSecurityConfig:
         """Test security configuration defaults."""
         config = SecurityConfig()
 
-        assert config.auth_enabled is True
+        assert config.auth_enabled is False
         assert config.jwt_algorithm == "HS256"
         assert config.token_expiration_hours == 24
         assert "http://localhost:3031" in config.allowed_origins

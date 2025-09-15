@@ -7,6 +7,7 @@ from unittest.mock import AsyncMock, Mock
 
 import httpx
 import pytest
+import pytest_asyncio
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.http_client import CanvasHTTPClient
@@ -39,7 +40,7 @@ def test_config():
     return config
 
 
-@pytest.fixture
+@pytest_asyncio.fixture
 async def mock_http_client():
     """Create a mock HTTP client for testing."""
     client = Mock(spec=CanvasHTTPClient)
@@ -260,7 +261,7 @@ async def integration_test_server():
             response = await client.get("http://localhost:3033/health")
             if response.status_code == 200:
                 break
-        except:
+        except Exception:
             pass
         time.sleep(0.5)
     else:

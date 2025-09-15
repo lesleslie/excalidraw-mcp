@@ -4,6 +4,7 @@ from unittest.mock import Mock, patch
 
 import httpx
 import pytest
+import pytest_asyncio
 
 from excalidraw_mcp.http_client import CanvasHTTPClient, HealthCacheEntry
 
@@ -11,7 +12,7 @@ from excalidraw_mcp.http_client import CanvasHTTPClient, HealthCacheEntry
 class TestCanvasHTTPClient:
     """Test the Canvas HTTP client."""
 
-    @pytest.fixture
+    @pytest_asyncio.fixture
     async def http_client(self):
         """Create HTTP client for testing."""
         client = CanvasHTTPClient()

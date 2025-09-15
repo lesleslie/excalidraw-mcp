@@ -14,6 +14,7 @@ describe('ElementStorage', () => {
 
   afterEach(() => {
     storage.clear();
+    storage.destroy();
   });
 
   const createTestElement = (id: string, type: ElementType = 'rectangle', x = 0, y = 0): ServerElement => ({

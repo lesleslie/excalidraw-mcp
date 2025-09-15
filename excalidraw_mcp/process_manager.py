@@ -8,6 +8,7 @@ import signal
 import subprocess
 import time
 from pathlib import Path
+from typing import Callable, List, Optional
 
 import psutil
 
@@ -18,12 +19,20 @@ logger = logging.getLogger(__name__)
 
 
 class CanvasProcessManager:
-    """Manages the canvas server process lifecycle."""
+    """Manages the canvas server process lifecycle with monitoring hooks."""
 
     def __init__(self):
         self.process: subprocess.Popen | None = None
         self.process_pid: int | None = None
         self._startup_lock = asyncio.Lock()
+        self._start_time: Optional[float] = None
+        self._restart_count = 0
+        
+        # Event hooks for monitoring integration
+        self._on_start_callbacks: List[Callable] = []
+        self._on_stop_callbacks: List[Callable] = []
+        self._on_restart_callbacks: List[Callable] = []
+        self._on_health_change_callbacks: List[Callable] = []
 
         # Register cleanup handlers
         atexit.register(self.cleanup)
@@ -102,7 +111,11 @@ class CanvasProcessManager:
             )
 
             self.process_pid = self.process.pid
+            self._start_time = time.time()
             logger.info(f"Canvas server started with PID: {self.process_pid}")
+
+            # Trigger start callbacks
+            await self._trigger_callbacks(self._on_start_callbacks, self.process_pid)
 
             # Give the server a moment to start
             await asyncio.sleep(config.server.startup_retry_delay_seconds)
@@ -137,6 +150,11 @@ class CanvasProcessManager:
         """Terminate any existing canvas server process."""
         if self.process_pid:
             try:
+                # Trigger stop callbacks before termination
+                asyncio.create_task(
+                    self._trigger_callbacks(self._on_stop_callbacks, self.process_pid, "terminating")
+                )
+                
                 # Try to find and kill the process group
                 if os.name != "nt":
                     os.killpg(os.getpgid(self.process_pid), signal.SIGTERM)
@@ -166,8 +184,16 @@ class CanvasProcessManager:
 
     def _reset_process_info(self) -> None:
         """Reset process information."""
+        was_running = self.process_pid is not None
         self.process = None
         self.process_pid = None
+        self._start_time = None
+        
+        if was_running:
+            # Trigger stop callbacks when process info is reset
+            asyncio.create_task(
+                self._trigger_callbacks(self._on_stop_callbacks, None, "stopped")
+            )
 
     def _get_project_root(self) -> Path:
         """Get the project root directory."""
@@ -187,8 +213,19 @@ class CanvasProcessManager:
     async def restart(self) -> bool:
         """Restart the canvas server."""
         logger.info("Restarting canvas server...")
+        self._restart_count += 1
+        
+        # Trigger restart callbacks
+        await self._trigger_callbacks(self._on_restart_callbacks, self._restart_count, "starting")
+        
         self._terminate_current_process()
-        return await self.ensure_running()
+        success = await self.ensure_running()
+        
+        # Trigger restart completion callbacks
+        status = "success" if success else "failed"
+        await self._trigger_callbacks(self._on_restart_callbacks, self._restart_count, status)
+        
+        return success
 
     async def stop(self):
         """Stop the canvas server."""
@@ -196,13 +233,58 @@ class CanvasProcessManager:
         self._terminate_current_process()
 
     def get_status(self) -> dict:
-        """Get process status information."""
+        """Get comprehensive process status information."""
+        is_running = self._is_process_running()
+        uptime = time.time() - self._start_time if self._start_time and is_running else 0
+        
         return {
-            "running": self._is_process_running(),
+            "running": is_running,
             "pid": self.process_pid,
             "healthy": False,  # Will be updated by health check
             "auto_start_enabled": config.server.canvas_auto_start,
+            "start_time": self._start_time,
+            "uptime_seconds": uptime,
+            "restart_count": self._restart_count,
         }
+
+
+    # Event hook management methods
+    def add_start_callback(self, callback: Callable) -> None:
+        """Add callback for process start events."""
+        self._on_start_callbacks.append(callback)
+    
+    def add_stop_callback(self, callback: Callable) -> None:
+        """Add callback for process stop events."""
+        self._on_stop_callbacks.append(callback)
+        
+    def add_restart_callback(self, callback: Callable) -> None:
+        """Add callback for process restart events."""
+        self._on_restart_callbacks.append(callback)
+        
+    def add_health_change_callback(self, callback: Callable) -> None:
+        """Add callback for health status changes."""
+        self._on_health_change_callbacks.append(callback)
+    
+    async def _trigger_callbacks(self, callbacks: List[Callable], *args) -> None:
+        """Trigger a list of callbacks with error handling."""
+        for callback in callbacks:
+            try:
+                if asyncio.iscoroutinefunction(callback):
+                    await callback(*args)
+                else:
+                    callback(*args)
+            except Exception as e:
+                logger.error(f"Error in process manager callback: {e}")
+    
+    def get_restart_count(self) -> int:
+        """Get the number of times the process has been restarted."""
+        return self._restart_count
+        
+    def get_uptime(self) -> float:
+        """Get process uptime in seconds."""
+        if not self._start_time or not self._is_process_running():
+            return 0.0
+        return time.time() - self._start_time
 
 
 # Global process manager instance

@@ -1,10 +1,11 @@
-"""HTTP client management with connection pooling and health caching."""
+"""HTTP client management with connection pooling, health caching, and request tracing."""
 
 import asyncio
 import logging
 import time
+import uuid
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Dict, Optional
 
 import httpx
 
@@ -23,12 +24,20 @@ class HealthCacheEntry:
 
 
 class CanvasHTTPClient:
-    """HTTP client for canvas server communication with connection pooling and caching."""
+    """HTTP client for canvas server communication with connection pooling, caching, and tracing."""
 
     def __init__(self):
         self._client: httpx.AsyncClient | None = None
         self._health_cache = HealthCacheEntry(status=False, timestamp=0)
         self._lock = asyncio.Lock()
+        
+        # Request tracing
+        self._request_metrics: Dict[str, Any] = {
+            "total_requests": 0,
+            "successful_requests": 0,
+            "failed_requests": 0,
+            "total_response_time": 0.0,
+        }
 
     async def __aenter__(self):
         await self._ensure_client()
@@ -59,9 +68,10 @@ class CanvasHTTPClient:
             await self._client.aclose()
             self._client = None
 
-    async def check_health(self, force: bool = False) -> bool:
-        """Check canvas server health with caching."""
+    async def check_health(self, force: bool = False, correlation_id: Optional[str] = None) -> bool:
+        """Check canvas server health with caching and tracing."""
         current_time = time.time()
+        trace_id = correlation_id or self._generate_correlation_id()
 
         # Use cached result if recent and not forced
         if (
@@ -80,14 +90,24 @@ class CanvasHTTPClient:
             ):
                 return self._health_cache.status
 
+            start_time = time.time()
             try:
                 await self._ensure_client()
+                
+                # Add tracing headers if enabled
+                headers = self._get_tracing_headers(trace_id) if config.monitoring.request_tracing_enabled else {}
+                
                 response = await self._client.get(
                     f"{config.server.express_url}/health",
                     timeout=config.server.health_check_timeout_seconds,
+                    headers=headers,
                 )
 
                 is_healthy = response.status_code == 200
+                response_time = time.time() - start_time
+                
+                # Update metrics
+                self._update_request_metrics(True, response_time, "GET", "/health")
 
                 # Update cache
                 self._health_cache = HealthCacheEntry(
@@ -99,16 +119,19 @@ class CanvasHTTPClient:
                 )
 
                 if is_healthy:
-                    logger.debug("Canvas server health check passed")
+                    logger.debug(f"Canvas server health check passed (trace: {trace_id}, time: {response_time:.3f}s)")
                 else:
                     logger.warning(
-                        f"Canvas server health check failed: HTTP {response.status_code}"
+                        f"Canvas server health check failed: HTTP {response.status_code} (trace: {trace_id})"
                     )
 
                 return is_healthy
 
             except Exception as e:
-                logger.warning(f"Canvas server health check failed: {e}")
+                response_time = time.time() - start_time
+                self._update_request_metrics(False, response_time, "GET", "/health")
+                
+                logger.warning(f"Canvas server health check failed: {e} (trace: {trace_id})")
 
                 # Update cache with failure
                 self._health_cache = HealthCacheEntry(
@@ -120,28 +143,35 @@ class CanvasHTTPClient:
                 return False
 
     async def post_json(
-        self, endpoint: str, data: dict[str, Any], retries: int = None
+        self, endpoint: str, data: dict[str, Any], retries: int = None, correlation_id: Optional[str] = None
     ) -> dict[str, Any] | None:
-        """POST JSON data to canvas server with retries."""
+        """POST JSON data to canvas server with retries and tracing."""
         if retries is None:
             retries = config.server.sync_retry_attempts
-
+            
+        trace_id = correlation_id or self._generate_correlation_id()
         await self._ensure_client()
         url = f"{config.server.express_url}{endpoint}"
 
         for attempt in range(retries + 1):
+            start_time = time.time()
             try:
-                response = await self._client.post(
-                    url, json=data, headers={"Content-Type": "application/json"}
-                )
+                # Prepare headers with tracing
+                headers = {"Content-Type": "application/json"}
+                if config.monitoring.request_tracing_enabled:
+                    headers.update(self._get_tracing_headers(trace_id))
+                
+                response = await self._client.post(url, json=data, headers=headers)
+                response_time = time.time() - start_time
 
-                if response.status_code == 200:
-                    return response.json()
-                elif response.status_code == 201:
+                if response.status_code in (200, 201):
+                    self._update_request_metrics(True, response_time, "POST", endpoint)
+                    logger.debug(f"POST {endpoint} successful (trace: {trace_id}, time: {response_time:.3f}s)")
                     return response.json()
                 else:
+                    self._update_request_metrics(False, response_time, "POST", endpoint)
                     logger.warning(
-                        f"Canvas server returned HTTP {response.status_code}: {response.text}"
+                        f"Canvas server returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
                     )
                     if attempt < retries:
                         await asyncio.sleep(config.server.sync_retry_delay_seconds)
@@ -149,8 +179,10 @@ class CanvasHTTPClient:
                     return None
 
             except httpx.TimeoutException:
+                response_time = time.time() - start_time
+                self._update_request_metrics(False, response_time, "POST", endpoint)
                 logger.warning(
-                    f"Canvas server request timeout (attempt {attempt + 1}/{retries + 1})"
+                    f"Canvas server request timeout (attempt {attempt + 1}/{retries + 1}) (trace: {trace_id})"
                 )
                 if attempt < retries:
                     await asyncio.sleep(config.server.sync_retry_delay_seconds)
@@ -158,7 +190,9 @@ class CanvasHTTPClient:
                 return None
 
             except Exception as e:
-                logger.error(f"Canvas server request failed: {e}")
+                response_time = time.time() - start_time
+                self._update_request_metrics(False, response_time, "POST", endpoint)
+                logger.error(f"Canvas server request failed: {e} (trace: {trace_id})")
                 if attempt < retries:
                     await asyncio.sleep(config.server.sync_retry_delay_seconds)
                     continue
@@ -167,66 +201,154 @@ class CanvasHTTPClient:
         return None
 
     async def put_json(
-        self, endpoint: str, data: dict[str, Any]
+        self, endpoint: str, data: dict[str, Any], correlation_id: Optional[str] = None
     ) -> dict[str, Any] | None:
-        """PUT JSON data to canvas server."""
+        """PUT JSON data to canvas server with tracing."""
+        trace_id = correlation_id or self._generate_correlation_id()
         await self._ensure_client()
         url = f"{config.server.express_url}{endpoint}"
 
+        start_time = time.time()
         try:
-            response = await self._client.put(
-                url, json=data, headers={"Content-Type": "application/json"}
-            )
+            # Prepare headers with tracing
+            headers = {"Content-Type": "application/json"}
+            if config.monitoring.request_tracing_enabled:
+                headers.update(self._get_tracing_headers(trace_id))
+                
+            response = await self._client.put(url, json=data, headers=headers)
+            response_time = time.time() - start_time
 
             if response.status_code == 200:
+                self._update_request_metrics(True, response_time, "PUT", endpoint)
+                logger.debug(f"PUT {endpoint} successful (trace: {trace_id}, time: {response_time:.3f}s)")
                 return response.json()
             else:
+                self._update_request_metrics(False, response_time, "PUT", endpoint)
                 logger.warning(
-                    f"Canvas server PUT returned HTTP {response.status_code}: {response.text}"
+                    f"Canvas server PUT returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
                 )
                 return None
 
         except Exception as e:
-            logger.error(f"Canvas server PUT request failed: {e}")
+            response_time = time.time() - start_time
+            self._update_request_metrics(False, response_time, "PUT", endpoint)
+            logger.error(f"Canvas server PUT request failed: {e} (trace: {trace_id})")
             return None
 
-    async def delete(self, endpoint: str) -> bool:
-        """DELETE request to canvas server."""
+    async def delete(self, endpoint: str, correlation_id: Optional[str] = None) -> bool:
+        """DELETE request to canvas server with tracing."""
+        trace_id = correlation_id or self._generate_correlation_id()
         await self._ensure_client()
         url = f"{config.server.express_url}{endpoint}"
 
+        start_time = time.time()
         try:
-            response = await self._client.delete(url)
-            return response.status_code in (200, 204)
+            # Prepare headers with tracing
+            headers = self._get_tracing_headers(trace_id) if config.monitoring.request_tracing_enabled else {}
+            
+            response = await self._client.delete(url, headers=headers)
+            response_time = time.time() - start_time
+            
+            success = response.status_code in (200, 204)
+            self._update_request_metrics(success, response_time, "DELETE", endpoint)
+            
+            if success:
+                logger.debug(f"DELETE {endpoint} successful (trace: {trace_id}, time: {response_time:.3f}s)")
+            else:
+                logger.warning(f"DELETE {endpoint} failed with HTTP {response.status_code} (trace: {trace_id})")
+                
+            return success
 
         except Exception as e:
-            logger.error(f"Canvas server DELETE request failed: {e}")
+            response_time = time.time() - start_time
+            self._update_request_metrics(False, response_time, "DELETE", endpoint)
+            logger.error(f"Canvas server DELETE request failed: {e} (trace: {trace_id})")
             return False
 
-    async def get_json(self, endpoint: str) -> dict[str, Any] | None:
-        """GET JSON data from canvas server."""
+    async def get_json(self, endpoint: str, correlation_id: Optional[str] = None) -> dict[str, Any] | None:
+        """GET JSON data from canvas server with tracing."""
+        trace_id = correlation_id or self._generate_correlation_id()
         await self._ensure_client()
         url = f"{config.server.express_url}{endpoint}"
 
+        start_time = time.time()
         try:
-            response = await self._client.get(url)
+            # Prepare headers with tracing
+            headers = self._get_tracing_headers(trace_id) if config.monitoring.request_tracing_enabled else {}
+            
+            response = await self._client.get(url, headers=headers)
+            response_time = time.time() - start_time
 
             if response.status_code == 200:
+                self._update_request_metrics(True, response_time, "GET", endpoint)
+                logger.debug(f"GET {endpoint} successful (trace: {trace_id}, time: {response_time:.3f}s)")
                 return response.json()
             else:
+                self._update_request_metrics(False, response_time, "GET", endpoint)
                 logger.warning(
-                    f"Canvas server GET returned HTTP {response.status_code}: {response.text}"
+                    f"Canvas server GET returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
                 )
                 return None
 
         except Exception as e:
-            logger.error(f"Canvas server GET request failed: {e}")
+            response_time = time.time() - start_time
+            self._update_request_metrics(False, response_time, "GET", endpoint)
+            logger.error(f"Canvas server GET request failed: {e} (trace: {trace_id})")
             return None
 
     @property
     def health_failure_count(self) -> int:
         """Get the current health check failure count."""
         return self._health_cache.failure_count
+
+    def _generate_correlation_id(self) -> str:
+        """Generate a unique correlation ID for request tracing."""
+        return str(uuid.uuid4())[:8]
+    
+    def _get_tracing_headers(self, correlation_id: str) -> Dict[str, str]:
+        """Get headers for request tracing."""
+        if not config.monitoring.trace_headers_enabled:
+            return {}
+            
+        return {
+            config.logging.correlation_header: correlation_id,
+            "X-Request-ID": correlation_id,
+            "X-Trace-ID": correlation_id,
+        }
+    
+    def _update_request_metrics(self, success: bool, response_time: float, method: str, endpoint: str) -> None:
+        """Update request metrics for monitoring."""
+        self._request_metrics["total_requests"] += 1
+        self._request_metrics["total_response_time"] += response_time
+        
+        if success:
+            self._request_metrics["successful_requests"] += 1
+        else:
+            self._request_metrics["failed_requests"] += 1
+            
+        # Log slow requests
+        if response_time > 1.0:  # Requests over 1 second
+            logger.warning(f"Slow request: {method} {endpoint} took {response_time:.3f}s")
+    
+    def get_request_metrics(self) -> Dict[str, Any]:
+        """Get request metrics for monitoring."""
+        total_requests = max(self._request_metrics["total_requests"], 1)
+        
+        return {
+            **self._request_metrics,
+            "success_rate": (self._request_metrics["successful_requests"] / total_requests) * 100,
+            "average_response_time": self._request_metrics["total_response_time"] / total_requests,
+            "error_rate": (self._request_metrics["failed_requests"] / total_requests) * 100,
+        }
+    
+    def reset_request_metrics(self) -> None:
+        """Reset request metrics."""
+        self._request_metrics = {
+            "total_requests": 0,
+            "successful_requests": 0,
+            "failed_requests": 0,
+            "total_response_time": 0.0,
+        }
 
     @property
     def is_healthy(self) -> bool:

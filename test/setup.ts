@@ -8,6 +8,8 @@ process.env.AUTH_ENABLED = 'false';
 process.env.JWT_SECRET = 'test-secret-key';
 process.env.PORT = '3032'; // Different port for tests
 process.env.ALLOWED_ORIGINS = 'http://localhost:3000,http://localhost:3032';
+process.env.LOG_LEVEL = 'debug'; // Set debug logging for tests
+process.env.ENABLE_SPATIAL_INDEXING = 'true'; // Enable spatial indexing for tests
 
 // Mock console methods to reduce noise in tests unless explicitly needed
 const originalConsole = { ...console };

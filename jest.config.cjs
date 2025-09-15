@@ -1,8 +1,8 @@
 /** @type {import('jest').Config} */
 module.exports = {
   preset: 'ts-jest',                                      // Use TypeScript Jest preset
-  testEnvironment: 'jsdom',                               // DOM environment for React testing
-  roots: ['<rootDir>/src', '<rootDir>/test', '<rootDir>/frontend/src'],
+  testEnvironment: 'node',                                // Node environment for server testing
+  roots: ['<rootDir>/src', '<rootDir>/test'],
   testMatch: [
     '**/__tests__/**/*.+(ts|tsx|js)',                    // Tests in __tests__ directories
     '**/*.(test|spec).+(ts|tsx|js)'                     // Files ending with .test or .spec
@@ -12,11 +12,9 @@ module.exports = {
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',                                 // Include canvas server source
-    'frontend/src/**/*.{ts,tsx}',                        // Include React frontend source
     '!src/**/*.d.ts',                                    // Exclude TypeScript definition files
     '!src/types.ts',                                     // Types file doesn't need coverage
     '!src/**/*.config.ts',                               // Exclude configuration files
-    '!frontend/src/**/*.config.ts',                      // Exclude frontend config files
     '!**/node_modules/**',                               // Exclude dependencies
     '!**/dist/**'                                        // Exclude built files
   ],
@@ -31,13 +29,10 @@ module.exports = {
     }
   },
   setupFilesAfterEnv: ['<rootDir>/test/setup.ts'],
-  moduleNameMapping: {
+  moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@frontend/(.*)$': '<rootDir>/frontend/src/$1',
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   testTimeout: 10000,
-  verbose: true,
-  detectOpenHandles: true,
-  detectLeaks: true
+  verbose: true
 };

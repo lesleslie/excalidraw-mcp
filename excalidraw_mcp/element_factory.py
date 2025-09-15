@@ -151,6 +151,29 @@ class ElementFactory:
             errors.append("Element type is required")
 
         # Validate type
+        self._validate_element_type(element_data, errors)
+
+        # Validate coordinates
+        self._validate_coordinates(element_data, errors)
+
+        # Validate dimensions
+        self._validate_dimensions(element_data, errors)
+
+        # Validate colors
+        self._validate_colors(element_data, errors)
+
+        # Validate numeric ranges
+        self._validate_numeric_ranges(element_data, errors)
+
+        if errors:
+            raise ValueError(f"Element validation failed: {'; '.join(errors)}")
+
+        return element_data
+
+    def _validate_element_type(
+        self, element_data: dict[str, Any], errors: list
+    ) -> None:
+        """Validate element type."""
         valid_types = [
             "rectangle",
             "ellipse",
@@ -169,7 +192,8 @@ class ElementFactory:
                 f"Invalid element type. Must be one of: {', '.join(valid_types)}"
             )
 
-        # Validate coordinates
+    def _validate_coordinates(self, element_data: dict[str, Any], errors: list) -> None:
+        """Validate coordinates."""
         for coord in ["x", "y"]:
             if coord in element_data:
                 try:
@@ -177,7 +201,8 @@ class ElementFactory:
                 except (ValueError, TypeError):
                     errors.append(f"Invalid {coord} coordinate: must be a number")
 
-        # Validate dimensions
+    def _validate_dimensions(self, element_data: dict[str, Any], errors: list) -> None:
+        """Validate dimensions."""
         for dimension in ["width", "height"]:
             if dimension in element_data and element_data[dimension] is not None:
                 try:
@@ -186,21 +211,6 @@ class ElementFactory:
                         errors.append(f"Invalid {dimension}: must be non-negative")
                 except (ValueError, TypeError):
                     errors.append(f"Invalid {dimension}: must be a number")
-
-        # Validate colors
-        for color_prop in ["strokeColor", "backgroundColor"]:
-            if color_prop in element_data:
-                color = element_data[color_prop]
-                if color and not self._is_valid_color(color):
-                    errors.append(f"Invalid {color_prop}: must be a valid hex color")
-
-        # Validate numeric ranges
-        self._validate_numeric_ranges(element_data, errors)
-
-        if errors:
-            raise ValueError(f"Element validation failed: {'; '.join(errors)}")
-
-        return element_data
 
     def _is_valid_color(self, color: str) -> bool:
         """Validate hex color format."""
@@ -220,6 +230,14 @@ class ElementFactory:
                 return False
 
         return False
+
+    def _validate_colors(self, element_data: dict[str, Any], errors: list) -> None:
+        """Validate colors."""
+        for color_prop in ["strokeColor", "backgroundColor"]:
+            if color_prop in element_data:
+                color = element_data[color_prop]
+                if color and not self._is_valid_color(color):
+                    errors.append(f"Invalid {color_prop}: must be a valid hex color")
 
     def _validate_numeric_ranges(
         self, element_data: dict[str, Any], errors: list
