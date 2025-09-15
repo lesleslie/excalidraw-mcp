@@ -69,6 +69,7 @@ repos:
       - id: codespell
         exclude: ^\.venv/
         additional_dependencies: ["tomli"]
+        args: ["--config", ".codespellrc"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.12
     hooks:
