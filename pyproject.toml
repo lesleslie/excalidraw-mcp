@@ -30,28 +30,25 @@ dependencies = [
     "psutil>=6.1.1",
     "pyjwt>=2.10.1",
     "cryptography>=45.0.6",
+    "typer>=0.15.1",
+    "rich>=13.9.4",
 ]
 
 [project.license]
 text = "BSD-3-CLAUSE"
 
 [project.scripts]
-excalidraw-mcp = "excalidraw_mcp.server:main"
+excalidraw-mcp = "excalidraw_mcp.cli:app"
 
 [project.urls]
 Homepage = "https://github.com/lesleslie/excalidraw-mcp"
 Repository = "https://github.com/lesleslie/excalidraw-mcp"
 
-[dependency-groups]
-dev = [
-    "crackerjack>=0.31.8",
-    "pytest>=8.4.1",
-    "pytest-asyncio>=1.1.0",
-    "pytest-cov>=6.2.1",
-    "pytest-mock>=3.14.1",
-    "respx>=0.22.0",
-    "session-mgmt-mcp>=0.1.3",
-]
+[tool.excalidraw-mcp]
+mcp_http_port = 3032
+mcp_http_host = "127.0.0.1"
+canvas_server_url = "http://localhost:3031"
+http_enabled = true
 
 [tool.hatch.build.targets.wheel]
 packages = [
@@ -143,7 +140,7 @@ max-complexity = 13
 [tool.pyright]
 verboseOutput = true
 include = [
-    "crackerjack",
+    "excalidraw_mcp",
 ]
 exclude = [
     "scratch",
@@ -152,8 +149,8 @@ exclude = [
     "dist",
     "tests/*",
     "examples/*",
-    "crackerjack/mcp/*",
-    "crackerjack/plugins/*",
+    "excalidraw_mcp/mcp/*",
+    "excalidraw_mcp/plugins/*",
 ]
 extraPaths = [
     ".venv/lib/python3.13/site-packages/",
@@ -176,7 +173,7 @@ pythonVersion = "3.13"
 
 [tool.bandit]
 target = [
-    "crackerjack",
+    "excalidraw_mcp",
 ]
 skips = [
     "B101",
@@ -193,7 +190,7 @@ exclude_dirs = [
 [tool.vulture]
 min_confidence = 86
 paths = [
-    "crackerjack",
+    "excalidraw_mcp",
 ]
 ignore_names = [
     "cls",
@@ -215,11 +212,11 @@ max_complexity = 15
 [tool.codespell]
 skip = "*/data/*"
 quiet-level = 3
-ignore-words-list = "crate,uptodate,nd,nin"
+ignore-words-list = "COo,sade"
 
 [tool.creosote]
 paths = [
-    "crackerjack",
+    "excalidraw_mcp",
 ]
 deps-file = "pyproject.toml"
 exclude-deps = [
@@ -254,4 +251,15 @@ exclude-deps = [
     "websockets",
     "watchdog",
     "ruff",
+]
+
+[dependency-groups]
+dev = [
+    "excalidraw-mcp>=0.31.8",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+    "pytest-cov>=6.2.1",
+    "pytest-mock>=3.14.1",
+    "respx>=0.22.0",
+    "session-mgmt-mcp>=0.1.3",
 ]
