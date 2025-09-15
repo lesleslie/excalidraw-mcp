@@ -180,7 +180,9 @@ class TestConfig:
         os.environ["EXPRESS_SERVER_URL"] = "http://localhost:70000"
 
         try:
-            with pytest.raises(ValueError, match="Express port must be between 1 and 65535"):
+            with pytest.raises(
+                ValueError, match="Express port must be between 1 and 65535"
+            ):
                 Config()
         finally:
             os.environ.pop("EXPRESS_SERVER_URL", None)
@@ -203,7 +205,7 @@ class TestConfig:
         original_env = os.environ.get("ENVIRONMENT")
         if original_env is not None:
             del os.environ["ENVIRONMENT"]
-        
+
         try:
             # Default should be development
             config = Config()
@@ -215,7 +217,9 @@ class TestConfig:
             # Test explicit development
             os.environ["ENVIRONMENT"] = "development"
             config = Config()
-            print(f"Explicit development config.is_development: {config.is_development}")
+            print(
+                f"Explicit development config.is_development: {config.is_development}"
+            )
             assert config.is_development is True
             assert config.is_production is False
         finally:
@@ -228,7 +232,7 @@ class TestConfig:
     def test_is_production_mode(self):
         """Test production mode detection."""
         original_env = os.environ.get("ENVIRONMENT")
-        
+
         os.environ["ENVIRONMENT"] = "production"
 
         try:

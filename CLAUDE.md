@@ -89,6 +89,7 @@ npm run canvas          # Start canvas server independently
 Key environment variables:
 
 ### Server Configuration
+
 - `EXPRESS_SERVER_URL`: Canvas server URL (default: `http://localhost:3031`)
 - `ENABLE_CANVAS_SYNC`: Enable/disable canvas synchronization (default: `true`)
 - `CANVAS_AUTO_START`: Enable/disable automatic canvas server startup (default: `true`)
@@ -96,6 +97,7 @@ Key environment variables:
 - `HOST`: Canvas server host (default: `localhost`)
 
 ### Monitoring Configuration
+
 - `MONITORING_ENABLED`: Enable/disable monitoring system (default: `true`)
 - `HEALTH_CHECK_INTERVAL`: Health check interval in seconds (default: `10`)
 - `CPU_THRESHOLD`: CPU usage alert threshold percentage (default: `80`)
@@ -291,30 +293,35 @@ The system includes a comprehensive monitoring infrastructure with automatic rec
 ### Core Components
 
 #### MonitoringSupervisor (`excalidraw_mcp/monitoring/supervisor.py`)
+
 - **Continuous Health Monitoring**: Background monitoring loop with configurable intervals
 - **Automatic Recovery**: Restarts canvas server after consecutive failures
 - **Process Lifecycle Integration**: Hooks into process start/stop/restart events
 - **Circuit Breaker Integration**: Prevents cascading failures during outages
 
 #### HealthChecker (`excalidraw_mcp/monitoring/health_checker.py`)
+
 - **Multi-Endpoint Validation**: Checks `/health` and `/api/elements` endpoints
 - **Resource Monitoring**: CPU, memory, and thread usage tracking via psutil
 - **Health Status Levels**: HEALTHY, DEGRADED, UNHEALTHY, RECOVERING states
 - **Failure Count Tracking**: Progressive failure detection with reset capability
 
 #### Circuit Breaker (`excalidraw_mcp/monitoring/circuit_breaker.py`)
+
 - **Three States**: CLOSED (normal), OPEN (failing), HALF_OPEN (recovery testing)
 - **Exponential Backoff**: Progressive timeout increases during failures
 - **Automatic Recovery**: Attempts to restore service after timeout periods
 - **Request Protection**: Prevents system overload during outages
 
 #### Metrics Collection (`excalidraw_mcp/monitoring/metrics.py`)
+
 - **Prometheus Compatibility**: Standard Counter, Gauge, and Histogram metrics
 - **15+ Built-in Metrics**: Request rates, response times, error rates, resource usage
 - **Real-time Tracking**: Automatic metric updates for all HTTP operations
 - **Export Ready**: Formatted for Prometheus scraping or logging
 
 #### Alert Management (`excalidraw_mcp/monitoring/alerts.py`)
+
 - **6 Built-in Alert Rules**: Health failures, high resource usage, circuit breaker trips
 - **Multiple Channels**: Log, webhook, email notification support
 - **Deduplication**: Prevents alert spam with configurable windows

@@ -18,16 +18,19 @@ The Excalidraw MCP server acts as a bridge between AI agents and the Excalidraw 
 AI agents can create various types of visual elements:
 
 **Basic Shapes:**
+
 - Rectangles for processes, containers, or entities
 - Ellipses for start/end points or organic concepts
 - Diamonds for decision points
 - Text elements for labels and descriptions
 
 **Connectors:**
+
 - Arrows for process flow and relationships
 - Lines for connections and boundaries
 
 **Advanced Elements:**
+
 - Grouped elements for complex structures
 - Aligned and distributed layouts
 - Locked elements for template preservation
@@ -35,11 +38,13 @@ AI agents can create various types of visual elements:
 ### 2. Real-time Collaboration
 
 **Live Canvas Integration:**
+
 - Elements appear instantly on the web canvas at `http://localhost:3031`
 - Multiple users can view diagrams as agents create them
 - WebSocket-based real-time synchronization
 
 **Interactive Feedback:**
+
 - Agents can query existing elements
 - Modify diagrams based on user feedback
 - Clear canvas for fresh starts
@@ -47,26 +52,31 @@ AI agents can create various types of visual elements:
 ### 3. Common Use Cases for AI Agents
 
 **Process Diagrams:**
+
 ```
 Start → Process → Decision → End
 ```
 
 **System Architecture:**
+
 ```
 Frontend ↔ API ↔ Database
 ```
 
 **Flowcharts:**
+
 ```
 Input → Validation → Processing → Output
 ```
 
 **Mind Maps:**
+
 ```
 Central Concept with branching ideas
 ```
 
 **Data Visualization:**
+
 ```
 Charts, graphs, and data relationships
 ```
@@ -76,26 +86,31 @@ Charts, graphs, and data relationships
 ### Element Creation Tools
 
 #### `create_element`
+
 Create individual diagram elements with full control over positioning, styling, and content.
 
 **Supported Element Types:**
+
 - `rectangle` - Rectangular shapes for processes, entities
-- `ellipse` - Oval shapes for start/end points  
+- `ellipse` - Oval shapes for start/end points
 - `diamond` - Diamond shapes for decisions
 - `arrow` - Directional arrows for flow
 - `line` - Simple lines for connections
 - `text` - Text labels and descriptions
 
 **Key Parameters:**
+
 - Position: `x`, `y` coordinates
-- Size: `width`, `height` 
+- Size: `width`, `height`
 - Styling: `backgroundColor`, `strokeColor`, `strokeWidth`
 - Content: `text` for text elements
 
 #### `batch_create_elements`
+
 Create multiple elements in a single operation for complex diagrams.
 
 **Benefits:**
+
 - Atomic operation - all elements created together
 - Better performance for complex diagrams
 - Maintains relationships between elements
@@ -103,21 +118,26 @@ Create multiple elements in a single operation for complex diagrams.
 ### Element Management Tools
 
 #### `update_element`
+
 Modify existing elements on the canvas.
 
 **Use Cases:**
+
 - Update text content
 - Change styling or colors
 - Resize or reposition elements
 - Modify element properties
 
 #### `delete_element`
+
 Remove elements from the canvas.
 
 #### `query_elements`
+
 Search and filter existing elements on the canvas.
 
 **Filter Options:**
+
 - By element type
 - By text content
 - By position ranges
@@ -126,36 +146,45 @@ Search and filter existing elements on the canvas.
 ### Organization Tools
 
 #### `group_elements` / `ungroup_elements`
+
 Organize related elements into logical groups.
 
 **Benefits:**
+
 - Move multiple elements together
 - Apply operations to entire groups
 - Maintain visual hierarchy
 
 #### `align_elements`
+
 Align multiple elements for professional layouts.
 
 **Alignment Options:**
+
 - Horizontal: `left`, `center`, `right`
 - Vertical: `top`, `middle`, `bottom`
 
 #### `distribute_elements`
+
 Evenly space elements for clean layouts.
 
 **Distribution Options:**
+
 - Horizontal distribution
 - Vertical distribution
 
 #### `lock_elements` / `unlock_elements`
+
 Protect elements from accidental modification.
 
 ### Resource Access
 
 #### `get_resource`
+
 Access canvas data and metadata.
 
 **Resource Types:**
+
 - `scene` - Complete canvas state
 - `elements` - All elements data
 - `library` - Element library
@@ -187,11 +216,13 @@ Use consistent patterns for similar diagram types:
 def create_flowchart_step(text, x, y):
     return {
         "type": "rectangle",
-        "x": x, "y": y,
-        "width": 120, "height": 60,
+        "x": x,
+        "y": y,
+        "width": 120,
+        "height": 60,
         "backgroundColor": "#e3f2fd",
         "strokeColor": "#1976d2",
-        "text": text
+        "text": text,
     }
 ```
 
@@ -251,28 +282,32 @@ Specializes in creating business process diagrams:
 def create_process_flow(steps):
     x_start = 100
     y_pos = 200
-    
+
     elements = []
     for i, step in enumerate(steps):
         # Create process box
-        elements.append({
-            "type": "rectangle",
-            "x": x_start + (i * 200),
-            "y": y_pos,
-            "text": step,
-            "backgroundColor": "#e3f2fd"
-        })
-        
+        elements.append(
+            {
+                "type": "rectangle",
+                "x": x_start + (i * 200),
+                "y": y_pos,
+                "text": step,
+                "backgroundColor": "#e3f2fd",
+            }
+        )
+
         # Add arrow (except for last step)
         if i < len(steps) - 1:
-            elements.append({
-                "type": "arrow",
-                "x": x_start + (i * 200) + 120,
-                "y": y_pos + 30,
-                "width": 80,
-                "height": 0
-            })
-    
+            elements.append(
+                {
+                    "type": "arrow",
+                    "x": x_start + (i * 200) + 120,
+                    "y": y_pos + 30,
+                    "width": 80,
+                    "height": 0,
+                }
+            )
+
     batch_create_elements(elements)
 ```
 
@@ -285,20 +320,22 @@ def create_architecture_diagram(components):
     layers = {
         "frontend": {"y": 100, "color": "#e8f5e8"},
         "api": {"y": 250, "color": "#fff3e0"},
-        "database": {"y": 400, "color": "#fce4ec"}
+        "database": {"y": 400, "color": "#fce4ec"},
     }
-    
+
     elements = []
     for component in components:
         layer_config = layers[component["layer"]]
-        elements.append({
-            "type": "rectangle",
-            "x": component["x"],
-            "y": layer_config["y"],
-            "text": component["name"],
-            "backgroundColor": layer_config["color"]
-        })
-    
+        elements.append(
+            {
+                "type": "rectangle",
+                "x": component["x"],
+                "y": layer_config["y"],
+                "text": component["name"],
+                "backgroundColor": layer_config["color"],
+            }
+        )
+
     batch_create_elements(elements)
 ```
 
@@ -309,34 +346,37 @@ def create_architecture_diagram(components):
 When using with Claude Code, agents can:
 
 1. **Explain Code Visually**: Create diagrams showing code structure
-2. **Design System Architecture**: Visualize proposed system designs
-3. **Process Documentation**: Convert text processes into visual flows
-4. **Debug Assistance**: Create visual representations of data flow
+1. **Design System Architecture**: Visualize proposed system designs
+1. **Process Documentation**: Convert text processes into visual flows
+1. **Debug Assistance**: Create visual representations of data flow
 
 ### Multi-Agent Workflows
 
 Multiple specialized agents can collaborate:
 
 1. **Planning Agent**: Creates high-level structure
-2. **Detail Agent**: Adds specific elements and styling
-3. **Review Agent**: Checks layout and suggests improvements
-4. **User Interface Agent**: Handles user feedback and modifications
+1. **Detail Agent**: Adds specific elements and styling
+1. **Review Agent**: Checks layout and suggests improvements
+1. **User Interface Agent**: Handles user feedback and modifications
 
 ## Troubleshooting
 
 ### Common Issues
 
 **Elements Not Appearing:**
+
 - Check canvas server is running (`http://localhost:3031`)
 - Verify MCP server connection
 - Check console for WebSocket errors
 
 **Layout Problems:**
+
 - Use `align_elements` for consistent positioning
 - Check element dimensions and spacing
 - Consider using `distribute_elements` for even spacing
 
 **Performance Issues:**
+
 - Use `batch_create_elements` for multiple elements
 - Avoid excessive individual element operations
 - Clear canvas periodically with complex diagrams
@@ -357,6 +397,6 @@ The Excalidraw MCP server continues to evolve with new capabilities:
 - Export capabilities for diagrams
 - Integration with other visualization tools
 
----
+______________________________________________________________________
 
 For technical implementation details, see the main [README.md](README.md) and [CLAUDE.md](CLAUDE.md) files.

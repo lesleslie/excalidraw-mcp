@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class ElementFactory:
     """Factory for creating and managing Excalidraw elements."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.default_timestamp = "2025-01-01T00:00:00.000Z"
 
     def create_element(self, element_data: dict[str, Any]) -> dict[str, Any]:
@@ -215,7 +215,7 @@ class ElementFactory:
     def _is_valid_color(self, color: str) -> bool:
         """Validate hex color format."""
         if not isinstance(color, str):
-            return False
+            return False  # type: ignore[unreachable]
 
         # Allow transparent
         if color.lower() == "transparent":
@@ -229,6 +229,7 @@ class ElementFactory:
             except ValueError:
                 return False
 
+        # Default case - invalid color format
         return False
 
     def _validate_colors(self, element_data: dict[str, Any], errors: list) -> None:

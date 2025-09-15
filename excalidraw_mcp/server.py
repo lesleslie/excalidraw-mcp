@@ -7,83 +7,106 @@ Provides MCP tools for creating and managing Excalidraw diagrams with canvas syn
 import asyncio
 import atexit
 import logging
+import signal
+from typing import Any
 
 from fastmcp import FastMCP
 
-from .config import config
-from .mcp_tools import MCPToolsManager
-from .process_manager import process_manager
 from .monitoring.supervisor import MonitoringSupervisor
+
+# Initialize FastMCP server
+mcp = FastMCP("Excalidraw MCP Server", streamable_http_path="/mcp")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Global instances
+process_manager: Any = None
+monitoring_supervisor: Any = None
+
+
+def get_process_manager() -> Any:
+    """Get or create the global process manager instance."""
+    global process_manager
+    if process_manager is None:
+        from .process_manager import CanvasProcessManager
+
+        process_manager = CanvasProcessManager()
+    return process_manager
+
+
+def get_monitoring_supervisor() -> Any:
+    """Get or create the global monitoring supervisor instance."""
+    global monitoring_supervisor
+    if monitoring_supervisor is None:
+        from .monitoring.supervisor import MonitoringSupervisor
+
+        monitoring_supervisor = MonitoringSupervisor()
+    return monitoring_supervisor
+
 
 # Initialize monitoring supervisor
 monitoring_supervisor = MonitoringSupervisor()
 
 # Register cleanup function
 atexit.register(process_manager.cleanup)
-atexit.register(lambda: asyncio.create_task(monitoring_supervisor.stop()) if monitoring_supervisor.is_running else None)
-
-# Initialize FastMCP server
-mcp = FastMCP("Excalidraw MCP Server")
 
 
-async def startup_initialization():
+def cleanup_monitoring() -> None:
+    if monitoring_supervisor.is_running:
+        try:
+            asyncio.create_task(monitoring_supervisor.stop())
+        except RuntimeError:
+            # No running event loop, monitoring supervisor will clean up naturally
+            pass
+
+
+async def startup_initialization() -> None:
     """Initialize canvas server and monitoring on startup"""
     logger.info("Starting Excalidraw MCP Server...")
+    # Initialize components
+    process_manager = get_process_manager()
+    monitoring_supervisor = get_monitoring_supervisor()
 
-    # Start canvas server if configured
-    if config.server.canvas_auto_start:
-        logger.info("Checking canvas server status...")
-        is_running = await process_manager.ensure_running()
-        if is_running:
-            logger.info("Canvas server is ready")
-        else:
-            logger.warning(
-                "Canvas server failed to start - continuing without canvas sync"
-            )
-    else:
-        logger.info("Canvas auto-start disabled")
+    # Start canvas server
+    await process_manager.start()
 
-    # Initialize MCP tools manager
-    MCPToolsManager(mcp)
-    
-    # Start monitoring supervisor
-    if config.monitoring.enabled:
-        logger.info("Starting monitoring supervisor...")
-        await monitoring_supervisor.start()
-        logger.info("Monitoring supervisor started")
-    else:
-        logger.info("Monitoring disabled in configuration")
+    # Start monitoring
+    monitoring_supervisor.start_monitoring()
+
+    logger.info("Excalidraw MCP Server started successfully")
 
 
-def main():
+def main() -> None:
     """Main entry point for the CLI"""
-    async def shutdown():
+
+    async def shutdown() -> None:
         """Graceful shutdown procedure."""
         logger.info("Starting graceful shutdown...")
-        if monitoring_supervisor.is_running:
-            await monitoring_supervisor.stop()
-        logger.info("Shutdown complete")
-    
-    try:
-        # Run startup initialization
-        asyncio.run(startup_initialization())
+        process_manager = get_process_manager()
+        monitoring_supervisor = get_monitoring_supervisor()
 
-        # Start MCP server
-        mcp.run()
+        # Stop monitoring first
+        monitoring_supervisor.stop_monitoring()
+
+        # Stop canvas server
+        await process_manager.stop()
+
+        logger.info("Graceful shutdown completed")
+
+    # Set up signal handlers for graceful shutdown
+    signal.signal(signal.SIGTERM, lambda signum, frame: asyncio.create_task(shutdown()))
+    signal.signal(signal.SIGINT, lambda signum, frame: asyncio.create_task(shutdown()))
+
+    try:
+        logger.info("Starting Excalidraw MCP Server...")
+        asyncio.run(startup_initialization())
     except KeyboardInterrupt:
-        logger.info("Received interrupt signal, shutting down...")
-        asyncio.run(shutdown())
+        logger.info("Server interrupted by user")
     except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        asyncio.run(shutdown())
+        logger.error(f"Server error: {e}")
         raise
-    finally:
-        # Cleanup is handled by atexit and signal handlers
-        pass
 
 
 if __name__ == "__main__":

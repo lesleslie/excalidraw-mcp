@@ -109,7 +109,11 @@ class TestHttpClientCoverage:
             mock_response_200.status_code = 200
             mock_response_200.json.return_value = {"success": True}
 
-            mock_post.side_effect = [mock_response_400, mock_response_400, mock_response_200]
+            mock_post.side_effect = [
+                mock_response_400,
+                mock_response_400,
+                mock_response_200,
+            ]
 
             result = await http_client.post_json("/api/elements", test_data, retries=2)
 

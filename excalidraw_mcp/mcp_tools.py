@@ -16,12 +16,12 @@ logger = logging.getLogger(__name__)
 class MCPToolsManager:
     """Manager for MCP tool implementations."""
 
-    def __init__(self, mcp: FastMCP):
+    def __init__(self, mcp: FastMCP) -> None:
         self.mcp = mcp
         self.element_factory = ElementFactory()
         self._register_tools()
 
-    def _register_tools(self):
+    def _register_tools(self) -> None:
         """Register all MCP tools."""
         # Element management tools
         self.mcp.tool("create_element")(self.create_element)

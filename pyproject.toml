@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "excalidraw-mcp"
-version = "0.1.2"
+version = "0.31.8"
 description = "MCP server for Excalidraw diagram management with canvas sync"
 readme = "README.md"
 classifiers = [
@@ -251,11 +251,12 @@ exclude-deps = [
     "websockets",
     "watchdog",
     "ruff",
+    "cryptography",
+    "pyjwt",
 ]
 
 [dependency-groups]
 dev = [
-    "excalidraw-mcp>=0.31.8",
     "pytest>=8.4.1",
     "pytest-asyncio>=1.1.0",
     "pytest-cov>=6.2.1",

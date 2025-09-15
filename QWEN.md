@@ -30,6 +30,7 @@ The system uses a hybrid architecture:
 ```
 
 **Benefits:**
+
 - **Python FastMCP**: Handles MCP protocol, tool registration, and auto-manages canvas server
 - **TypeScript Canvas**: Express.js API + WebSocket for real-time canvas synchronization
 - **Auto-Management**: Python server monitors and restarts canvas server as needed
@@ -73,6 +74,7 @@ excalidraw-mcp/
 ## Technology Stack
 
 ### Backend (Python)
+
 - **FastMCP**: Python framework for building MCP servers
 - **HTTPX**: Async HTTP client with HTTP/2 support
 - **Pydantic**: Data validation and settings management
@@ -80,6 +82,7 @@ excalidraw-mcp/
 - **PyJWT**: JSON Web Token implementation
 
 ### Frontend/Canvas Server (TypeScript)
+
 - **Express.js**: Web framework for REST API
 - **WebSocket**: Real-time communication
 - **React**: Frontend UI framework
@@ -89,11 +92,13 @@ excalidraw-mcp/
 ## Development Setup
 
 ### Prerequisites
+
 - Python 3.13+
 - Node.js 16+
 - UV package manager for Python
 
 ### Installation
+
 ```bash
 # Clone and setup
 git clone https://github.com/lesleslie/excalidraw-mcp.git
@@ -108,6 +113,7 @@ npm run build
 ```
 
 ### Running the System
+
 ```bash
 # The Python MCP server auto-starts the canvas server
 uv run python excalidraw_mcp/server.py
@@ -117,6 +123,7 @@ npm run canvas
 ```
 
 ### Development Commands
+
 ```bash
 # Development mode (TypeScript watch + Vite dev server)
 npm run dev
@@ -135,42 +142,49 @@ npm test
 ## Key Components
 
 ### 1. Python MCP Server (`excalidraw_mcp/server.py`)
+
 - Main entry point for the MCP server
 - Uses FastMCP framework for MCP protocol handling
 - Automatically manages the canvas server lifecycle
 - Exposes tools for AI agents to create and manipulate diagrams
 
 ### 2. Canvas Server (`src/server.ts`)
+
 - Express.js server with REST API endpoints
 - WebSocket server for real-time updates
 - In-memory storage for Excalidraw elements
 - Serves the React frontend
 
 ### 3. React Frontend (`frontend/src/App.tsx`)
+
 - Excalidraw canvas component
 - WebSocket client for real-time synchronization
 - UI controls for connection status and canvas management
 - Manual sync functionality to backend
 
 ### 4. Configuration (`excalidraw_mcp/config.py`)
+
 - Centralized configuration management
 - Environment variable support
 - Validation for all configuration values
 - Separate sections for security, server, performance, and logging
 
 ### 5. HTTP Client (`excalidraw_mcp/http_client.py`)
+
 - Async HTTP client with connection pooling
 - Health check caching
 - Retry mechanisms for failed requests
 - Communication with canvas server
 
 ### 6. Process Manager (`excalidraw_mcp/process_manager.py`)
+
 - Lifecycle management for canvas server process
 - Automatic startup and health monitoring
 - Graceful shutdown handling
 - Process cleanup on exit
 
 ### 7. Element Factory (`excalidraw_mcp/element_factory.py`)
+
 - Creation and validation of Excalidraw elements
 - Default value handling
 - Type-specific property management
@@ -179,15 +193,18 @@ npm test
 ## MCP Tools Available
 
 ### Element Management
+
 - `create_element` - Create any type of Excalidraw element
 - `update_element` - Modify existing elements
 - `delete_element` - Remove elements
 - `query_elements` - Search elements with filters
 
 ### Batch Operations
+
 - `batch_create_elements` - Create complex diagrams in one call
 
 ### Element Organization
+
 - `group_elements` - Group multiple elements
 - `ungroup_elements` - Ungroup element groups
 - `align_elements` - Align elements (left, center, right, top, middle, bottom)
@@ -195,11 +212,13 @@ npm test
 - `lock_elements` / `unlock_elements` - Lock/unlock elements
 
 ### Resource Access
+
 - `get_resource` - Access scene, library, theme, or elements data
 
 ## API Endpoints
 
 ### Canvas Server REST Endpoints
+
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/api/elements` | Get all elements |
@@ -210,6 +229,7 @@ npm test
 | `GET` | `/health` | Server health check |
 
 ### WebSocket Events
+
 - `initial_elements` - Sent when client connects with current elements
 - `element_created` - Element created on canvas
 - `element_updated` - Element updated on canvas
@@ -232,6 +252,7 @@ npm test
 ## Testing
 
 ### Test Structure
+
 - **Unit Tests**: Individual component testing
 - **Integration Tests**: Component interaction testing
 - **Security Tests**: Security vulnerability testing
@@ -239,6 +260,7 @@ npm test
 - **End-to-End Tests**: Complete system workflow testing
 
 ### Running Tests
+
 ```bash
 # Python tests with coverage
 pytest --cov=excalidraw_mcp --cov-report=html
@@ -256,6 +278,7 @@ npm run test:unit                   # TypeScript unit tests
 ```
 
 ### Quality Standards
+
 - **Coverage Requirements**: 85% minimum for Python, 70% for TypeScript
 - **Type Checking**: All code must pass Pyright (Python) and TSC (TypeScript)
 - **Security**: Scanning with Bandit for Python
@@ -265,6 +288,7 @@ npm run test:unit                   # TypeScript unit tests
 ## Build Process
 
 ### TypeScript Compilation
+
 ```bash
 # Build server only
 npm run build:server
@@ -277,20 +301,24 @@ npm run build
 ```
 
 ### Development Workflow
+
 1. **Development Server**: `npm run dev` starts both TypeScript watch and Vite dev server
-2. **Type Checking**: `npm run type-check` validates TypeScript without compilation
-3. **Production Build**: `npm run production` builds and starts the system
+1. **Type Checking**: `npm run type-check` validates TypeScript without compilation
+1. **Production Build**: `npm run production` builds and starts the system
 
 ## Deployment
 
 ### Package Naming
+
 - **Python Package**: `excalidraw_mcp` (underscore) - used in imports
 - **PyPI Distribution**: `excalidraw-mcp` (hyphen) - used for `uvx excalidraw-mcp`
 - **npm Package**: `excalidraw-mcp` (hyphen) - used for Node.js dependencies
 - **MCP Server Name**: `excalidraw` - used in .mcp.json configuration
 
 ### Publishing
+
 The Python package is published to PyPI as `excalidraw-mcp`:
+
 ```bash
 # Install from PyPI
 pip install excalidraw-mcp
@@ -302,7 +330,9 @@ uvx excalidraw-mcp
 ## Integration with AI Tools
 
 ### Claude Code Integration
+
 Add this configuration to your Claude Code `.mcp.json`:
+
 ```json
 {
   "mcpServers": {
@@ -319,32 +349,38 @@ Add this configuration to your Claude Code `.mcp.json`:
 ```
 
 ### Other Tools
+
 Similar configurations work for Cursor IDE, VS Code MCP Extension, and other MCP-compatible tools.
 
 ## Troubleshooting
 
 ### Canvas Not Loading
+
 - Ensure `npm run build` completed successfully
 - Verify canvas server is running on port 3031
 - Python MCP server auto-starts canvas server - check console for errors
 
 ### Elements Not Syncing
+
 - Python server automatically manages canvas server
 - Check `ENABLE_CANVAS_SYNC=true` in environment
 - Verify canvas server health at `http://localhost:3031/health`
 
 ### WebSocket Connection Issues
+
 - Check browser console for WebSocket errors
 - Ensure no firewall blocking WebSocket connections
 - Try refreshing the browser page
 
 ### Build Errors
+
 - Delete `node_modules` and run `npm install`
 - Check Node.js version (requires 16+)
 - Run `npm run type-check` to identify TypeScript issues
 - Run `uv sync` to update Python dependencies
 
 ### Python Dependencies
+
 - Use `uv sync` to install/update Python dependencies
 - Ensure Python 3.13+ is installed
 - Check `uv --version` to verify uv installation

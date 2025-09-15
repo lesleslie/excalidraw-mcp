@@ -3,10 +3,9 @@
 from unittest.mock import patch
 
 import pytest
-from pydantic import BaseModel
+from fastmcp import FastMCP
 
 from excalidraw_mcp.mcp_tools import MCPToolsManager
-from fastmcp import FastMCP
 
 
 class TestMCPToolsIntegration:
@@ -30,12 +29,10 @@ class TestMCPToolsIntegration:
             "success": True,
         }
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
             from pydantic import BaseModel
-            
+
             class ElementRequest(BaseModel):
                 type: str
                 x: float
@@ -47,7 +44,7 @@ class TestMCPToolsIntegration:
                 strokeWidth: float = None
                 opacity: float = None
                 roughness: float = None
-            
+
             request = ElementRequest(**sample_element_data)
             result = await mcp_tools_manager.create_element(request)
 
@@ -76,7 +73,9 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_update_element_integration(self, mcp_tools_manager, mock_http_client):
+    async def test_update_element_integration(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test element update through MCP tool."""
         update_data = {
             "id": "test-element-123",
@@ -87,18 +86,16 @@ class TestMCPToolsIntegration:
 
         mock_http_client.put_json.return_value = {"success": True}
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
             from pydantic import BaseModel
-            
+
             class UpdateRequest(BaseModel):
                 id: str
                 x: float = None
                 y: float = None
                 strokeColor: str = None
-            
+
             request = UpdateRequest(**update_data)
             result = await mcp_tools_manager.update_element(request)
 
@@ -120,15 +117,15 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_delete_element_integration(self, mcp_tools_manager, mock_http_client):
+    async def test_delete_element_integration(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test element deletion through MCP tool."""
         element_id = "test-element-123"
 
         mock_http_client.delete.return_value = True
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             result = await mcp_tools_manager.delete_element(element_id)
 
         # Verify client was called correctly
@@ -138,7 +135,9 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_query_elements_integration(self, mcp_tools_manager, mock_http_client):
+    async def test_query_elements_integration(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test element querying through MCP tool."""
         mock_elements = [
             {"id": "1", "type": "rectangle", "x": 100},
@@ -148,16 +147,14 @@ class TestMCPToolsIntegration:
 
         query_request = {"type": "rectangle", "filter": {"x": 100}}
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
             from pydantic import BaseModel
-            
+
             class QueryRequest(BaseModel):
                 type: str = None
                 filter: dict = None
-            
+
             request = QueryRequest(**query_request)
             result = await mcp_tools_manager.query_elements(request)
 
@@ -170,7 +167,9 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_create_element_validation_error(self, mcp_tools_manager, mock_http_client):
+    async def test_create_element_validation_error(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test element creation with validation errors."""
         # Test that HTTP client is not called when there are validation errors at the element factory level
         # We can't easily test this with Pydantic models since they validate at creation time
@@ -179,22 +178,22 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_http_client_connection_error(self, mcp_tools_manager, mock_http_client):
+    async def test_http_client_connection_error(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test handling of HTTP connection errors."""
         # Simulate connection error
         mock_http_client.post_json.side_effect = Exception("Connection failed")
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
             from pydantic import BaseModel
-            
+
             class ElementRequest(BaseModel):
                 type: str
                 x: float
                 y: float
-            
+
             request = ElementRequest(type="rectangle", x=100, y=200)
             result = await mcp_tools_manager.create_element(request)
 
@@ -204,7 +203,9 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_canvas_server_error_response(self, mcp_tools_manager, mock_http_client):
+    async def test_canvas_server_error_response(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test handling of canvas server error responses."""
         # Simulate server error
         mock_http_client.post_json.return_value = {
@@ -214,17 +215,15 @@ class TestMCPToolsIntegration:
 
         sample_data = {"type": "rectangle", "x": 100, "y": 200}
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
             from pydantic import BaseModel
-            
+
             class ElementRequest(BaseModel):
                 type: str
                 x: float
                 y: float
-            
+
             request = ElementRequest(**sample_data)
             result = await mcp_tools_manager.create_element(request)
 
@@ -235,7 +234,9 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_concurrent_element_operations(self, mcp_tools_manager, mock_http_client):
+    async def test_concurrent_element_operations(
+        self, mcp_tools_manager, mock_http_client
+    ):
         """Test concurrent element operations."""
         import asyncio
 
@@ -247,24 +248,22 @@ class TestMCPToolsIntegration:
         element_data = {"type": "rectangle", "x": 100, "y": 200}
         update_data = {"id": "test-123", "x": 150}
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create proper Pydantic models for the requests
             from pydantic import BaseModel
-            
+
             class ElementRequest(BaseModel):
                 type: str
                 x: float
                 y: float
-            
+
             class UpdateRequest(BaseModel):
                 id: str
                 x: float = None
-            
+
             element_request = ElementRequest(**element_data)
             update_request = UpdateRequest(**update_data)
-            
+
             # Run operations concurrently
             results = await asyncio.gather(
                 mcp_tools_manager.create_element(element_request),
@@ -284,7 +283,11 @@ class TestMCPToolsIntegration:
     @pytest.mark.slow
     @pytest.mark.asyncio
     async def test_bulk_element_creation(
-        self, mcp_tools_manager, mock_http_client, batch_element_data, performance_monitor
+        self,
+        mcp_tools_manager,
+        mock_http_client,
+        batch_element_data,
+        performance_monitor,
     ):
         """Test bulk element creation performance."""
         # Generate 10 elements (under the 50 limit)
@@ -292,13 +295,11 @@ class TestMCPToolsIntegration:
 
         mock_http_client.post_json.return_value = {"id": "test", "success": True}
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
+
             from pydantic import BaseModel
-            from typing import List
-            
+
             class ElementData(BaseModel):
                 type: str
                 x: float
@@ -310,10 +311,10 @@ class TestMCPToolsIntegration:
                 strokeWidth: float = None
                 opacity: float = None
                 roughness: float = None
-            
+
             class BatchRequest(BaseModel):
-                elements: List[ElementData]
-                
+                elements: list[ElementData]
+
             # Convert elements to proper format
             element_models = [ElementData(**elem) for elem in elements]
             request = BatchRequest(elements=element_models)
@@ -330,7 +331,9 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_element_lifecycle(self, mcp_tools_manager, mock_http_client, sample_element_data):
+    async def test_element_lifecycle(
+        self, mcp_tools_manager, mock_http_client, sample_element_data
+    ):
         """Test complete element lifecycle: create -> update -> delete."""
         element_id = "lifecycle-test-123"
 
@@ -339,12 +342,10 @@ class TestMCPToolsIntegration:
         mock_http_client.put_json.return_value = {"success": True}
         mock_http_client.delete.return_value = True
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # 1. Create element
             from pydantic import BaseModel
-            
+
             class ElementRequest(BaseModel):
                 type: str
                 x: float
@@ -356,7 +357,7 @@ class TestMCPToolsIntegration:
                 strokeWidth: float = None
                 opacity: float = None
                 roughness: float = None
-            
+
             create_request = ElementRequest(**sample_element_data)
             create_result = await mcp_tools_manager.create_element(create_request)
             assert create_result["success"] is True
@@ -366,7 +367,7 @@ class TestMCPToolsIntegration:
                 id: str
                 x: float = None
                 y: float = None
-            
+
             update_data = {"id": element_id, "x": 300, "y": 400}
             update_request = UpdateRequest(**update_data)
             update_result = await mcp_tools_manager.update_element(update_request)
@@ -383,16 +384,16 @@ class TestMCPToolsIntegration:
 
     @pytest.mark.integration
     @pytest.mark.asyncio
-    async def test_client_context_manager(self, mcp_tools_manager, mock_http_client, sample_element_data):
+    async def test_client_context_manager(
+        self, mcp_tools_manager, mock_http_client, sample_element_data
+    ):
         """Test that HTTP client context manager is used correctly."""
         mock_http_client.post_json.return_value = {"id": "test", "success": True}
 
-        with patch(
-            "excalidraw_mcp.mcp_tools.http_client", mock_http_client
-        ):
+        with patch("excalidraw_mcp.mcp_tools.http_client", mock_http_client):
             # Create a proper Pydantic model for the request
             from pydantic import BaseModel
-            
+
             class ElementRequest(BaseModel):
                 type: str
                 x: float
@@ -404,7 +405,7 @@ class TestMCPToolsIntegration:
                 strokeWidth: float = None
                 opacity: float = None
                 roughness: float = None
-                
+
             request = ElementRequest(**sample_element_data)
             await mcp_tools_manager.create_element(request)
 

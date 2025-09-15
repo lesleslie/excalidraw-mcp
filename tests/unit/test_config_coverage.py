@@ -10,7 +10,9 @@ from excalidraw_mcp.config import Config
 
 def test_config_validation_token_expiration_positive():
     """Test validation passes for positive token expiration."""
-    with patch.dict(os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret"}, clear=False):
+    with patch.dict(
+        os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret"}, clear=False
+    ):
         config = Config()
         config.security.token_expiration_hours = 1  # Positive value
         # Should not raise exception
@@ -19,23 +21,27 @@ def test_config_validation_token_expiration_positive():
 
 def test_config_validation_token_expiration_zero():
     """Test validation fails for zero token expiration."""
-    with patch.dict(os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret"}, clear=False):
+    with patch.dict(
+        os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret"}, clear=False
+    ):
         with pytest.raises(ValueError) as exc_info:
             config = Config()
             config.security.token_expiration_hours = 0  # Zero value
             config._validate()
-        
+
         assert "Token expiration must be positive" in str(exc_info.value)
 
 
 def test_config_validation_token_expiration_negative():
     """Test validation fails for negative token expiration."""
-    with patch.dict(os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret"}, clear=False):
+    with patch.dict(
+        os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret"}, clear=False
+    ):
         with pytest.raises(ValueError) as exc_info:
             config = Config()
             config.security.token_expiration_hours = -1  # Negative value
             config._validate()
-        
+
         assert "Token expiration must be positive" in str(exc_info.value)
 
 
@@ -53,7 +59,7 @@ def test_config_validation_health_check_timeout_zero():
         config = Config()
         config.server.health_check_timeout_seconds = 0.0  # Zero value
         config._validate()
-    
+
     assert "Health check timeout must be positive" in str(exc_info.value)
 
 
@@ -63,7 +69,7 @@ def test_config_validation_health_check_timeout_negative():
         config = Config()
         config.server.health_check_timeout_seconds = -1.0  # Negative value
         config._validate()
-    
+
     assert "Health check timeout must be positive" in str(exc_info.value)
 
 
@@ -81,7 +87,7 @@ def test_config_validation_websocket_batch_size_zero():
         config = Config()
         config.performance.websocket_batch_size = 0  # Zero value
         config._validate()
-    
+
     assert "WebSocket batch size must be positive" in str(exc_info.value)
 
 
@@ -91,5 +97,5 @@ def test_config_validation_websocket_batch_size_negative():
         config = Config()
         config.performance.websocket_batch_size = -1  # Negative value
         config._validate()
-    
+
     assert "WebSocket batch size must be positive" in str(exc_info.value)

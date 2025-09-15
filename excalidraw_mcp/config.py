@@ -1,8 +1,17 @@
 """Configuration management for Excalidraw MCP server."""
 
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
 from urllib.parse import urlparse
+
+try:
+    import tomli
+
+    _tomli: Any = tomli
+except ImportError:
+    _tomli = None
 
 
 @dataclass
@@ -16,22 +25,17 @@ class SecurityConfig:
     token_expiration_hours: int = 24
 
     # CORS
-    allowed_origins: list[str] = None
+    allowed_origins: list[str] = field(default_factory=list)
     cors_credentials: bool = True
-    cors_methods: list[str] = None
-    cors_headers: list[str] = None
+    cors_methods: list[str] = field(default_factory=list)
+    cors_headers: list[str] = field(default_factory=list)
 
     # Rate limiting
     rate_limit_window_minutes: int = 15
     rate_limit_max_requests: int = 100
 
-    def __post_init__(self):
-        if self.allowed_origins is None:
-            self.allowed_origins = ["http://localhost:3031", "http://127.0.0.1:3031"]
-        if self.cors_methods is None:
-            self.cors_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
-        if self.cors_headers is None:
-            self.cors_headers = ["Content-Type", "Authorization", "X-Requested-With"]
+    def __post_init__(self) -> None:
+        pass
 
 
 @dataclass
@@ -59,7 +63,7 @@ class ServerConfig:
     startup_retry_delay_seconds: float = 1.0
     graceful_shutdown_timeout_seconds: float = 10.0
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Validate and parse configuration."""
         try:
             parsed = urlparse(self.express_url)
@@ -126,7 +130,7 @@ class MonitoringConfig:
 
     # Alerting
     alerting_enabled: bool = True
-    alert_channels: list[str] = None
+    alert_channels: list[str] = field(default_factory=list)
     alert_deduplication_window_seconds: int = 300
     alert_throttle_max_per_hour: int = 10
 
@@ -141,9 +145,8 @@ class MonitoringConfig:
     trace_sampling_rate: float = 1.0
     trace_headers_enabled: bool = True
 
-    def __post_init__(self):
-        if self.alert_channels is None:
-            self.alert_channels = ["log"]
+    def __post_init__(self) -> None:
+        pass
 
         # Validate thresholds
         if not (0 < self.cpu_threshold_percent <= 100):
@@ -169,30 +172,69 @@ class LoggingConfig:
     # Security logging
     audit_enabled: bool = True
     audit_file_path: str | None = None
-    sensitive_fields: list[str] = None
+    sensitive_fields: list[str] = field(default_factory=list)
 
     # Correlation tracking
     correlation_id_enabled: bool = True
     correlation_header: str = "X-Correlation-ID"
 
-    def __post_init__(self):
-        if self.sensitive_fields is None:
-            self.sensitive_fields = ["password", "token", "secret", "key"]
+    def __post_init__(self) -> None:
+        pass
+
+
+@dataclass
+class MCPConfig:
+    """MCP server configuration."""
+
+    http_enabled: bool = False
+    http_host: str = "127.0.0.1"
+    http_port: int = 3030
+    canvas_server_url: str = "http://localhost:3031"
 
 
 class Config:
     """Main configuration class."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.security = SecurityConfig()
         self.server = ServerConfig()
         self.performance = PerformanceConfig()
         self.logging = LoggingConfig()
         self.monitoring = MonitoringConfig()
+        self.mcp = MCPConfig()
+        self._load_from_pyproject()
         self._load_from_environment()
         self._validate()
 
-    def _load_from_environment(self):
+    def _load_from_pyproject(self) -> None:
+        """Load MCP configuration from pyproject.toml."""
+        project_path = Path.cwd()
+        pyproject_path = project_path / "pyproject.toml"
+
+        if not pyproject_path.exists() or not tomli:
+            return
+
+        try:
+            with pyproject_path.open("rb") as f:
+                pyproject_data = tomli.load(f)
+
+            mcp_config = pyproject_data.get("tool", {}).get("excalidraw-mcp", {})
+
+            if mcp_config:
+                self.mcp.http_enabled = mcp_config.get(
+                    "http_enabled", self.mcp.http_enabled
+                )
+                self.mcp.http_host = mcp_config.get("mcp_http_host", self.mcp.http_host)
+                self.mcp.http_port = mcp_config.get("mcp_http_port", self.mcp.http_port)
+                self.mcp.canvas_server_url = mcp_config.get(
+                    "canvas_server_url", self.mcp.canvas_server_url
+                )
+
+        except Exception:
+            # Silently handle config loading failures
+            pass
+
+    def _load_from_environment(self) -> None:
         """Load configuration from environment variables."""
 
         # Security config
@@ -212,7 +254,7 @@ class Config:
         self.server.canvas_auto_start = (
             os.getenv("CANVAS_AUTO_START", "true").lower() != "false"
         )
-        
+
         # Parse the updated URL
         self.server.__post_init__()
 
@@ -225,9 +267,7 @@ class Config:
         self.logging.structured_logging = (
             os.getenv("STRUCTURED_LOGGING", "true").lower() == "true"
         )
-        self.logging.json_format = (
-            os.getenv("JSON_LOGGING", "false").lower() == "true"
-        )
+        self.logging.json_format = os.getenv("JSON_LOGGING", "false").lower() == "true"
         self.logging.file_path = os.getenv("LOG_FILE")
         self.logging.audit_file_path = os.getenv("AUDIT_LOG_FILE")
 
@@ -244,21 +284,21 @@ class Config:
         self.monitoring.circuit_breaker_enabled = (
             os.getenv("CIRCUIT_BREAKER_ENABLED", "true").lower() == "true"
         )
-        
+
         if os.getenv("HEALTH_CHECK_INTERVAL"):
             self.monitoring.health_check_interval_seconds = int(
                 os.getenv("HEALTH_CHECK_INTERVAL")
             )
-        
-        if os.getenv("CPU_THRESHOLD"):
-            self.monitoring.cpu_threshold_percent = float(os.getenv("CPU_THRESHOLD"))
-        
-        if os.getenv("MEMORY_THRESHOLD"):
-            self.monitoring.memory_threshold_percent = float(
-                os.getenv("MEMORY_THRESHOLD")
-            )
 
-    def _validate(self):
+        cpu_threshold = os.getenv("CPU_THRESHOLD")
+        if cpu_threshold:
+            self.monitoring.cpu_threshold_percent = float(cpu_threshold)
+
+        memory_threshold = os.getenv("MEMORY_THRESHOLD")
+        if memory_threshold:
+            self.monitoring.memory_threshold_percent = float(memory_threshold)
+
+    def _validate(self) -> None:
         """Validate configuration values."""
         errors = []
 

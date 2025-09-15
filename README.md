@@ -21,6 +21,7 @@ A **dual-language MCP (Model Context Protocol) server** that combines **Excalidr
 > **See MCP Excalidraw in Action!**
 
 [![MCP Excalidraw Demo](https://img.youtube.com/vi/RRN7AF7QIew/maxresdefault.jpg)](https://youtu.be/RRN7AF7QIew)
+![Coverage](https://img.shields.io/badge/coverage-0.0%25-red)
 
 *Watch how AI agents create and manipulate diagrams in real-time on the live canvas*
 

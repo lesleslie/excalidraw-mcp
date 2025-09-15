@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: validate-regex-patterns
         name: validate-regex-patterns
-        entry: uv run python -m excalidraw_mcp.tools.validate_regex_patterns
+        entry: uv run python -m crackerjack.tools.validate_regex_patterns
         language: system
         files: \.py$
         exclude: ^\.venv/
@@ -16,7 +16,7 @@ repos:
         stages: ["pre-push", "manual"]
       - id: zuban
         name: zuban-type-checking
-        entry: uv run zuban check
+        entry: zuban check
         language: system
         args: ["--config-file", "mypy.ini", "./excalidraw_mcp"]
         pass_filenames: false
@@ -25,8 +25,8 @@ repos:
         name: pyright-type-checking
         entry: uv run pyright
         language: system
-        files: ^excalidraw_mcp/.*\.py$
-        exclude: ^excalidraw_mcp/(mcp|plugins)/.*\.py$|excalidraw_mcp/code_cleaner\.py$
+        files: ^crackerjack/.*\.py$
+        exclude: ^crackerjack/(mcp|plugins)/.*\.py$|crackerjack/code_cleaner\.py$
         stages: ["pre-push", "manual"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -61,7 +61,7 @@ repos:
     hooks:
       - id: bandit
         args: ["-c", "pyproject.toml", "-r", "-ll"]
-        files: ^excalidraw_mcp/.*\.py$
+        files: ^crackerjack/.*\.py$
         stages: ["pre-push", "manual"]
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
@@ -69,7 +69,6 @@ repos:
       - id: codespell
         exclude: ^\.venv/
         additional_dependencies: ["tomli"]
-        args: ["--config", "pyproject.toml"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.12
     hooks:
@@ -94,7 +93,7 @@ repos:
     hooks:
       - id: complexipy
         args: ["-d", "low", "--max-complexity-allowed", "15"]
-        files: ^excalidraw_mcp/.*\.py$
+        files: ^crackerjack/.*\.py$
         exclude: ^(\.venv/|tests/)
         stages: ["pre-push", "manual"]
   - repo: https://github.com/dosisod/refurb
@@ -102,6 +101,6 @@ repos:
     hooks:
       - id: refurb
         args: ["--ignore", "FURB184", "--ignore", "FURB120"]
-        files: ^excalidraw_mcp/.*\.py$
+        files: ^crackerjack/.*\.py$
         exclude: ^tests/.*\.py$
         stages: ["pre-push", "manual"]

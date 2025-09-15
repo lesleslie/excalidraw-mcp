@@ -8,11 +8,11 @@ from excalidraw_mcp.element_factory import ElementFactory
 def test_line_element_default_dimensions():
     """Test that line elements get default dimensions when not provided."""
     factory = ElementFactory()
-    
+
     # Create a line element without width/height
     element_data = {"type": "line"}
     element = factory.create_element(element_data)
-    
+
     # Should have default dimensions for lines
     assert element["width"] == 100.0
     assert element["height"] == 0.0
@@ -21,11 +21,11 @@ def test_line_element_default_dimensions():
 def test_shape_elements_default_dimensions():
     """Test that shape elements get default dimensions when not provided."""
     factory = ElementFactory()
-    
+
     # Create a rectangle without width/height
     element_data = {"type": "rectangle"}
     element = factory.create_element(element_data)
-    
+
     # Should have default dimensions for shapes
     assert element["width"] == 100.0
     assert element["height"] == 100.0
@@ -97,7 +97,7 @@ def test_element_validation_invalid_font_size_not_number():
 def test_optional_float_conversion_invalid_values():
     """Test optional float conversion with invalid values."""
     factory = ElementFactory()
-    
+
     # Test with various invalid values
     assert factory._get_optional_float({"key": "invalid"}, "key") is None
     assert factory._get_optional_float({"key": []}, "key") is None
@@ -117,7 +117,7 @@ def test_prepare_update_data_numeric_conversion():
     }
 
     result = factory.prepare_update_data(update_data)
-    
+
     assert result["x"] == 150.0
     assert result["y"] == 250.0
     assert result["width"] == 100.5
@@ -134,7 +134,7 @@ def test_prepare_update_data_with_none_values():
     }
 
     result = factory.prepare_update_data(update_data)
-    
+
     # None values should remain None
     assert result["x"] is None
     assert result["width"] is None
@@ -150,6 +150,6 @@ def test_prepare_update_data_with_valid_numeric_values():
     }
 
     result = factory.prepare_update_data(update_data)
-    
+
     assert result["x"] == 150.0
     assert result["y"] == 250.5
