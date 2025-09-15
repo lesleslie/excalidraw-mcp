@@ -16,7 +16,7 @@ repos:
         stages: ["pre-push", "manual"]
       - id: zuban
         name: zuban-type-checking
-        entry: zuban check
+        entry: uv run zuban check
         language: system
         args: ["--config-file", "mypy.ini", "./excalidraw_mcp"]
         pass_filenames: false

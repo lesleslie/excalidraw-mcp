@@ -149,6 +149,28 @@ def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> 
         sys.exit(1)
 
 
+def _stop_process(
+    process: psutil.Process, process_name: str, force: bool, timeout: int
+) -> str:
+    """Stop a single process and return a status message."""
+    try:
+        if force:
+            process.kill()
+            return f"{process_name} (PID: {process.pid}) - killed"
+        else:
+            process.terminate()
+            try:
+                process.wait(timeout=timeout)
+                return f"{process_name} (PID: {process.pid}) - terminated"
+            except psutil.TimeoutExpired:
+                process.kill()
+                return f"{process_name} (PID: {process.pid}) - force killed"
+    except psutil.NoSuchProcess:
+        return f"{process_name} - already stopped"
+    except Exception as e:
+        return f"{process_name} - failed to stop: {e}"
+
+
 def stop_mcp_server_impl(force: bool = False) -> None:
     """Implementation for stopping MCP server."""
     mcp_proc = find_mcp_server_process()
@@ -164,49 +186,19 @@ def stop_mcp_server_impl(force: bool = False) -> None:
 
     # Stop MCP server
     if mcp_proc:
-        try:
-            if force:
-                mcp_proc.kill()
-                stopped_procs.append(f"MCP server (PID: {mcp_proc.pid}) - killed")
-            else:
-                mcp_proc.terminate()
-                try:
-                    mcp_proc.wait(timeout=10)
-                    stopped_procs.append(
-                        f"MCP server (PID: {mcp_proc.pid}) - terminated"
-                    )
-                except psutil.TimeoutExpired:
-                    mcp_proc.kill()
-                    stopped_procs.append(
-                        f"MCP server (PID: {mcp_proc.pid}) - force killed"
-                    )
-        except psutil.NoSuchProcess:
-            stopped_procs.append("MCP server - already stopped")
-        except Exception as e:
-            rprint(f"[red]Failed to stop MCP server: {e}[/red]")
+        status = _stop_process(mcp_proc, "MCP server", force, 10)
+        if "failed to stop" in status:
+            rprint(f"[red]Failed to stop MCP server: {status.split(': ')[-1]}[/red]")
+        else:
+            stopped_procs.append(status)
 
     # Stop canvas server
     if canvas_proc:
-        try:
-            if force:
-                canvas_proc.kill()
-                stopped_procs.append(f"Canvas server (PID: {canvas_proc.pid}) - killed")
-            else:
-                canvas_proc.terminate()
-                try:
-                    canvas_proc.wait(timeout=5)
-                    stopped_procs.append(
-                        f"Canvas server (PID: {canvas_proc.pid}) - terminated"
-                    )
-                except psutil.TimeoutExpired:
-                    canvas_proc.kill()
-                    stopped_procs.append(
-                        f"Canvas server (PID: {canvas_proc.pid}) - force killed"
-                    )
-        except psutil.NoSuchProcess:
-            stopped_procs.append("Canvas server - already stopped")
-        except Exception as e:
-            rprint(f"[red]Failed to stop canvas server: {e}[/red]")
+        status = _stop_process(canvas_proc, "Canvas server", force, 5)
+        if "failed to stop" in status:
+            rprint(f"[red]Failed to stop canvas server: {status.split(': ')[-1]}[/red]")
+        else:
+            stopped_procs.append(status)
 
     # Display results
     if stopped_procs:
