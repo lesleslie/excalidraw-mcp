@@ -291,11 +291,9 @@ class MetricsCollector:
             # Get element count
             elements = await http_client.get_json("/api/elements")
             if elements is not None:
-                element_count = (
-                    len(elements)
-                    if elements is not None and isinstance(elements, list)
-                    else 0
-                )  # type: ignore
+                # Elements is a dict with an 'elements' key containing the list
+                element_list: list = elements.get("elements", []) if isinstance(elements, dict) else []
+                element_count = len(element_list)
                 self.set_gauge("canvas_elements_count", element_count)
 
         except Exception as e:
