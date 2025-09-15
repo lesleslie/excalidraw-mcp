@@ -3,7 +3,7 @@ repos:
     hooks:
       - id: validate-regex-patterns
         name: validate-regex-patterns
-        entry: uv run python -m excalidraw_mcp.tools.validate_regex_patterns
+        entry: uv run python -m crackerjack.tools.validate_regex_patterns
         language: system
         files: \.py$
         exclude: ^\.venv/
