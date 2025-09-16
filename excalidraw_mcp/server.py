@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Excalidraw MCP Server - Python FastMCP Implementation
+"""Excalidraw MCP Server - Python FastMCP Implementation
 Provides MCP tools for creating and managing Excalidraw diagrams with canvas sync.
 """
 
@@ -33,6 +32,8 @@ def get_process_manager() -> Any:
         from .process_manager import CanvasProcessManager
 
         process_manager = CanvasProcessManager()
+        # Register cleanup function
+        atexit.register(process_manager.cleanup)
     return process_manager
 
 
@@ -49,17 +50,13 @@ def get_monitoring_supervisor() -> Any:
 # Initialize monitoring supervisor
 monitoring_supervisor = MonitoringSupervisor()
 
-# Register cleanup function
-atexit.register(process_manager.cleanup)
-
 
 def cleanup_monitoring() -> None:
     if monitoring_supervisor.is_running:
-        try:
+        from contextlib import suppress
+
+        with suppress(RuntimeError):
             asyncio.create_task(monitoring_supervisor.stop())
-        except RuntimeError:
-            # No running event loop, monitoring supervisor will clean up naturally
-            pass
 
 
 async def startup_initialization() -> None:

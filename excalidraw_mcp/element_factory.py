@@ -56,8 +56,8 @@ class ElementFactory:
 
         # Add provided updates
         for key, value in update_data.items():
-            if key not in ["createdAt", "version"]:  # Protect immutable fields
-                if key in [
+            if key not in ("createdAt", "version"):  # Protect immutable fields
+                if key in (
                     "x",
                     "y",
                     "width",
@@ -66,7 +66,7 @@ class ElementFactory:
                     "opacity",
                     "roughness",
                     "fontSize",
-                ]:
+                ):
                     update_payload[key] = float(value) if value is not None else value
                 else:
                     update_payload[key] = value
@@ -89,9 +89,9 @@ class ElementFactory:
         self._add_visual_properties(element, element_data)
 
         # Shape-specific properties
-        if element_type in ["rectangle", "ellipse", "diamond"]:
+        if element_type in ("rectangle", "ellipse", "diamond"):
             self._add_shape_properties(element, element_data)
-        elif element_type in ["line", "arrow"]:
+        elif element_type in ("line", "arrow"):
             self._add_line_properties(element, element_data)
 
     def _add_visual_properties(
@@ -196,7 +196,7 @@ class ElementFactory:
         self, element_data: dict[str, Any], errors: list[str]
     ) -> None:
         """Validate coordinates."""
-        for coord in ["x", "y"]:
+        for coord in ("x", "y"):
             if coord in element_data:
                 try:
                     float(element_data[coord])
@@ -207,7 +207,7 @@ class ElementFactory:
         self, element_data: dict[str, Any], errors: list[str]
     ) -> None:
         """Validate dimensions."""
-        for dimension in ["width", "height"]:
+        for dimension in ("width", "height"):
             if dimension in element_data and element_data[dimension] is not None:
                 try:
                     value = float(element_data[dimension])
@@ -235,17 +235,16 @@ class ElementFactory:
 
     def _validate_colors(self, element_data: dict[str, Any], errors: list[str]) -> None:
         """Validate colors."""
-        for color_prop in ["strokeColor", "backgroundColor"]:
+        for color_prop in ("strokeColor", "backgroundColor"):
             if color_prop in element_data:
                 color = element_data[color_prop]
                 if color and not self._is_valid_color(color):
                     errors.append(f"Invalid {color_prop}: must be a valid hex color")
 
-    def _validate_numeric_ranges(
+    def _validate_stroke_width(
         self, element_data: dict[str, Any], errors: list[str]
     ) -> None:
-        """Validate numeric properties are within acceptable ranges."""
-        # Stroke width
+        """Validate stroke width property."""
         if "strokeWidth" in element_data:
             try:
                 stroke_width = float(element_data["strokeWidth"])
@@ -254,7 +253,10 @@ class ElementFactory:
             except (ValueError, TypeError):
                 errors.append("strokeWidth must be a number")
 
-        # Opacity
+    def _validate_opacity(
+        self, element_data: dict[str, Any], errors: list[str]
+    ) -> None:
+        """Validate opacity property."""
         if "opacity" in element_data:
             try:
                 opacity = float(element_data["opacity"])
@@ -263,7 +265,10 @@ class ElementFactory:
             except (ValueError, TypeError):
                 errors.append("opacity must be a number")
 
-        # Roughness
+    def _validate_roughness(
+        self, element_data: dict[str, Any], errors: list[str]
+    ) -> None:
+        """Validate roughness property."""
         if "roughness" in element_data:
             try:
                 roughness = float(element_data["roughness"])
@@ -272,7 +277,10 @@ class ElementFactory:
             except (ValueError, TypeError):
                 errors.append("roughness must be a number")
 
-        # Font size
+    def _validate_font_size(
+        self, element_data: dict[str, Any], errors: list[str]
+    ) -> None:
+        """Validate font size property."""
         if "fontSize" in element_data:
             try:
                 font_size = float(element_data["fontSize"])
@@ -280,3 +288,12 @@ class ElementFactory:
                     errors.append("fontSize must be between 8 and 200")
             except (ValueError, TypeError):
                 errors.append("fontSize must be a number")
+
+    def _validate_numeric_ranges(
+        self, element_data: dict[str, Any], errors: list[str]
+    ) -> None:
+        """Validate numeric properties are within acceptable ranges."""
+        self._validate_stroke_width(element_data, errors)
+        self._validate_opacity(element_data, errors)
+        self._validate_roughness(element_data, errors)
+        self._validate_font_size(element_data, errors)

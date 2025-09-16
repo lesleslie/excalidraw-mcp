@@ -56,6 +56,9 @@ class ServerConfig:
     sync_operation_timeout_seconds: float = 10.0
     sync_retry_attempts: int = 3
     sync_retry_delay_seconds: float = 1.0
+    sync_retry_max_delay_seconds: float = 30.0
+    sync_retry_exponential_base: float = 2.0
+    sync_retry_jitter: bool = True
 
     # Process management
     canvas_auto_start: bool = True
@@ -214,7 +217,9 @@ class Config:
         if not pyproject_path.exists() or not _tomli:
             return
 
-        try:
+        from contextlib import suppress
+
+        with suppress(Exception):
             with pyproject_path.open("rb") as f:
                 pyproject_data = _tomli.load(f)
 
@@ -230,14 +235,8 @@ class Config:
                     "canvas_server_url", self.mcp.canvas_server_url
                 )
 
-        except Exception:
-            # Silently handle config loading failures
-            pass
-
-    def _load_from_environment(self) -> None:
-        """Load configuration from environment variables."""
-
-        # Security config
+    def _load_security_config_from_environment(self) -> None:
+        """Load security configuration from environment variables."""
         self.security.auth_enabled = (
             os.getenv("AUTH_ENABLED", "false").lower() == "true"
         )
@@ -247,7 +246,8 @@ class Config:
         if origins_env:
             self.security.allowed_origins = [o.strip() for o in origins_env.split(",")]
 
-        # Server config
+    def _load_server_config_from_environment(self) -> None:
+        """Load server configuration from environment variables."""
         self.server.express_url = os.getenv(
             "EXPRESS_SERVER_URL", self.server.express_url
         )
@@ -255,18 +255,48 @@ class Config:
             os.getenv("CANVAS_AUTO_START", "true").lower() != "false"
         )
 
+        # Retry configuration from environment
+        from contextlib import suppress
+
+        sync_retry_attempts = os.getenv("SYNC_RETRY_ATTEMPTS")
+        if sync_retry_attempts:
+            with suppress(ValueError):
+                self.server.sync_retry_attempts = int(sync_retry_attempts)
+
+        sync_retry_delay = os.getenv("SYNC_RETRY_DELAY_SECONDS")
+        if sync_retry_delay:
+            with suppress(ValueError):
+                self.server.sync_retry_delay_seconds = float(sync_retry_delay)
+
+        sync_retry_max_delay = os.getenv("SYNC_RETRY_MAX_DELAY_SECONDS")
+        if sync_retry_max_delay:
+            with suppress(ValueError):
+                self.server.sync_retry_max_delay_seconds = float(sync_retry_max_delay)
+
+        sync_retry_base = os.getenv("SYNC_RETRY_EXPONENTIAL_BASE")
+        if sync_retry_base:
+            with suppress(ValueError):
+                self.server.sync_retry_exponential_base = float(sync_retry_base)
+
+        sync_retry_jitter = os.getenv("SYNC_RETRY_JITTER")
+        if sync_retry_jitter:
+            self.server.sync_retry_jitter = sync_retry_jitter.lower() == "true"
+
         # Parse the updated URL
         self.server.__post_init__()
+
+    def _load_performance_config_from_environment(self) -> None:
+        """Load performance configuration from environment variables."""
+        from contextlib import suppress
 
         # Performance config
         max_elements = os.getenv("MAX_ELEMENTS")
         if max_elements:
-            try:
+            with suppress(ValueError):
                 self.performance.max_elements_per_canvas = int(max_elements)
-            except ValueError:
-                pass
 
-        # Logging config
+    def _load_logging_config_from_environment(self) -> None:
+        """Load logging configuration from environment variables."""
         self.logging.level = os.getenv("LOG_LEVEL", self.logging.level)
         self.logging.structured_logging = (
             os.getenv("STRUCTURED_LOGGING", "true").lower() == "true"
@@ -274,6 +304,10 @@ class Config:
         self.logging.json_format = os.getenv("JSON_LOGGING", "false").lower() == "true"
         self.logging.file_path = os.getenv("LOG_FILE")
         self.logging.audit_file_path = os.getenv("AUDIT_LOG_FILE")
+
+    def _load_monitoring_config_from_environment(self) -> None:
+        """Load monitoring configuration from environment variables."""
+        from contextlib import suppress
 
         # Monitoring config
         self.monitoring.enabled = (
@@ -291,53 +325,67 @@ class Config:
 
         health_check_interval = os.getenv("HEALTH_CHECK_INTERVAL")
         if health_check_interval:
-            try:
+            with suppress(ValueError):
                 self.monitoring.health_check_interval_seconds = int(
                     health_check_interval
                 )
-            except ValueError:
-                pass
 
         cpu_threshold = os.getenv("CPU_THRESHOLD")
         if cpu_threshold:
-            try:
+            with suppress(ValueError):
                 self.monitoring.cpu_threshold_percent = float(cpu_threshold)
-            except ValueError:
-                pass
 
         memory_threshold = os.getenv("MEMORY_THRESHOLD")
         if memory_threshold:
-            try:
+            with suppress(ValueError):
                 self.monitoring.memory_threshold_percent = float(memory_threshold)
-            except ValueError:
-                pass
 
-    def _validate(self) -> None:
-        """Validate configuration values."""
-        errors = []
+    def _load_from_environment(self) -> None:
+        """Load configuration from environment variables."""
+        self._load_security_config_from_environment()
+        self._load_server_config_from_environment()
+        self._load_performance_config_from_environment()
+        self._load_logging_config_from_environment()
+        self._load_monitoring_config_from_environment()
 
-        # Validate security config
+    def _validate_security_config(self, errors: list[str]) -> None:
+        """Validate security configuration values."""
         if self.security.auth_enabled and not self.security.jwt_secret:
             errors.append("JWT_SECRET is required when authentication is enabled")
 
         if self.security.token_expiration_hours <= 0:
             errors.append("Token expiration must be positive")
 
-        # Validate server config
+    def _validate_server_config(self, errors: list[str]) -> None:
+        """Validate server configuration values."""
         if self.server.express_port <= 0 or self.server.express_port > 65535:
             errors.append("Express port must be between 1 and 65535")
 
         if self.server.health_check_timeout_seconds <= 0:
             errors.append("Health check timeout must be positive")
 
-        # Validate performance config
+        if self.server.sync_retry_attempts < 0:
+            errors.append("Sync retry attempts must be non-negative")
+
+        if self.server.sync_retry_delay_seconds <= 0:
+            errors.append("Sync retry delay must be positive")
+
+        if self.server.sync_retry_max_delay_seconds <= 0:
+            errors.append("Sync retry max delay must be positive")
+
+        if self.server.sync_retry_exponential_base <= 1.0:
+            errors.append("Sync retry exponential base must be greater than 1.0")
+
+    def _validate_performance_config(self, errors: list[str]) -> None:
+        """Validate performance configuration values."""
         if self.performance.max_elements_per_canvas <= 0:
             errors.append("Max elements per canvas must be positive")
 
         if self.performance.websocket_batch_size <= 0:
             errors.append("WebSocket batch size must be positive")
 
-        # Validate monitoring config
+    def _validate_monitoring_config(self, errors: list[str]) -> None:
+        """Validate monitoring configuration values."""
         if self.monitoring.health_check_interval_seconds <= 0:
             errors.append("Health check interval must be positive")
 
@@ -346,6 +394,14 @@ class Config:
 
         if self.monitoring.circuit_failure_threshold <= 0:
             errors.append("Circuit breaker failure threshold must be positive")
+
+    def _validate(self) -> None:
+        """Validate configuration values."""
+        errors: list[str] = []
+        self._validate_security_config(errors)
+        self._validate_server_config(errors)
+        self._validate_performance_config(errors)
+        self._validate_monitoring_config(errors)
 
         if errors:
             raise ValueError(f"Configuration validation failed: {'; '.join(errors)}")

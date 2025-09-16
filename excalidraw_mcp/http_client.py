@@ -10,6 +10,7 @@ from typing import Any
 import httpx
 
 from .config import config
+from .retry_utils import RetryConfig, retry_async
 
 logger = logging.getLogger(__name__)
 
@@ -68,6 +69,36 @@ class CanvasHTTPClient:
             await self._client.aclose()
             self._client = None
 
+    async def _perform_health_check_request(self, trace_id: str, config: Any) -> bool:
+        """Perform a single health check request."""
+        try:
+            await self._ensure_client()
+
+            # Add tracing headers if enabled
+            headers = (
+                self._get_tracing_headers(trace_id)
+                if config.monitoring.request_tracing_enabled
+                else {}
+            )
+
+            if self._client is not None:
+                response = await self._client.get(
+                    f"{config.server.express_url}/health",
+                    timeout=config.server.health_check_timeout_seconds,
+                    headers=headers,
+                )
+            else:
+                raise RuntimeError("HTTP client not initialized")
+
+            is_healthy: bool = response.status_code == 200
+            return is_healthy
+
+        except Exception as e:
+            logger.warning(
+                f"Canvas server health check failed: {e} (trace: {trace_id})"
+            )
+            raise  # Re-raise to trigger retry
+
     async def check_health(
         self, force: bool = False, correlation_id: str | None = None
     ) -> bool:
@@ -93,67 +124,49 @@ class CanvasHTTPClient:
                 return self._health_cache.status
 
             start_time = time.time()
+
+            # Configure retry for health checks
+            retry_config = RetryConfig(
+                base_delay=0.5,  # Quick retries for health checks
+                max_delay=5.0,
+                exponential_base=config.server.sync_retry_exponential_base,
+                jitter=config.server.sync_retry_jitter,
+            )
+
+            async def _health_check_request() -> bool:
+                return await self._perform_health_check_request(trace_id, config)
+
             try:
-                await self._ensure_client()
-
-                # Add tracing headers if enabled
-                headers = (
-                    self._get_tracing_headers(trace_id)
-                    if config.monitoring.request_tracing_enabled
-                    else {}
+                is_healthy = await retry_async(
+                    _health_check_request,
+                    retry_config=retry_config,
+                    retry_on_exceptions=(Exception,),
                 )
+            except Exception:
+                # On failure, consider server unhealthy
+                is_healthy = False
 
-                if self._client is not None:
-                    response = await self._client.get(
-                        f"{config.server.express_url}/health",
-                        timeout=config.server.health_check_timeout_seconds,
-                        headers=headers,
-                    )
-                else:
-                    raise RuntimeError("HTTP client not initialized")
+            # Update cache
+            self._health_cache = HealthCacheEntry(
+                status=is_healthy,
+                timestamp=current_time,
+                failure_count=0 if is_healthy else self._health_cache.failure_count + 1,
+            )
 
-                is_healthy = response.status_code == 200
-                response_time = time.time() - start_time
-
-                # Update metrics
+            # Log the result
+            response_time = time.time() - start_time
+            if is_healthy:
+                logger.debug(
+                    f"Canvas server health check passed (trace: {trace_id}, time: {response_time:.3f}s)"
+                )
                 self._update_request_metrics(True, response_time, "GET", "/health")
-
-                # Update cache
-                self._health_cache = HealthCacheEntry(
-                    status=is_healthy,
-                    timestamp=current_time,
-                    failure_count=0
-                    if is_healthy
-                    else self._health_cache.failure_count + 1,
+            else:
+                logger.warning(
+                    f"Canvas server health check failed: (trace: {trace_id})"
                 )
-
-                if is_healthy:
-                    logger.debug(
-                        f"Canvas server health check passed (trace: {trace_id}, time: {response_time:.3f}s)"
-                    )
-                else:
-                    logger.warning(
-                        f"Canvas server health check failed: HTTP {response.status_code} (trace: {trace_id})"
-                    )
-
-                return is_healthy
-
-            except Exception as e:
-                response_time = time.time() - start_time
                 self._update_request_metrics(False, response_time, "GET", "/health")
 
-                logger.warning(
-                    f"Canvas server health check failed: {e} (trace: {trace_id})"
-                )
-
-                # Update cache with failure
-                self._health_cache = HealthCacheEntry(
-                    status=False,
-                    timestamp=current_time,
-                    failure_count=self._health_cache.failure_count + 1,
-                )
-
-                return False
+            return is_healthy
 
     async def post_json(
         self,
@@ -171,7 +184,16 @@ class CanvasHTTPClient:
         await self._ensure_client()
         url = f"{config.server.express_url}{endpoint}"
 
-        for attempt in range(retry_count + 1):
+        # Configure retry behavior
+        retry_config = RetryConfig(
+            max_attempts=retry_count + 1,
+            base_delay=config.server.sync_retry_delay_seconds,
+            max_delay=config.server.sync_retry_max_delay_seconds,
+            exponential_base=config.server.sync_retry_exponential_base,
+            jitter=config.server.sync_retry_jitter,
+        )
+
+        async def _post_request() -> dict[str, Any] | None:
             start_time = time.time()
             try:
                 # Prepare headers with tracing
@@ -197,32 +219,39 @@ class CanvasHTTPClient:
                     logger.warning(
                         f"Canvas server returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
                     )
-                    if attempt < retry_count:
-                        await asyncio.sleep(config.server.sync_retry_delay_seconds)
-                        continue
-                    return None
+                    # Raise exception to trigger retry
+                    raise httpx.HTTPStatusError(
+                        f"HTTP {response.status_code}: {response.text}",
+                        request=response.request,
+                        response=response,
+                    )
 
             except httpx.TimeoutException:
                 response_time = time.time() - start_time
                 self._update_request_metrics(False, response_time, "POST", endpoint)
-                logger.warning(
-                    f"Canvas server request timeout (attempt {attempt + 1}/{retry_count + 1}) (trace: {trace_id})"
-                )
-                if attempt < retry_count:
-                    await asyncio.sleep(config.server.sync_retry_delay_seconds)
-                    continue
-                return None
+                logger.warning(f"Canvas server request timeout (trace: {trace_id})")
+                raise
 
             except Exception as e:
                 response_time = time.time() - start_time
                 self._update_request_metrics(False, response_time, "POST", endpoint)
                 logger.error(f"Canvas server request failed: {e} (trace: {trace_id})")
-                if attempt < retry_count:
-                    await asyncio.sleep(config.server.sync_retry_delay_seconds)
-                    continue
-                return None
+                raise
 
-        return None
+        # Use enhanced retry with exponential backoff and jitter
+        try:
+            return await retry_async(
+                _post_request,
+                retry_config=retry_config,
+                retry_on_exceptions=(
+                    httpx.TimeoutException,
+                    httpx.HTTPStatusError,
+                    Exception,
+                ),
+            )
+        except Exception:
+            # Return None on complete failure as per original behavior
+            return None
 
     async def put_json(
         self, endpoint: str, data: dict[str, Any], correlation_id: str | None = None
@@ -393,8 +422,7 @@ class CanvasHTTPClient:
         """Get request metrics for monitoring."""
         total_requests = max(self._request_metrics["total_requests"], 1)
 
-        return {
-            **self._request_metrics,
+        return self._request_metrics | {
             "success_rate": (
                 self._request_metrics["successful_requests"] / total_requests
             )

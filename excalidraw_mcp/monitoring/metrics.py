@@ -378,7 +378,7 @@ class MetricsCollector:
                     "count": hist.count,
                     "sum": hist.sum_value,
                     "average": hist.average,
-                    "buckets": dict(hist.counts),
+                    "buckets": hist.counts.copy(),
                     "help": hist.help_text,
                     "labels": hist.labels,
                 }
@@ -388,12 +388,13 @@ class MetricsCollector:
 
     def get_prometheus_format(self) -> str:
         """Export metrics in Prometheus format."""
-        lines = []
+        lines: list[str] = []
 
         # Counters
         for name, counter in self._counters.items():
-            lines.append(f"# HELP {name} {counter.help_text}")
-            lines.append(f"# TYPE {name} counter")
+            lines.extend(
+                (f"# HELP {name} {counter.help_text}", f"# TYPE {name} counter")
+            )
             label_str = ",".join(f'{k}="{v}"' for k, v in counter.labels.items())
             if label_str:
                 lines.append(f"{name}{{{label_str}}} {counter.value}")
@@ -402,8 +403,7 @@ class MetricsCollector:
 
         # Gauges
         for name, gauge in self._gauges.items():
-            lines.append(f"# HELP {name} {gauge.help_text}")
-            lines.append(f"# TYPE {name} gauge")
+            lines.extend((f"# HELP {name} {gauge.help_text}", f"# TYPE {name} gauge"))
             label_str = ",".join(f'{k}="{v}"' for k, v in gauge.labels.items())
             if label_str:
                 lines.append(f"{name}{{{label_str}}} {gauge.value}")
@@ -412,20 +412,20 @@ class MetricsCollector:
 
         # Histograms
         for name, hist in self._histograms.items():
-            lines.append(f"# HELP {name} {hist.help_text}")
-            lines.append(f"# TYPE {name} histogram")
-
+            lines.extend(
+                (f"# HELP {name} {hist.help_text}", f"# TYPE {name} histogram")
+            )
+            # Add histogram metrics
             label_str = ",".join(f'{k}="{v}"' for k, v in hist.labels.items())
-            base_labels = f",{label_str}" if label_str else ""
+            base_name = f"{name}{{{label_str}}}" if label_str else name
 
-            # Buckets
-            for bucket, count in hist.counts.items():
-                bucket_str = "+Inf" if bucket == float("inf") else str(bucket)
-                lines.append(f'{name}_bucket{{le="{bucket_str}"{base_labels}}} {count}')
-
-            # Count and sum
-            lines.append(f"{name}_count{{{label_str}}} {hist.count}")
-            lines.append(f"{name}_sum{{{label_str}}} {hist.sum_value}")
+            lines.extend(
+                (
+                    f"{base_name}_count {hist.count}",
+                    f"{base_name}_sum {hist.sum_value}",
+                    f"{base_name}_average {hist.average}",
+                )
+            )
 
         return "\n".join(lines) + "\n"
 

@@ -308,6 +308,11 @@ For VS Code MCP extension, add to your settings:
 | `EXPRESS_SERVER_URL` | `http://localhost:3031` | Canvas server URL for MCP sync |
 | `ENABLE_CANVAS_SYNC` | `true` | Enable/disable canvas synchronization |
 | `CANVAS_AUTO_START` | `true` | Auto-start canvas server with MCP server |
+| `SYNC_RETRY_ATTEMPTS` | `3` | Number of retry attempts for failed operations |
+| `SYNC_RETRY_DELAY_SECONDS` | `1.0` | Base delay between retry attempts (seconds) |
+| `SYNC_RETRY_MAX_DELAY_SECONDS` | `30.0` | Maximum delay between retry attempts (seconds) |
+| `SYNC_RETRY_EXPONENTIAL_BASE` | `2.0` | Exponential base for backoff calculation |
+| `SYNC_RETRY_JITTER` | `true` | Enable/disable jitter for retry delays |
 | `PORT` | `3031` | Canvas server port |
 | `HOST` | `localhost` | Canvas server host |
 | `DEBUG` | `false` | Enable debug logging |

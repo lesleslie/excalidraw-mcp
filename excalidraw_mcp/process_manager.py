@@ -15,6 +15,7 @@ import psutil
 
 from .config import config
 from .http_client import http_client
+from .retry_utils import RetryConfig, retry_async
 
 logger = logging.getLogger(__name__)
 
@@ -40,26 +41,43 @@ class CanvasProcessManager:
         signal.signal(signal.SIGINT, self._signal_handler)
         signal.signal(signal.SIGTERM, self._signal_handler)
 
+    async def _check_process_health(self) -> bool:
+        """Check if process is already running and healthy."""
+        return await self._is_process_healthy()
+
+    async def _handle_disabled_auto_start(self) -> bool:
+        """Handle case when auto-start is disabled."""
+        logger.warning("Canvas server not running and auto-start is disabled")
+        return False
+
+    async def _attempt_process_start(self) -> bool:
+        """Attempt to start the canvas server process."""
+        success = await self._start_process()
+        if not success:
+            logger.error("Failed to start canvas server")
+        return success
+
+    async def _ensure_process_healthy(self) -> bool:
+        """Ensure process is healthy or start it if needed."""
+        # Check if process is already running and healthy
+        if await self._check_process_health():
+            return True
+
+        # If auto-start is disabled, just check health
+        if not config.server.canvas_auto_start:
+            return await self._handle_disabled_auto_start()
+
+        # Try to start the process
+        if not await self._attempt_process_start():
+            return False
+
+        # Wait for process to become healthy
+        return await self._wait_for_health()
+
     async def ensure_running(self) -> bool:
         """Ensure canvas server is running and healthy."""
         async with self._startup_lock:
-            # Check if process is already running and healthy
-            if await self._is_process_healthy():
-                return True
-
-            # If auto-start is disabled, just check health
-            if not config.server.canvas_auto_start:
-                logger.warning("Canvas server not running and auto-start is disabled")
-                return False
-
-            # Try to start the process
-            success = await self._start_process()
-            if not success:
-                logger.error("Failed to start canvas server")
-                return False
-
-            # Wait for process to become healthy
-            return await self._wait_for_health()
+            return await self._ensure_process_healthy()
 
     async def _is_process_healthy(self) -> bool:
         """Check if the current process is running and healthy."""
@@ -128,24 +146,51 @@ class CanvasProcessManager:
             self._reset_process_info()
             return False
 
+    async def _check_health_with_process_check(self) -> bool:
+        """Check health with process validation."""
+        if not self._is_process_running():
+            raise RuntimeError("Canvas server process died during startup")
+
+        if await http_client.check_health(force=True):
+            return True
+        else:
+            raise RuntimeError("Canvas server not yet healthy")
+
     async def _wait_for_health(self) -> bool:
         """Wait for canvas server to become healthy."""
         logger.info("Waiting for canvas server to become healthy...")
 
-        for _ in range(config.server.startup_timeout_seconds):
-            if not self._is_process_running():
-                logger.error("Canvas server process died during startup")
-                return False
+        # Configure retry for health checks
+        retry_config = RetryConfig(
+            max_attempts=config.server.startup_timeout_seconds,
+            max_delay=5.0,
+            exponential_base=config.server.sync_retry_exponential_base,
+            jitter=config.server.sync_retry_jitter,
+        )
 
-            if await http_client.check_health(force=True):
-                logger.info("Canvas server is healthy and ready")
-                return True
+        try:
+            await retry_async(
+                self._check_health_with_process_check,
+                retry_config=retry_config,
+                retry_on_exceptions=(RuntimeError, Exception),
+            )
+            logger.info("Canvas server is healthy and ready")
+            return True
+        except Exception as e:
+            logger.error(f"Canvas server failed to become healthy: {e}")
+            self._terminate_current_process()
+            return False
 
-            await asyncio.sleep(1)
-
-        logger.error("Canvas server failed to become healthy within timeout")
-        self._terminate_current_process()
-        return False
+    def _send_termination_signal(self, sig: int) -> None:
+        """Send termination signal to the process group."""
+        if self.process is not None and self.process_pid is not None:
+            if os.name != "nt":
+                os.killpg(os.getpgid(self.process_pid), sig)
+            else:
+                if sig == signal.SIGTERM:
+                    self.process.terminate()
+                else:
+                    self.process.kill()
 
     def _terminate_existing_process(self) -> None:
         """Terminate any existing canvas server process."""
@@ -159,21 +204,14 @@ class CanvasProcessManager:
                 )
 
                 # Try to find and kill the process group
-                if self.process is not None:
-                    if os.name != "nt":
-                        os.killpg(os.getpgid(self.process_pid), signal.SIGTERM)
-                    else:
-                        self.process.terminate()
+                self._send_termination_signal(signal.SIGTERM)
 
                 # Wait a moment for graceful shutdown
                 time.sleep(2)
 
                 # Force kill if still running
                 if self.process is not None and psutil.pid_exists(self.process_pid):
-                    if os.name != "nt":
-                        os.killpg(os.getpgid(self.process_pid), signal.SIGKILL)
-                    else:
-                        self.process.kill()
+                    self._send_termination_signal(signal.SIGKILL)
 
             except (ProcessLookupError, OSError) as e:
                 logger.debug(f"Process already terminated: {e}")

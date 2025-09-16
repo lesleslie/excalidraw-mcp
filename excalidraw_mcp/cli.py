@@ -214,13 +214,13 @@ def restart_mcp_server_impl(background: bool = False, monitoring: bool = True) -
     rprint("[yellow]Restarting Excalidraw MCP server...[/yellow]")
 
     # Stop existing servers
-    stop_mcp_server_impl(force=False)
+    stop_mcp_server_impl()
 
     # Wait a moment for processes to fully stop
     time.sleep(2)
 
     # Start server again
-    start_mcp_server_impl(background=background, monitoring=monitoring)
+    start_mcp_server_impl(background=background)
 
 
 def status_impl() -> None:
@@ -281,49 +281,64 @@ def status_impl() -> None:
     console.print(config_panel)
 
 
-def logs_impl(lines: int = 50, follow: bool = False) -> None:
-    """Implementation for showing logs."""
-    # Look for common log file locations
+def _find_log_file() -> Path | None:
+    """Find the log file in common locations."""
     log_paths = [
         Path("excalidraw-mcp.log"),
         Path("logs/excalidraw-mcp.log"),
-        Path("/tmp/excalidraw-mcp.log"),
+        Path.home() / "tmp" / "excalidraw-mcp.log",
         Path.home() / ".local" / "state" / "excalidraw-mcp" / "server.log",
     ]
 
-    log_file = None
     for path in log_paths:
         if path.exists():
-            log_file = path
-            break
+            return path
+    return None
+
+
+def _show_missing_log_message() -> None:
+    """Show message when log file is not found."""
+    rprint("[yellow]No log file found. Logs may be going to stdout/stderr.[/yellow]")
+    rprint("Try running the server with output redirection:")
+    rprint("  [cyan]excalidraw-mcp --start-mcp-server > server.log 2>&1[/cyan]")
+
+
+def _follow_log_output(log_file: Path) -> None:
+    """Follow log output (basic implementation)."""
+    with log_file.open("r") as f:
+        # Move to end of file
+        f.seek(0, 2)
+        while True:
+            line = f.readline()
+            if line:
+                print(line.rstrip())
+            else:
+                time.sleep(0.1)
+
+
+def _show_recent_log_lines(log_file: Path, lines: int) -> None:
+    """Show recent lines from log file."""
+    with log_file.open("r") as f:
+        # Read all lines and show last N
+        all_lines = f.readlines()
+        recent_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
+        for line in recent_lines:
+            print(line.rstrip())
+
+
+def logs_impl(lines: int = 50, follow: bool = False) -> None:
+    """Implementation for showing logs."""
+    log_file = _find_log_file()
 
     if not log_file:
-        rprint(
-            "[yellow]No log file found. Logs may be going to stdout/stderr.[/yellow]"
-        )
-        rprint("Try running the server with output redirection:")
-        rprint("  [cyan]excalidraw-mcp --start-mcp-server > server.log 2>&1[/cyan]")
+        _show_missing_log_message()
         return
 
     try:
         if follow:
-            # Follow log output (basic implementation)
-            rprint(f"[green]Following logs from: {log_file}[/green]")
-            rprint("[yellow]Press Ctrl+C to stop[/yellow]\n")
-
-            subprocess.run(["tail", "-f", str(log_file)])
+            _follow_log_output(log_file)
         else:
-            # Show recent logs
-            with open(log_file) as f:
-                log_lines = f.readlines()
-                recent_lines = (
-                    log_lines[-lines:] if len(log_lines) > lines else log_lines
-                )
-
-                rprint(f"[green]Recent logs from: {log_file}[/green]\n")
-                for line in recent_lines:
-                    print(line.rstrip())
-
+            _show_recent_log_lines(log_file, lines)
     except KeyboardInterrupt:
         rprint("\n[yellow]Stopped following logs[/yellow]")
     except Exception as e:
@@ -395,7 +410,7 @@ def main(
     elif status:
         status_impl()
     elif logs:
-        logs_impl(lines=lines, follow=follow)
+        logs_impl()
 
 
 app = typer.Typer()

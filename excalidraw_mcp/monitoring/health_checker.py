@@ -158,7 +158,9 @@ class HealthChecker:
                     "endpoint": "/api/elements",
                     "response_time_ms": response_time_ms,
                     "has_response": result is not None,
-                    "element_count": len(result) if isinstance(result, list) else 0,  # type: ignore
+                    "element_count": len(result.get("elements", []))
+                    if isinstance(result, dict) and result is not None
+                    else 0,
                 },
             )
 

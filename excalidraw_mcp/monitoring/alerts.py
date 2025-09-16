@@ -1,8 +1,10 @@
-"""Alert management system for monitoring notifications."""
+"""Alert management with rule-based triggering and multiple delivery channels."""
 
+import ast
 import asyncio
 import json
 import logging
+import operator
 import time
 from dataclasses import dataclass, field
 from enum import Enum
@@ -33,15 +35,15 @@ class AlertChannel(Enum):
 
 @dataclass
 class Alert:
-    """An alert notification."""
+    """An alert instance."""
 
     id: str
-    title: str
-    message: str
+    rule_name: str
     level: AlertLevel
+    message: str
     timestamp: float
     source: str
-    labels: dict[str, str] = field(default_factory=dict)
+    labels: dict = field(default_factory=dict)
     resolved: bool = False
     resolved_at: float | None = None
 
@@ -74,28 +76,27 @@ class AlertManager:
 
     def _initialize_alert_rules(self) -> list[AlertRule]:
         """Initialize standard alert rules."""
-        rules = []
+        rules: list[AlertRule] = []
 
         # Health check failure alerts
-        rules.append(
-            AlertRule(
-                name="health_check_failing",
-                condition="consecutive_health_failures >= 3",
-                level=AlertLevel.WARNING,
-                message_template="Canvas server health checks failing: {consecutive_failures} consecutive failures",
-                channels=[AlertChannel.LOG],
-                throttle_seconds=300,
-            )
-        )
-
-        rules.append(
-            AlertRule(
-                name="health_check_critical",
-                condition="consecutive_health_failures >= 5",
-                level=AlertLevel.CRITICAL,
-                message_template="Canvas server health checks critical: {consecutive_failures} consecutive failures",
-                channels=[AlertChannel.LOG],
-                throttle_seconds=180,
+        rules.extend(
+            (
+                AlertRule(
+                    name="health_check_failing",
+                    condition="consecutive_health_failures >= 3",
+                    level=AlertLevel.WARNING,
+                    message_template="Canvas server health checks failing: {consecutive_failures} consecutive failures",
+                    channels=[AlertChannel.LOG],
+                    throttle_seconds=300,
+                ),
+                AlertRule(
+                    name="health_check_critical",
+                    condition="consecutive_health_failures >= 5",
+                    level=AlertLevel.CRITICAL,
+                    message_template="Canvas server health checks critical: {consecutive_failures} consecutive failures",
+                    channels=[AlertChannel.LOG],
+                    throttle_seconds=180,
+                ),
             )
         )
 
@@ -111,26 +112,25 @@ class AlertManager:
             )
         )
 
-        # Resource usage alerts
-        rules.append(
-            AlertRule(
-                name="high_cpu_usage",
-                condition="cpu_percent > cpu_threshold",
-                level=AlertLevel.WARNING,
-                message_template="High CPU usage: {cpu_percent}% (threshold: {cpu_threshold}%)",
-                channels=[AlertChannel.LOG],
-                throttle_seconds=300,
-            )
-        )
-
-        rules.append(
-            AlertRule(
-                name="high_memory_usage",
-                condition="memory_percent > memory_threshold",
-                level=AlertLevel.WARNING,
-                message_template="High memory usage: {memory_percent}% (threshold: {memory_threshold}%)",
-                channels=[AlertChannel.LOG],
-                throttle_seconds=300,
+        # CPU/Memory alerts
+        rules.extend(
+            (
+                AlertRule(
+                    name="high_cpu_usage",
+                    condition="cpu_percent >= 80.0",
+                    level=AlertLevel.WARNING,
+                    message_template="High CPU usage detected: {cpu_percent:.1f}%",
+                    channels=[AlertChannel.LOG],
+                    throttle_seconds=600,
+                ),
+                AlertRule(
+                    name="high_memory_usage",
+                    condition="memory_percent >= 85.0",
+                    level=AlertLevel.WARNING,
+                    message_template="High memory usage detected: {memory_percent:.1f}%",
+                    channels=[AlertChannel.LOG],
+                    throttle_seconds=600,
+                ),
             )
         )
 
@@ -161,7 +161,7 @@ class AlertManager:
 
             try:
                 # Evaluate condition
-                if self._evaluate_condition(rule.condition, metrics):
+                if self._safe_eval_condition(rule.condition, metrics):
                     await self._trigger_alert(rule, metrics, current_time)
                 else:
                     # Check if we should resolve existing alert
@@ -170,35 +170,100 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Error evaluating alert rule '{rule.name}': {e}")
 
-    def _evaluate_condition(self, condition: str, metrics: dict[str, Any]) -> bool:
-        """Evaluate alert condition against metrics."""
+    def _eval_expression(self, node: ast.Expression, operators: dict) -> Any:
+        """Evaluate an expression node."""
+        return self._eval_node(node.body, operators)
+
+    def _eval_compare(self, node: ast.Compare, operators: dict) -> bool:
+        """Evaluate a comparison node."""
+        left = self._eval_node(node.left, operators)
+        comparisons = []
+        for op, comparator in zip(node.ops, node.comparators):
+            right = self._eval_node(comparator, operators)
+            if type(op) in operators:
+                comparisons.append(operators[type(op)](left, right))
+            else:
+                raise ValueError(f"Unsupported operator: {op}")
+            left = right
+        return all(comparisons)
+
+    def _eval_bool_op(self, node: ast.BoolOp, operators: dict) -> Any:
+        """Evaluate a boolean operation node."""
+        values = [self._eval_node(value, operators) for value in node.values]
+        if type(node.op) in operators:
+            result = values[0]
+            for value in values[1:]:
+                result = operators[type(node.op)](result, value)
+            return result
+        else:
+            raise ValueError(f"Unsupported boolean operator: {node.op}")
+
+    def _eval_unary_op(self, node: ast.UnaryOp, operators: dict) -> Any:
+        """Evaluate a unary operation node."""
+        if isinstance(node.op, ast.Not) and type(node.op) in operators:
+            return operators[type(node.op)](self._eval_node(node.operand, operators))
+        else:
+            raise ValueError(f"Unsupported unary operator: {node.op}")
+
+    def _eval_constant(self, node: ast.Constant) -> Any:
+        """Evaluate a constant node."""
+        return node.value
+
+    def _eval_name(self, node: ast.Name, context: dict[str, Any]) -> Any:
+        """Evaluate a name node."""
+        if node.id in context:
+            return context[node.id]
+        else:
+            raise ValueError(f"Undefined variable: {node.id}")
+
+    def _eval_node(
+        self, node: ast.AST, operators: dict, context: dict[str, Any] | None = None
+    ) -> Any:
+        """Recursively evaluate an AST node."""
+        if isinstance(node, ast.Expression):
+            return self._eval_expression(node, operators)
+        elif isinstance(node, ast.Compare):
+            return self._eval_compare(node, operators)
+        elif isinstance(node, ast.BoolOp):
+            return self._eval_bool_op(node, operators)
+        elif isinstance(node, ast.UnaryOp):
+            return self._eval_unary_op(node, operators)
+        elif isinstance(node, ast.Constant):
+            return self._eval_constant(node)
+        elif isinstance(node, ast.Num):  # For Python < 3.8
+            return node.n
+        elif isinstance(node, ast.Str):  # For Python < 3.8
+            return node.s
+        elif isinstance(node, ast.Name):
+            if context is None:
+                raise ValueError("Context required for name evaluation")
+            return self._eval_name(node, context)
+        else:
+            raise ValueError(f"Unsupported node type: {type(node)}")
+
+    def _safe_eval_condition(self, condition: str, context: dict[str, Any]) -> bool:
+        """Safely evaluate an alert condition using AST parsing.
+
+        Supports basic comparisons and logical operators only.
+        """
         try:
-            # Create safe evaluation context
-            context = {
-                # Health metrics
-                "consecutive_health_failures": metrics.get(
-                    "consecutive_health_failures", 0
-                ),
-                "health_response_time": metrics.get("health_response_time", 0),
-                # Circuit breaker metrics
-                "circuit_state": metrics.get("circuit_state", "closed"),
-                "circuit_failure_rate": metrics.get("circuit_failure_rate", 0),
-                "circuit_failures": metrics.get("circuit_failures", 0),
-                # Resource metrics
-                "cpu_percent": metrics.get("cpu_percent", 0),
-                "memory_percent": metrics.get("memory_percent", 0),
-                "cpu_threshold": config.monitoring.cpu_threshold_percent,
-                "memory_threshold": config.monitoring.memory_threshold_percent,
-                # Process metrics
-                "process_status": metrics.get("process_status", "unknown"),
-                "uptime_seconds": metrics.get("uptime_seconds", 0),
-                # Request metrics
-                "error_rate": metrics.get("error_rate", 0),
-                "avg_response_time": metrics.get("avg_response_time", 0),
+            # Parse the condition into an AST
+            tree = ast.parse(condition, mode="eval")
+
+            # Define allowed operations
+            operators = {
+                ast.Eq: operator.eq,
+                ast.NotEq: operator.ne,
+                ast.Lt: operator.lt,
+                ast.LtE: operator.le,
+                ast.Gt: operator.gt,
+                ast.GtE: operator.ge,
+                ast.And: operator.and_,
+                ast.Or: operator.or_,
+                ast.Not: operator.not_,
             }
 
-            # Safe evaluation (only allow basic comparisons and logical operators)
-            result = eval(condition, {"__builtins__": {}}, context)
+            result = self._eval_node(tree, operators, context)
             return bool(result)
 
         except Exception as e:
@@ -220,15 +285,14 @@ class AlertManager:
             # Format message
             message = self._format_alert_message(rule.message_template, metrics)
 
-            # Create alert
             alert = Alert(
                 id=alert_id,
-                title=rule.name.replace("_", " ").title(),
-                message=message,
+                rule_name=rule.name,
                 level=rule.level,
+                message=message,
                 timestamp=timestamp,
-                source="canvas_monitoring",
-                labels={"rule": rule.name},
+                source="excalidraw-mcp",
+                labels=metrics,
             )
 
             # Store alert
@@ -240,7 +304,7 @@ class AlertManager:
             # Send alert through configured channels
             await self._send_alert(alert, rule.channels)
 
-            logger.info(f"Alert triggered: {alert.title} - {alert.message}")
+            logger.info(f"Alert triggered: {alert.rule_name} - {alert.message}")
 
     async def _resolve_alert(self, rule_name: str, timestamp: float) -> None:
         """Resolve an active alert."""
@@ -253,7 +317,7 @@ class AlertManager:
                 # Remove from active alerts
                 del self._active_alerts[rule_name]
 
-                logger.info(f"Alert resolved: {alert.title}")
+                logger.info(f"Alert resolved: {alert.rule_name}")
 
     def _should_throttle_alert(self, rule_name: str, timestamp: float) -> bool:
         """Check if alert should be throttled."""
@@ -309,7 +373,9 @@ class AlertManager:
             AlertLevel.CRITICAL: logger.critical,
         }.get(alert.level, logger.info)
 
-        log_level(f"ALERT [{alert.level.value.upper()}] {alert.title}: {alert.message}")
+        log_level(
+            f"ALERT [{alert.level.value.upper()}] {alert.rule_name}: {alert.message}"
+        )
 
     async def _send_webhook_alert(self, alert: Alert) -> None:
         """Send alert via webhook."""
@@ -326,7 +392,7 @@ class AlertManager:
 
         payload = {
             "alert_id": alert.id,
-            "title": alert.title,
+            "title": alert.rule_name,
             "message": alert.message,
             "level": alert.level.value,
             "timestamp": alert.timestamp,
@@ -347,9 +413,9 @@ class AlertManager:
         """Manually trigger an alert."""
         alert = Alert(
             id=f"manual_{int(time.time())}",
-            title=title,
-            message=message,
+            rule_name=title,
             level=level,
+            message=message,
             timestamp=time.time(),
             source="manual",
         )

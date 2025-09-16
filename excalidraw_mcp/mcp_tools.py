@@ -73,7 +73,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Canvas sync failed for {operation}: {e}")
-            raise RuntimeError(f"Failed to sync {operation} to canvas: {str(e)}")
+            raise RuntimeError(f"Failed to sync {operation} to canvas: {e}")
 
     # Element Management Tools
 
@@ -101,7 +101,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element creation failed: {e}")
-            return {"success": False, "error": f"Element creation failed: {str(e)}"}
+            return {"success": False, "error": f"Element creation failed: {e}"}
 
     async def update_element(self, request: BaseModel) -> dict[str, Any]:
         """Update an existing element."""
@@ -129,7 +129,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element update failed: {e}")
-            return {"success": False, "error": f"Element update failed: {str(e)}"}
+            return {"success": False, "error": f"Element update failed: {e}"}
 
     async def delete_element(self, element_id: str) -> dict[str, Any]:
         """Delete an element from the canvas."""
@@ -150,7 +150,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element deletion failed: {e}")
-            return {"success": False, "error": f"Element deletion failed: {str(e)}"}
+            return {"success": False, "error": f"Element deletion failed: {e}"}
 
     async def query_elements(self, request: BaseModel) -> dict[str, Any]:
         """Query elements from the canvas."""
@@ -174,7 +174,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element query failed: {e}")
-            return {"success": False, "error": f"Element query failed: {str(e)}"}
+            return {"success": False, "error": f"Element query failed: {e}"}
 
     # Batch Operations
 
@@ -226,7 +226,7 @@ class MCPToolsManager:
             logger.error(f"Batch element creation failed: {e}")
             return {
                 "success": False,
-                "error": f"Batch element creation failed: {str(e)}",
+                "error": f"Batch element creation failed: {e}",
             }
 
     # Element Organization Tools
@@ -254,7 +254,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element grouping failed: {e}")
-            return {"success": False, "error": f"Element grouping failed: {str(e)}"}
+            return {"success": False, "error": f"Element grouping failed: {e}"}
 
     async def ungroup_elements(self, group_id: str) -> dict[str, Any]:
         """Ungroup a group of elements."""
@@ -274,7 +274,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element ungrouping failed: {e}")
-            return {"success": False, "error": f"Element ungrouping failed: {str(e)}"}
+            return {"success": False, "error": f"Element ungrouping failed: {e}"}
 
     async def align_elements(self, request: BaseModel) -> dict[str, Any]:
         """Align elements to a specific position."""
@@ -302,7 +302,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element alignment failed: {e}")
-            return {"success": False, "error": f"Element alignment failed: {str(e)}"}
+            return {"success": False, "error": f"Element alignment failed: {e}"}
 
     async def distribute_elements(self, request: BaseModel) -> dict[str, Any]:
         """Distribute elements evenly."""
@@ -335,7 +335,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element distribution failed: {e}")
-            return {"success": False, "error": f"Element distribution failed: {str(e)}"}
+            return {"success": False, "error": f"Element distribution failed: {e}"}
 
     async def lock_elements(self, element_ids: list[str]) -> dict[str, Any]:
         """Lock elements to prevent modification."""
@@ -353,7 +353,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element locking failed: {e}")
-            return {"success": False, "error": f"Element locking failed: {str(e)}"}
+            return {"success": False, "error": f"Element locking failed: {e}"}
 
     async def unlock_elements(self, element_ids: list[str]) -> dict[str, Any]:
         """Unlock elements to allow modification."""
@@ -374,7 +374,7 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Element unlocking failed: {e}")
-            return {"success": False, "error": f"Element unlocking failed: {str(e)}"}
+            return {"success": False, "error": f"Element unlocking failed: {e}"}
 
     # Resource Access
 
@@ -406,4 +406,4 @@ class MCPToolsManager:
 
         except Exception as e:
             logger.error(f"Resource retrieval failed: {e}")
-            return {"success": False, "error": f"Resource retrieval failed: {str(e)}"}
+            return {"success": False, "error": f"Resource retrieval failed: {e}"}

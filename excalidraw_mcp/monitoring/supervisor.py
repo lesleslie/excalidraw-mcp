@@ -7,6 +7,7 @@ from collections.abc import Awaitable, Callable
 from typing import Any
 
 from ..config import config
+from ..retry_utils import RetryConfig, retry_async
 from .alerts import AlertManager
 from .circuit_breaker import CircuitBreaker
 from .health_checker import HealthChecker, HealthCheckResult, HealthStatus
@@ -80,25 +81,46 @@ class MonitoringSupervisor:
 
     async def _monitoring_loop(self) -> None:
         """Main monitoring loop that coordinates health checks, metrics, and alerts."""
+        # Configure retry for monitoring loop
+        retry_config = RetryConfig(
+            max_attempts=5,  # Limit retries to prevent infinite loops
+            max_delay=30.0,
+            exponential_base=config.server.sync_retry_exponential_base,
+            jitter=config.server.sync_retry_jitter,
+        )
+
+        async def _monitoring_cycle() -> None:
+            loop_start_time = time.time()
+
+            # Perform health check
+            health_result = await self._perform_monitored_health_check()
+
+            # Handle health status changes
+            await self._handle_health_status(health_result)
+
+            # Collect and analyze metrics
+            metrics = await self._collect_monitoring_metrics(health_result)
+
+            # Check alert conditions
+            await self.alert_manager.check_conditions(metrics)
+
+            # Log monitoring cycle completion
+            cycle_duration = time.time() - loop_start_time
+            logger.debug(f"Monitoring cycle completed in {cycle_duration:.2f}s")
+
+        async def _on_retry(attempt: int, exception: Exception) -> None:
+            logger.warning(
+                f"Monitoring cycle failed (attempt {attempt}), retrying... Error: {exception}"
+            )
+
         while self._running:
             try:
-                loop_start_time = time.time()
-
-                # Perform health check
-                health_result = await self._perform_monitored_health_check()
-
-                # Handle health status changes
-                await self._handle_health_status(health_result)
-
-                # Collect and analyze metrics
-                metrics = await self._collect_monitoring_metrics(health_result)
-
-                # Check alert conditions
-                await self.alert_manager.check_conditions(metrics)
-
-                # Log monitoring cycle completion
-                cycle_duration = time.time() - loop_start_time
-                logger.debug(f"Monitoring cycle completed in {cycle_duration:.2f}s")
+                await retry_async(
+                    _monitoring_cycle,
+                    retry_config=retry_config,
+                    retry_on_exceptions=(Exception,),
+                    on_retry=_on_retry,
+                )
 
                 # Wait for next cycle
                 await asyncio.sleep(config.monitoring.health_check_interval_seconds)
@@ -107,7 +129,7 @@ class MonitoringSupervisor:
                 break
             except Exception as e:
                 logger.error(f"Error in monitoring loop: {e}")
-                await asyncio.sleep(5)  # Brief pause before retrying
+                await asyncio.sleep(5)  # Brief pause before continuing
 
     async def _perform_monitored_health_check(self) -> HealthCheckResult:
         """Perform health check with metrics tracking."""
@@ -202,8 +224,29 @@ class MonitoringSupervisor:
             self._restart_count += 1
             self.metrics_collector.increment_counter("canvas_restarts_total")
 
-            # Attempt restart
-            restart_success = await process_manager.restart()
+            # Configure retry for restart attempts
+            retry_config = RetryConfig(
+                base_delay=2.0,
+                max_delay=10.0,
+                exponential_base=config.server.sync_retry_exponential_base,
+                jitter=config.server.sync_retry_jitter,
+            )
+
+            async def _perform_restart() -> bool:
+                result = await process_manager.restart()
+                if not result:
+                    raise RuntimeError("Restart failed")
+                return result
+
+            # Attempt restart with retries
+            try:
+                restart_success = await retry_async(
+                    _perform_restart,
+                    retry_config=retry_config,
+                    retry_on_exceptions=(RuntimeError, Exception),
+                )
+            except Exception:
+                restart_success = False
 
             if restart_success:
                 logger.info("Canvas server restart successful")
