@@ -114,9 +114,11 @@ class MetricsCollector:
         self._counters: dict[str, Counter] = {}
         self._gauges: dict[str, Gauge] = {}
         self._histograms: dict[str, Histogram] = {}
-        self._history: dict[str, deque[MetricPoint]] = defaultdict(
-            lambda: deque(maxlen=100)
-        )  # type: ignore
+
+        def _create_deque() -> deque[MetricPoint]:
+            return deque(maxlen=100)
+
+        self._history: dict[str, deque[MetricPoint]] = defaultdict(_create_deque)
         self._collection_task: asyncio.Task[Any] | None = None
         self._running = False
         self._lock = asyncio.Lock()
