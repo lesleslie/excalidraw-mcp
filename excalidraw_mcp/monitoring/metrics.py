@@ -114,8 +114,10 @@ class MetricsCollector:
         self._counters: dict[str, Counter] = {}
         self._gauges: dict[str, Gauge] = {}
         self._histograms: dict[str, Histogram] = {}
-        self._history: dict[str, deque] = defaultdict(lambda: deque(maxlen=100))
-        self._collection_task: asyncio.Task | None = None
+        self._history: dict[str, deque[MetricPoint]] = defaultdict(
+            lambda: deque(maxlen=100)
+        )  # type: ignore
+        self._collection_task: asyncio.Task[Any] | None = None
         self._running = False
         self._lock = asyncio.Lock()
 
@@ -292,7 +294,9 @@ class MetricsCollector:
             elements = await http_client.get_json("/api/elements")
             if elements is not None:
                 # Elements is a dict with an 'elements' key containing the list
-                element_list: list = elements.get("elements", []) if isinstance(elements, dict) else []
+                element_list: list[Any] = (
+                    elements.get("elements", []) if hasattr(elements, "get") else []
+                )
                 element_count = len(element_list)
                 self.set_gauge("canvas_elements_count", element_count)
 

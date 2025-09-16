@@ -81,7 +81,7 @@ class MCPToolsManager:
         """Create a new element on the canvas."""
         try:
             # Create element with factory
-            element_data = self.element_factory.create_element(request.dict())
+            element_data = self.element_factory.create_element(request.model_dump())
 
             # Sync to canvas
             result = await self._sync_to_canvas("create", element_data)
@@ -106,7 +106,7 @@ class MCPToolsManager:
     async def update_element(self, request: BaseModel) -> dict[str, Any]:
         """Update an existing element."""
         try:
-            request_data = request.dict()
+            request_data = request.model_dump()
             element_id = request_data.get("id")
 
             if not element_id:
@@ -156,7 +156,7 @@ class MCPToolsManager:
         """Query elements from the canvas."""
         try:
             # Sync to canvas
-            result = await self._sync_to_canvas("query", request.dict())
+            result = await self._sync_to_canvas("query", request.model_dump())
 
             if result:
                 elements = result.get("elements", [])
@@ -181,7 +181,7 @@ class MCPToolsManager:
     async def batch_create_elements(self, request: BaseModel) -> dict[str, Any]:
         """Create multiple elements in one operation."""
         try:
-            request_data = request.dict()
+            request_data = request.model_dump()
             elements_data = request_data.get("elements", [])
 
             if not elements_data:
@@ -279,7 +279,7 @@ class MCPToolsManager:
     async def align_elements(self, request: BaseModel) -> dict[str, Any]:
         """Align elements to a specific position."""
         try:
-            request_data = request.dict()
+            request_data = request.model_dump()
             element_ids = request_data.get("elementIds", [])
             alignment = request_data.get("alignment")
 
@@ -307,7 +307,7 @@ class MCPToolsManager:
     async def distribute_elements(self, request: BaseModel) -> dict[str, Any]:
         """Distribute elements evenly."""
         try:
-            request_data = request.dict()
+            request_data = request.model_dump()
             element_ids = request_data.get("elementIds", [])
             direction = request_data.get("direction")
 

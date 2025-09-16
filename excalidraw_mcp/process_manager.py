@@ -7,7 +7,7 @@ import os
 import signal
 import subprocess
 import time
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
 
@@ -23,17 +23,17 @@ class CanvasProcessManager:
     """Manages the canvas server process lifecycle with monitoring hooks."""
 
     def __init__(self) -> None:
-        self.process: subprocess.Popen | None = None
+        self.process: subprocess.Popen[Any] | None = None
         self.process_pid: int | None = None
         self._startup_lock = asyncio.Lock()
         self._start_time: float | None = None
         self._restart_count = 0
 
         # Event hooks for monitoring integration
-        self._on_start_callbacks: list[Callable] = []
-        self._on_stop_callbacks: list[Callable] = []
-        self._on_restart_callbacks: list[Callable] = []
-        self._on_health_change_callbacks: list[Callable] = []
+        self._on_start_callbacks: list[Callable[..., Awaitable[None]]] = []
+        self._on_stop_callbacks: list[Callable[..., Awaitable[None]]] = []
+        self._on_restart_callbacks: list[Callable[..., Awaitable[None]]] = []
+        self._on_health_change_callbacks: list[Callable[..., Awaitable[None]]] = []
 
         # Register cleanup handlers
         atexit.register(self.cleanup)
@@ -132,7 +132,7 @@ class CanvasProcessManager:
         """Wait for canvas server to become healthy."""
         logger.info("Waiting for canvas server to become healthy...")
 
-        for attempt in range(config.server.startup_timeout_seconds):
+        for _ in range(config.server.startup_timeout_seconds):
             if not self._is_process_running():
                 logger.error("Canvas server process died during startup")
                 return False
@@ -244,7 +244,7 @@ class CanvasProcessManager:
         logger.info("Stopping canvas server...")
         self._terminate_current_process()
 
-    def get_status(self) -> dict:
+    def get_status(self) -> dict[str, Any]:
         """Get comprehensive process status information."""
         is_running = self._is_process_running()
         uptime = (
@@ -262,23 +262,27 @@ class CanvasProcessManager:
         }
 
     # Event hook management methods
-    def add_start_callback(self, callback: Callable) -> None:
+    def add_start_callback(self, callback: Callable[..., Awaitable[None]]) -> None:
         """Add callback for process start events."""
         self._on_start_callbacks.append(callback)
 
-    def add_stop_callback(self, callback: Callable) -> None:
+    def add_stop_callback(self, callback: Callable[..., Awaitable[None]]) -> None:
         """Add callback for process stop events."""
         self._on_stop_callbacks.append(callback)
 
-    def add_restart_callback(self, callback: Callable) -> None:
+    def add_restart_callback(self, callback: Callable[..., Awaitable[None]]) -> None:
         """Add callback for process restart events."""
         self._on_restart_callbacks.append(callback)
 
-    def add_health_change_callback(self, callback: Callable) -> None:
+    def add_health_change_callback(
+        self, callback: Callable[..., Awaitable[None]]
+    ) -> None:
         """Add callback for health status changes."""
         self._on_health_change_callbacks.append(callback)
 
-    async def _trigger_callbacks(self, callbacks: list[Callable], *args: Any) -> None:
+    async def _trigger_callbacks(
+        self, callbacks: list[Callable[..., Awaitable[None]]], *args: Any
+    ) -> None:
         """Trigger a list of callbacks with error handling."""
         for callback in callbacks:
             try:

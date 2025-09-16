@@ -211,12 +211,12 @@ class Config:
         project_path = Path.cwd()
         pyproject_path = project_path / "pyproject.toml"
 
-        if not pyproject_path.exists() or not tomli:
+        if not pyproject_path.exists() or not _tomli:
             return
 
         try:
             with pyproject_path.open("rb") as f:
-                pyproject_data = tomli.load(f)
+                pyproject_data = _tomli.load(f)
 
             mcp_config = pyproject_data.get("tool", {}).get("excalidraw-mcp", {})
 
@@ -259,8 +259,12 @@ class Config:
         self.server.__post_init__()
 
         # Performance config
-        if os.getenv("MAX_ELEMENTS"):
-            self.performance.max_elements_per_canvas = int(os.getenv("MAX_ELEMENTS"))
+        max_elements = os.getenv("MAX_ELEMENTS")
+        if max_elements:
+            try:
+                self.performance.max_elements_per_canvas = int(max_elements)
+            except ValueError:
+                pass
 
         # Logging config
         self.logging.level = os.getenv("LOG_LEVEL", self.logging.level)
@@ -285,18 +289,28 @@ class Config:
             os.getenv("CIRCUIT_BREAKER_ENABLED", "true").lower() == "true"
         )
 
-        if os.getenv("HEALTH_CHECK_INTERVAL"):
-            self.monitoring.health_check_interval_seconds = int(
-                os.getenv("HEALTH_CHECK_INTERVAL")
-            )
+        health_check_interval = os.getenv("HEALTH_CHECK_INTERVAL")
+        if health_check_interval:
+            try:
+                self.monitoring.health_check_interval_seconds = int(
+                    health_check_interval
+                )
+            except ValueError:
+                pass
 
         cpu_threshold = os.getenv("CPU_THRESHOLD")
         if cpu_threshold:
-            self.monitoring.cpu_threshold_percent = float(cpu_threshold)
+            try:
+                self.monitoring.cpu_threshold_percent = float(cpu_threshold)
+            except ValueError:
+                pass
 
         memory_threshold = os.getenv("MEMORY_THRESHOLD")
         if memory_threshold:
-            self.monitoring.memory_threshold_percent = float(memory_threshold)
+            try:
+                self.monitoring.memory_threshold_percent = float(memory_threshold)
+            except ValueError:
+                pass
 
     def _validate(self) -> None:
         """Validate configuration values."""

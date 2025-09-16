@@ -2,7 +2,7 @@
 
 import logging
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Any
 
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class ElementFactory:
         element_id = str(uuid.uuid4())
 
         # Get current timestamp
-        current_time = datetime.utcnow().isoformat() + "Z"
+        current_time = datetime.now(UTC).isoformat() + "Z"
 
         # Base element structure
         element = {
@@ -49,7 +49,7 @@ class ElementFactory:
             raise ValueError("Element ID is required for updates")
 
         # Increment version and update timestamp
-        current_time = datetime.utcnow().isoformat() + "Z"
+        current_time = datetime.now(UTC).isoformat() + "Z"
 
         # Prepare update payload
         update_payload = {"id": element_id, "updatedAt": current_time}
@@ -144,7 +144,7 @@ class ElementFactory:
 
     def validate_element_data(self, element_data: dict[str, Any]) -> dict[str, Any]:
         """Validate and normalize element data."""
-        errors = []
+        errors: list[str] = []
 
         # Required fields
         if "type" not in element_data:
@@ -171,7 +171,7 @@ class ElementFactory:
         return element_data
 
     def _validate_element_type(
-        self, element_data: dict[str, Any], errors: list
+        self, element_data: dict[str, Any], errors: list[str]
     ) -> None:
         """Validate element type."""
         valid_types = [
@@ -192,7 +192,9 @@ class ElementFactory:
                 f"Invalid element type. Must be one of: {', '.join(valid_types)}"
             )
 
-    def _validate_coordinates(self, element_data: dict[str, Any], errors: list) -> None:
+    def _validate_coordinates(
+        self, element_data: dict[str, Any], errors: list[str]
+    ) -> None:
         """Validate coordinates."""
         for coord in ["x", "y"]:
             if coord in element_data:
@@ -201,7 +203,9 @@ class ElementFactory:
                 except (ValueError, TypeError):
                     errors.append(f"Invalid {coord} coordinate: must be a number")
 
-    def _validate_dimensions(self, element_data: dict[str, Any], errors: list) -> None:
+    def _validate_dimensions(
+        self, element_data: dict[str, Any], errors: list[str]
+    ) -> None:
         """Validate dimensions."""
         for dimension in ["width", "height"]:
             if dimension in element_data and element_data[dimension] is not None:
@@ -214,9 +218,6 @@ class ElementFactory:
 
     def _is_valid_color(self, color: str) -> bool:
         """Validate hex color format."""
-        if not isinstance(color, str):
-            return False  # type: ignore[unreachable]
-
         # Allow transparent
         if color.lower() == "transparent":
             return True
@@ -232,7 +233,7 @@ class ElementFactory:
         # Default case - invalid color format
         return False
 
-    def _validate_colors(self, element_data: dict[str, Any], errors: list) -> None:
+    def _validate_colors(self, element_data: dict[str, Any], errors: list[str]) -> None:
         """Validate colors."""
         for color_prop in ["strokeColor", "backgroundColor"]:
             if color_prop in element_data:
@@ -241,7 +242,7 @@ class ElementFactory:
                     errors.append(f"Invalid {color_prop}: must be a valid hex color")
 
     def _validate_numeric_ranges(
-        self, element_data: dict[str, Any], errors: list
+        self, element_data: dict[str, Any], errors: list[str]
     ) -> None:
         """Validate numeric properties are within acceptable ranges."""
         # Stroke width

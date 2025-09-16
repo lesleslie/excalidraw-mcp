@@ -3,6 +3,7 @@
 import asyncio
 import logging
 import time
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 from ..config import config
@@ -26,13 +27,13 @@ class MonitoringSupervisor:
 
         # Supervisor state
         self._running = False
-        self._monitoring_task: asyncio.Task | None = None
+        self._monitoring_task: asyncio.Task[Any] | None = None
         self._restart_count = 0
         self._start_time = time.time()
 
         # Event hooks for external integration
-        self._on_health_change_callbacks: list = []
-        self._on_restart_callbacks: list = []
+        self._on_health_change_callbacks: list[Callable[..., Awaitable[None]]] = []
+        self._on_restart_callbacks: list[Callable[..., Awaitable[None]]] = []
 
     async def start(self) -> None:
         """Start monitoring supervision."""
@@ -293,11 +294,13 @@ class MonitoringSupervisor:
 
         return metrics
 
-    def add_health_change_callback(self, callback: Any) -> None:
+    def add_health_change_callback(
+        self, callback: Callable[..., Awaitable[None]]
+    ) -> None:
         """Add callback for health status changes."""
         self._on_health_change_callbacks.append(callback)
 
-    def add_restart_callback(self, callback: Any) -> None:
+    def add_restart_callback(self, callback: Callable[..., Awaitable[None]]) -> None:
         """Add callback for restart events."""
         self._on_restart_callbacks.append(callback)
 
@@ -356,7 +359,7 @@ class MonitoringSupervisor:
         """Get summary of all collected metrics."""
         return self.metrics_collector.get_all_metrics()
 
-    def get_recent_alerts(self, limit: int = 10) -> list:
+    def get_recent_alerts(self, limit: int = 10) -> list[Any]:
         """Get recent alert history."""
         return self.alert_manager.get_alert_history(limit=limit)
 

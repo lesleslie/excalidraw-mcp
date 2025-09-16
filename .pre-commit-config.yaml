@@ -11,22 +11,22 @@ repos:
         name: skylos-dead-code-detection
         entry: skylos
         language: system
-        args: ["excalidraw_mcp"]
+        args: ["src"]
         pass_filenames: false
         stages: ["pre-push", "manual"]
       - id: zuban
         name: zuban-type-checking
         entry: uv run zuban check
         language: system
-        args: ["--config-file", "mypy.ini", "./excalidraw_mcp"]
+        args: ["--config-file", "mypy.ini", "./src"]
         pass_filenames: false
         stages: ["pre-push", "manual"]
       - id: pyright
         name: pyright-type-checking
         entry: uv run pyright
         language: system
-        files: ^excalidraw_mcp/.*\.py$
-        exclude: ^excalidraw_mcp/(mcp|plugins)/.*\.py$|excalidraw_mcp/code_cleaner\.py$
+        files: ^src/.*\.py$
+        exclude: ^crackerjack/(mcp|plugins)/.*\.py$|crackerjack/code_cleaner\.py$
         stages: ["pre-push", "manual"]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -61,7 +61,7 @@ repos:
     hooks:
       - id: bandit
         args: ["-c", "pyproject.toml", "-r", "-ll"]
-        files: ^excalidraw_mcp/.*\.py$
+        files: ^src/.*\.py$
         stages: ["pre-push", "manual"]
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.1
@@ -93,7 +93,7 @@ repos:
     hooks:
       - id: complexipy
         args: ["-d", "low", "--max-complexity-allowed", "15"]
-        files: ^excalidraw_mcp/.*\.py$
+        files: ^src/.*\.py$
         exclude: ^(\.venv/|tests/)
         stages: ["pre-push", "manual"]
   - repo: https://github.com/dosisod/refurb
@@ -101,6 +101,6 @@ repos:
     hooks:
       - id: refurb
         args: ["--ignore", "FURB184", "--ignore", "FURB120"]
-        files: ^excalidraw_mcp/.*\.py$
+        files: ^src/.*\.py$
         exclude: ^tests/.*\.py$
         stages: ["pre-push", "manual"]

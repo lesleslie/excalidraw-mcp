@@ -65,7 +65,7 @@ class CircuitBreaker:
         self._half_open_calls = 0
         self._lock = asyncio.Lock()
 
-    async def call(self, func: Callable, *args: Any, **kwargs: Any) -> Any:
+    async def call(self, func: Callable[..., Any], *args: Any, **kwargs: Any) -> Any:
         """Execute function with circuit breaker protection."""
         async with self._lock:
             # Check if we should allow the call
@@ -235,7 +235,7 @@ class CircuitBreaker:
         """Check if circuit is half-open."""
         return self._state == CircuitState.HALF_OPEN
 
-    def get_stats(self) -> dict:
+    def get_stats(self) -> dict[str, Any]:
         """Get circuit breaker statistics."""
         failure_rate = (
             self._stats.failed_calls / max(self._stats.total_calls, 1) * 100
