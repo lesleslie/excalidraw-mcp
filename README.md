@@ -1,5 +1,9 @@
 # Excalidraw MCP Server: AI-Powered Live Visual Diagramming
 
+[![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
+[![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
+![Coverage](https://img.shields.io/badge/coverage-77%25-yellow)
+
 > **🙏 Acknowledgments**
 > This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).
 > Special thanks to the original contributors for creating the foundation that made this enhanced version possible.
@@ -21,7 +25,6 @@ A **dual-language MCP (Model Context Protocol) server** that combines **Excalidr
 > **See MCP Excalidraw in Action!**
 
 [![MCP Excalidraw Demo](https://img.youtube.com/vi/RRN7AF7QIew/maxresdefault.jpg)](https://youtu.be/RRN7AF7QIew)
-![Coverage](https://img.shields.io/badge/coverage-0.0%25-red)
 
 *Watch how AI agents create and manipulate diagrams in real-time on the live canvas*
 
