@@ -2,7 +2,7 @@
 
 [![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
 [![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
-![Coverage](https://img.shields.io/badge/coverage-77.0%25-yellow)
+![Coverage](https://img.shields.io/badge/coverage-0.0%25-red)
 
 > **🙏 Acknowledgments**
 > This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).
@@ -137,12 +137,23 @@ npm run production
 |--------|-------------|
 | `npm start` | Build and start MCP server (`dist/index.js`) |
 | `npm run canvas` | Build and start canvas server (`dist/server.js`) |
+| `npm run canvas-bg` | Build and start canvas server in background |
+| `npm run start-canvas` | Build and start canvas server |
+| `npm run canvas-for-npx` | Special script for npx usage |
+| `npm run start-all` | Start both servers together |
 | `npm run build` | Build both frontend and TypeScript backend |
 | `npm run build:frontend` | Build React frontend only |
 | `npm run build:server` | Compile TypeScript backend to JavaScript |
+| `npm run build:types` | Generate TypeScript declaration files only |
 | `npm run dev` | Start TypeScript watch mode + Vite dev server |
+| `npm run dev:server` | Start TypeScript in watch mode only |
 | `npm run type-check` | Run TypeScript type checking without compilation |
 | `npm run production` | Build + start in production mode |
+| `npm test` | Run all tests |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
+| `npm run test:unit` | Run unit tests only |
+| `npm run test:integration` | Run integration tests only |
 
 ## 🎯 Usage Guide
 
@@ -374,13 +385,20 @@ The canvas server provides these REST endpoints:
 - **WebSocket**: Type-safe real-time client communication
 - **Element Storage**: In-memory with comprehensive type definitions
 - **CORS**: Cross-origin support with proper typing
+- **Middleware**: Custom Express middleware components
+- **Storage**: Element storage implementations
+- **WebSocket**: Dedicated WebSocket server components
+- **Utils**: Utility functions for various operations
 
-### **MCP Server** (`src/index.ts` → `dist/index.js`)
+### **MCP Server** (`excalidraw_mcp/server.py`)
 
-- **TypeScript MCP Protocol**: Type-safe Model Context Protocol implementation
-- **Canvas Sync**: Strongly typed HTTP requests to canvas server
-- **Element Management**: Full CRUD operations with comprehensive type checking
-- **Batch Support**: Type-safe complex diagram creation
+- **Python FastMCP**: Python-based Model Context Protocol implementation
+- **Canvas Sync**: HTTP requests to canvas server for element synchronization
+- **Element Management**: Full CRUD operations for Excalidraw elements
+- **Batch Support**: Complex diagram creation through batch operations
+- **Process Management**: Canvas server lifecycle management
+- **HTTP Client**: Async HTTP client with retry mechanisms
+- **Configuration**: Centralized configuration management
 
 ### **Type System** (`src/types.ts`)
 
@@ -426,35 +444,53 @@ The canvas server provides these REST endpoints:
 
 ```
 excalidraw-mcp/
+├── examples/                 # Usage examples
 ├── excalidraw_mcp/           # Python FastMCP server
-│   ├── server.py            # Main MCP server (Python)
-│   ├── config.py            # Configuration management
-│   ├── element_factory.py   # Element creation utilities
-│   ├── http_client.py       # HTTP client for canvas server
-│   └── process_manager.py   # Canvas server lifecycle management
-├── frontend/                # React frontend
+│   ├── monitoring/           # Monitoring and health check utilities
+│   ├── server.py             # Main MCP server (Python)
+│   ├── config.py             # Configuration management
+│   ├── element_factory.py    # Element creation utilities
+│   ├── http_client.py        # HTTP client for canvas server
+│   ├── process_manager.py    # Canvas server lifecycle management
+│   ├── retry_utils.py        # Retry mechanisms for failed operations
+│   ├── cli.py                # Command-line interface
+│   ├── mcp_tools.py          # MCP tool implementations
+│   ├── __init__.py           # Package initialization
+│   └── __main__.py           # Main entry point
+├── frontend/                 # React frontend
 │   ├── src/
-│   │   ├── App.tsx          # Main React component (TypeScript)
-│   │   └── main.tsx         # React entry point (TypeScript)
-│   └── index.html           # HTML template
-├── src/                     # TypeScript canvas server
-│   ├── server.ts            # Express server + WebSocket (TypeScript)
-│   ├── types.ts             # Type definitions
-│   └── utils/
-│       └── logger.ts        # Logging utilities
-├── dist/                    # Compiled TypeScript output
-│   ├── server.js            # Compiled canvas server
-│   ├── types.js             # Compiled type definitions
-│   └── frontend/            # Built React frontend
-├── tests/                   # Python test suite
-│   ├── unit/                # Unit tests
+│   │   ├── App.tsx           # Main React component (TypeScript)
+│   │   └── main.tsx          # React entry point (TypeScript)
+│   └── index.html            # HTML template
+├── src/                      # TypeScript canvas server
+│   ├── middleware/           # Express middleware components
+│   ├── storage/              # Element storage implementations
+│   ├── utils/                # Utility functions
+│   ├── websocket/            # WebSocket server components
+│   ├── config.ts             # Server configuration
+│   ├── server.ts             # Express server + WebSocket (TypeScript)
+│   └── types.ts              # Type definitions
+├── dist/                     # Compiled TypeScript output
+│   ├── server.js             # Compiled canvas server
+│   ├── server.d.ts           # Server type definitions
+│   ├── server.js.map         # Server source maps
+│   ├── types.js              # Compiled type definitions
+│   ├── types.d.ts            # Type definition files
+│   ├── types.js.map          # Type definition source maps
+│   ├── utils/                # Compiled utilities
+│   ├── assets/               # Frontend assets
+│   └── frontend/             # Built React frontend
+├── tests/                    # Python test suite
+│   ├── unit/                 # Unit tests
 │   ├── integration/         # Integration tests
-│   ├── security/            # Security tests
-│   └── performance/         # Performance tests
-├── pyproject.toml           # Python project configuration
-├── package.json             # Node.js dependencies
-├── tsconfig.json            # TypeScript configuration
-└── README.md                # This file
+│   ├── security/             # Security tests
+│   ├── performance/         # Performance tests
+│   └── e2e/                  # End-to-end tests
+├── .github/                  # GitHub configurations
+├── pyproject.toml            # Python project configuration
+├── package.json             # Node.js dependencies and scripts
+├── tsconfig.json             # TypeScript configuration
+└── README.md                 # This file
 ```
 
 ## 📦 Package Naming
