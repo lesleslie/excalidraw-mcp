@@ -305,7 +305,7 @@ def _show_missing_log_message() -> None:
 
 def _follow_log_output(log_file: Path) -> None:
     """Follow log output (basic implementation)."""
-    with log_file.open("r") as f:
+    with log_file.open() as f:
         # Move to end of file
         f.seek(0, 2)
         while True:
@@ -318,7 +318,7 @@ def _follow_log_output(log_file: Path) -> None:
 
 def _show_recent_log_lines(log_file: Path, lines: int) -> None:
     """Show recent lines from log file."""
-    with log_file.open("r") as f:
+    with log_file.open() as f:
         # Read all lines and show last N
         all_lines = f.readlines()
         recent_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
