@@ -6,7 +6,6 @@ Provides MCP tools for creating and managing Excalidraw diagrams with canvas syn
 import asyncio
 import atexit
 import logging
-import signal
 from typing import Any
 
 from fastmcp import FastMCP
@@ -14,7 +13,12 @@ from fastmcp import FastMCP
 from .monitoring.supervisor import MonitoringSupervisor
 
 # Initialize FastMCP server
-mcp = FastMCP("Excalidraw MCP Server", streamable_http_path="/mcp")
+mcp = FastMCP("Excalidraw MCP Server")
+
+# Register MCP tools
+from .mcp_tools import MCPToolsManager
+
+tools_manager = MCPToolsManager(mcp)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -59,51 +63,58 @@ def cleanup_monitoring() -> None:
             asyncio.create_task(monitoring_supervisor.stop())
 
 
-async def startup_initialization() -> None:
-    """Initialize canvas server and monitoring on startup"""
-    logger.info("Starting Excalidraw MCP Server...")
-    # Initialize components
-    process_manager = get_process_manager()
-    monitoring_supervisor = get_monitoring_supervisor()
-
-    # Start canvas server
-    await process_manager.start()
-
-    # Start monitoring
-    monitoring_supervisor.start_monitoring()
-
-    logger.info("Excalidraw MCP Server started successfully")
-
-
 def main() -> None:
     """Main entry point for the CLI"""
-
-    async def shutdown() -> None:
-        """Graceful shutdown procedure."""
-        logger.info("Starting graceful shutdown...")
-        process_manager = get_process_manager()
-        monitoring_supervisor = get_monitoring_supervisor()
-
-        # Stop monitoring first
-        monitoring_supervisor.stop_monitoring()
-
-        # Stop canvas server
-        await process_manager.stop()
-
-        logger.info("Graceful shutdown completed")
-
-    # Set up signal handlers for graceful shutdown
-    signal.signal(signal.SIGTERM, lambda signum, frame: asyncio.create_task(shutdown()))
-    signal.signal(signal.SIGINT, lambda signum, frame: asyncio.create_task(shutdown()))
-
     try:
         logger.info("Starting Excalidraw MCP Server...")
-        asyncio.run(startup_initialization())
+
+        # Initialize services first using a simple approach
+        init_background_services()
+
+        # Run the FastMCP server in HTTP mode
+        mcp.run(transport="http", host="localhost", port=3032)
+
     except KeyboardInterrupt:
         logger.info("Server interrupted by user")
     except Exception as e:
         logger.error(f"Server error: {e}")
         raise
+
+
+def init_background_services() -> None:
+    """Initialize background services without asyncio conflicts."""
+    import subprocess
+    import time
+
+    # Start canvas server directly via subprocess if not running
+    try:
+        import requests
+
+        # Check if canvas server is already running
+        requests.get("http://localhost:3031/health", timeout=1)
+        logger.info("Canvas server already running")
+    except (requests.RequestException, ConnectionError, OSError):
+        logger.info("Starting canvas server...")
+        # Start canvas server in background
+        subprocess.Popen(
+            ["npm", "run", "canvas"],
+            cwd="/Users/les/Projects/excalidraw-mcp",
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
+
+        # Wait for it to be ready
+        for i in range(30):
+            try:
+                requests.get("http://localhost:3031/health", timeout=1)
+                logger.info("Canvas server is ready")
+                break
+            except (requests.RequestException, ConnectionError, OSError):
+                time.sleep(1)
+        else:
+            logger.warning("Canvas server may not be ready")
+
+    logger.info("Background services initialized")
 
 
 if __name__ == "__main__":

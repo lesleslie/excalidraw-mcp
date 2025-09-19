@@ -99,7 +99,6 @@
       ],
       "type": "stdio"
     },
-
     "mermaid": {
       "url": "http://localhost:3033/mcp",
       "type": "http"

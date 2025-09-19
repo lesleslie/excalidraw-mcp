@@ -74,6 +74,10 @@ class CanvasProcessManager:
         # Wait for process to become healthy
         return await self._wait_for_health()
 
+    async def start(self) -> bool:
+        """Start the canvas server if not already running."""
+        return await self.ensure_running()
+
     async def ensure_running(self) -> bool:
         """Ensure canvas server is running and healthy."""
         async with self._startup_lock:
@@ -196,11 +200,9 @@ class CanvasProcessManager:
         """Terminate any existing canvas server process."""
         if self.process_pid:
             try:
-                # Trigger stop callbacks before termination
-                asyncio.create_task(
-                    self._trigger_callbacks(
-                        self._on_stop_callbacks, self.process_pid, "terminating"
-                    )
+                # Trigger stop callbacks before termination (if event loop exists)
+                self._trigger_callbacks_sync(
+                    self._on_stop_callbacks, self.process_pid, "terminating"
                 )
 
                 # Try to find and kill the process group
@@ -232,14 +234,8 @@ class CanvasProcessManager:
         self._start_time = None
 
         if was_running:
-            # Trigger stop callbacks when process info is reset
-            try:
-                asyncio.create_task(
-                    self._trigger_callbacks(self._on_stop_callbacks, None, "stopped")
-                )
-            except RuntimeError:
-                # No running event loop, skip callback triggering
-                logger.debug("No event loop running, skipping stop callbacks")
+            # Trigger stop callbacks when process info is reset (if event loop exists)
+            self._trigger_callbacks_sync(self._on_stop_callbacks, None, "stopped")
 
     def _get_project_root(self) -> Path:
         """Get the project root directory."""
@@ -317,6 +313,27 @@ class CanvasProcessManager:
     ) -> None:
         """Add callback for health status changes."""
         self._on_health_change_callbacks.append(callback)
+
+    def _trigger_callbacks_sync(
+        self, callbacks: list[Callable[..., Awaitable[None]]], *args: Any
+    ) -> None:
+        """Trigger callbacks from synchronous context, safely handling async callbacks."""
+        for callback in callbacks:
+            try:
+                if asyncio.iscoroutinefunction(callback):
+                    # Check if there's an active event loop
+                    try:
+                        loop = asyncio.get_running_loop()
+                        # Schedule the coroutine on the existing loop
+                        loop.create_task(callback(*args))
+                    except RuntimeError:
+                        # No running event loop, skip async callbacks
+                        logger.debug("No running event loop, skipping async callback")
+                else:
+                    # Call sync callbacks directly
+                    callback(*args)
+            except Exception as e:
+                logger.error(f"Error in process manager callback: {e}")
 
     async def _trigger_callbacks(
         self, callbacks: list[Callable[..., Awaitable[None]]], *args: Any

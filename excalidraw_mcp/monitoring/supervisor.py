@@ -36,6 +36,10 @@ class MonitoringSupervisor:
         self._on_health_change_callbacks: list[Callable[..., Awaitable[None]]] = []
         self._on_restart_callbacks: list[Callable[..., Awaitable[None]]] = []
 
+    def start_monitoring(self) -> None:
+        """Start monitoring supervision (sync wrapper)."""
+        asyncio.create_task(self.start())
+
     async def start(self) -> None:
         """Start monitoring supervision."""
         if self._running:
