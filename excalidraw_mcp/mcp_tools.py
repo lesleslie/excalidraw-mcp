@@ -4,7 +4,6 @@ import logging
 from typing import Any
 
 from fastmcp import FastMCP
-from pydantic import BaseModel
 
 from .element_factory import ElementFactory
 from .http_client import http_client
@@ -77,11 +76,11 @@ class MCPToolsManager:
 
     # Element Management Tools
 
-    async def create_element(self, request: BaseModel) -> dict[str, Any]:
+    async def create_element(self, request: dict[str, Any]) -> dict[str, Any]:
         """Create a new element on the canvas."""
         try:
             # Create element with factory
-            element_data = self.element_factory.create_element(request.model_dump())
+            element_data = self.element_factory.create_element(request)
 
             # Sync to canvas
             result = await self._sync_to_canvas("create", element_data)
@@ -103,10 +102,10 @@ class MCPToolsManager:
             logger.error(f"Element creation failed: {e}")
             return {"success": False, "error": f"Element creation failed: {e}"}
 
-    async def update_element(self, request: BaseModel) -> dict[str, Any]:
+    async def update_element(self, request: dict[str, Any]) -> dict[str, Any]:
         """Update an existing element."""
         try:
-            request_data = request.model_dump()
+            request_data = request
             element_id = request_data.get("id")
 
             if not element_id:
@@ -152,11 +151,11 @@ class MCPToolsManager:
             logger.error(f"Element deletion failed: {e}")
             return {"success": False, "error": f"Element deletion failed: {e}"}
 
-    async def query_elements(self, request: BaseModel) -> dict[str, Any]:
+    async def query_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Query elements from the canvas."""
         try:
             # Sync to canvas
-            result = await self._sync_to_canvas("query", request.model_dump())
+            result = await self._sync_to_canvas("query", request)
 
             if result:
                 elements = result.get("elements", [])
@@ -178,10 +177,10 @@ class MCPToolsManager:
 
     # Batch Operations
 
-    async def batch_create_elements(self, request: BaseModel) -> dict[str, Any]:
+    async def batch_create_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Create multiple elements in one operation."""
         try:
-            request_data = request.model_dump()
+            request_data = request
             elements_data = request_data.get("elements", [])
 
             if not elements_data:
@@ -276,10 +275,10 @@ class MCPToolsManager:
             logger.error(f"Element ungrouping failed: {e}")
             return {"success": False, "error": f"Element ungrouping failed: {e}"}
 
-    async def align_elements(self, request: BaseModel) -> dict[str, Any]:
+    async def align_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Align elements to a specific position."""
         try:
-            request_data = request.model_dump()
+            request_data = request
             element_ids = request_data.get("elementIds", [])
             alignment = request_data.get("alignment")
 
@@ -304,10 +303,10 @@ class MCPToolsManager:
             logger.error(f"Element alignment failed: {e}")
             return {"success": False, "error": f"Element alignment failed: {e}"}
 
-    async def distribute_elements(self, request: BaseModel) -> dict[str, Any]:
+    async def distribute_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Distribute elements evenly."""
         try:
-            request_data = request.model_dump()
+            request_data = request
             element_ids = request_data.get("elementIds", [])
             direction = request_data.get("direction")
 

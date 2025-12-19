@@ -5,11 +5,17 @@ Provides MCP tools for creating and managing Excalidraw diagrams with canvas syn
 
 import asyncio
 import atexit
+import importlib.util
 import logging
 from typing import Any
 
 from fastmcp import FastMCP
 
+# Check ServerPanels availability (Phase 3.3 M2: improved pattern)
+SERVERPANELS_AVAILABLE = importlib.util.find_spec("mcp_common.ui") is not None
+
+# Import security availability flag (Phase 3 Security Hardening)
+from .config import SECURITY_AVAILABLE
 from .monitoring.supervisor import MonitoringSupervisor
 
 # Initialize FastMCP server
@@ -66,7 +72,38 @@ def cleanup_monitoring() -> None:
 def main() -> None:
     """Main entry point for the CLI"""
     try:
-        logger.info("Starting Excalidraw MCP Server...")
+        # Display beautiful startup message with ServerPanels (or fallback to plain text)
+        if SERVERPANELS_AVAILABLE:
+            from mcp_common.ui import ServerPanels
+
+            # Build features list with optional security feature
+            features = [
+                "🎨 Canvas Management",
+                "  • Create, update, and query elements",
+                "  • Group/ungroup operations",
+                "  • Align and distribute elements",
+                "🔒 Element Locking & State Control",
+                "  • Lock/unlock elements",
+                "  • Batch operations support",
+                "⚡ Real-time Canvas Sync",
+                "  • Background monitoring supervisor",
+                "  • Process management",
+                "🎨 Modern FastMCP Architecture",
+            ]
+            if SECURITY_AVAILABLE:
+                features.append("🔒 JWT Secret Validation (32+ chars)")
+
+            ServerPanels.startup_success(
+                server_name="Excalidraw MCP",
+                version="0.34.0",
+                features=features,
+                endpoint="http://localhost:3032/mcp",
+            )
+        else:
+            # Fallback to plain text
+            logger.info("Starting Excalidraw MCP Server...")
+            logger.info("  Endpoint: http://localhost:3032/mcp")
+            logger.info("  Canvas management & real-time sync enabled")
 
         # Initialize services first using a simple approach
         init_background_services()
@@ -85,6 +122,7 @@ def init_background_services() -> None:
     """Initialize background services without asyncio conflicts."""
     import subprocess
     import time
+    from pathlib import Path
 
     # Start canvas server directly via subprocess if not running
     try:
@@ -95,10 +133,13 @@ def init_background_services() -> None:
         logger.info("Canvas server already running")
     except (requests.RequestException, ConnectionError, OSError):
         logger.info("Starting canvas server...")
+        # Dynamically resolve project root (deployment-safe)
+        project_root = Path(__file__).parent.parent.resolve()
+
         # Start canvas server in background
         subprocess.Popen(
             ["npm", "run", "canvas"],
-            cwd="/Users/les/Projects/excalidraw-mcp",
+            cwd=str(project_root),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )

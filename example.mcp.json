@@ -1,11 +1,13 @@
 {
   "mcpServers": {
     "excalidraw": {
+      "args": [
+        "excalidraw-mcp"
+      ],
       "command": "uvx",
-      "args": ["excalidraw-mcp"],
       "env": {
-        "EXPRESS_SERVER_URL": "http://localhost:3031",
-        "ENABLE_CANVAS_SYNC": "true"
+        "ENABLE_CANVAS_SYNC": "true",
+        "EXPRESS_SERVER_URL": "http://localhost:3031"
       }
     }
   }

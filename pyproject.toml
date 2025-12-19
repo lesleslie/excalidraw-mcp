@@ -32,6 +32,7 @@ dependencies = [
     "cryptography>=45.0.6",
     "typer>=0.15.1",
     "rich>=13.9.4",
+    "mcp-common",
 ]
 
 [project.license]
@@ -255,6 +256,9 @@ exclude-deps = [
     "pyjwt",
 ]
 
+[tool.uv.sources.mcp-common]
+path = "../mcp-common"
+
 [dependency-groups]
 dev = [
     "pytest>=8.4.1",
@@ -262,5 +266,5 @@ dev = [
     "pytest-cov>=6.2.1",
     "pytest-mock>=3.14.1",
     "respx>=0.22.0",
-    "session-mgmt-mcp>=0.1.3",
+    "session-buddy>=0.1.3",
 ]

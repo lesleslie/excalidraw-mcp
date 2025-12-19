@@ -10,16 +10,16 @@ from typing import Any
 
 import psutil
 import typer
+from acb.console import Console
+from acb.depends import depends
+from mcp_common.ui import ServerPanels
 from rich import print as rprint
-from rich.console import Console
-from rich.panel import Panel
-from rich.table import Table
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor
 from excalidraw_mcp.process_manager import CanvasProcessManager
 
-console = Console()
+console = depends.get_sync(Console)
 
 # Global process manager instance
 _process_manager: CanvasProcessManager | None = None
@@ -225,11 +225,7 @@ def restart_mcp_server_impl(background: bool = False, monitoring: bool = True) -
 
 def status_impl() -> None:
     """Implementation for showing status."""
-    table = Table(title="Excalidraw MCP Server Status")
-    table.add_column("Component", style="cyan")
-    table.add_column("Status", style="green")
-    table.add_column("PID", style="yellow")
-    table.add_column("Details", style="white")
+    rows: list[list[str]] = []
 
     # Check MCP server
     mcp_proc = find_mcp_server_process()
@@ -237,16 +233,18 @@ def status_impl() -> None:
         try:
             cpu_percent = mcp_proc.cpu_percent()
             memory_mb = mcp_proc.memory_info().rss / 1024 / 1024
-            table.add_row(
-                "MCP Server",
-                "[green]Running[/green]",
-                str(mcp_proc.pid),
-                f"CPU: {cpu_percent:.1f}%, Memory: {memory_mb:.1f}MB",
+            rows.append(
+                [
+                    "MCP Server",
+                    "[green]Running[/green]",
+                    str(mcp_proc.pid),
+                    f"CPU: {cpu_percent:.1f}%, Memory: {memory_mb:.1f}MB",
+                ]
             )
         except psutil.NoSuchProcess:
-            table.add_row("MCP Server", "[red]Stopped[/red]", "-", "-")
+            rows.append(["MCP Server", "[red]Stopped[/red]", "-", "-"])
     else:
-        table.add_row("MCP Server", "[red]Stopped[/red]", "-", "-")
+        rows.append(["MCP Server", "[red]Stopped[/red]", "-", "-"])
 
     # Check canvas server
     canvas_proc = find_canvas_server_process()
@@ -254,31 +252,36 @@ def status_impl() -> None:
         try:
             cpu_percent = canvas_proc.cpu_percent()
             memory_mb = canvas_proc.memory_info().rss / 1024 / 1024
-            table.add_row(
-                "Canvas Server",
-                "[green]Running[/green]",
-                str(canvas_proc.pid),
-                f"CPU: {cpu_percent:.1f}%, Memory: {memory_mb:.1f}MB",
+            rows.append(
+                [
+                    "Canvas Server",
+                    "[green]Running[/green]",
+                    str(canvas_proc.pid),
+                    f"CPU: {cpu_percent:.1f}%, Memory: {memory_mb:.1f}MB",
+                ]
             )
         except psutil.NoSuchProcess:
-            table.add_row("Canvas Server", "[red]Stopped[/red]", "-", "-")
+            rows.append(["Canvas Server", "[red]Stopped[/red]", "-", "-"])
     else:
-        table.add_row("Canvas Server", "[red]Stopped[/red]", "-", "-")
+        rows.append(["Canvas Server", "[red]Stopped[/red]", "-", "-"])
 
-    console.print(table)
+    ServerPanels.server_status_table(
+        rows,
+        title="Excalidraw MCP Server Status",
+        headers=("Component", "Status", "PID", "Details"),
+    )
 
     # Show configuration info
     config = Config()
-    config_panel = Panel.fit(
-        f"[bold]Configuration[/bold]\n"
-        f"Canvas URL: {config.server.express_url}\n"
-        f"Canvas Auto-start: {config.server.canvas_auto_start}\n"
-        f"Monitoring: {config.monitoring.enabled}\n"
-        f"Health Check Interval: {config.monitoring.health_check_interval_seconds}s",
+    ServerPanels.config_table(
         title="Server Configuration",
+        items={
+            "Canvas URL": config.server.express_url,
+            "Canvas Auto-start": config.server.canvas_auto_start,
+            "Monitoring": config.monitoring.enabled,
+            "Health Check Interval": f"{config.monitoring.health_check_interval_seconds}s",
+        },
     )
-    console.print("\n")
-    console.print(config_panel)
 
 
 def _find_log_file() -> Path | None:

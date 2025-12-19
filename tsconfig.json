@@ -1,55 +1,39 @@
 {
   "compilerOptions": {
-    // Target and Module Settings
-    "target": "ES2022",                                  // Use ES2022 features for modern Node.js
-    "module": "ESNext",                                  // Use ESNext modules for tree-shaking
-    "moduleResolution": "node",                          // Use Node.js module resolution
-
-    // JavaScript Settings
-    "allowJs": false,                                    // Only allow TypeScript files
-    "checkJs": false,                                    // Don't type-check JavaScript files
-
-    // Declaration and Source Map Settings
-    "declaration": true,                                 // Generate .d.ts declaration files
-    "declarationMap": true,                              // Generate declaration source maps
-    "sourceMap": true,                                   // Generate source maps for debugging
-
-    // Output Settings
-    "outDir": "./dist",                                  // Output directory for compiled files
-    "rootDir": "./src",                                  // Root directory of source files
-
-    // Strict Type Checking
-    "strict": true,                                      // Enable all strict type checking options
-    "noImplicitAny": true,                              // Error on expressions with 'any' type
-    "strictNullChecks": true,                           // Enable strict null checks
-    "strictFunctionTypes": true,                        // Enable strict function type checking
-    "strictBindCallApply": true,                        // Enable strict bind/call/apply methods
-    "strictPropertyInitialization": true,               // Ensure properties are initialized
-    "noImplicitThis": true,                             // Error on 'this' with 'any' type
-    "noImplicitReturns": false,                         // Allow functions without explicit returns
-    "noFallthroughCasesInSwitch": true,                 // Error on switch case fallthrough
-    "noUncheckedIndexedAccess": true,                   // Add undefined to index access types
-    "noImplicitOverride": true,                         // Ensure override keyword is used
-
-    // Module and Interop Settings
-    "esModuleInterop": true,                            // Enable ES module interoperability
-    "allowSyntheticDefaultImports": true,               // Allow default imports from modules
-    "forceConsistentCasingInFileNames": true,           // Enforce consistent file name casing
-    "skipLibCheck": true,                               // Skip type checking of declaration files
-    "resolveJsonModule": true,                          // Allow importing JSON modules
-    "isolatedModules": true,                            // Ensure each file is a separate module
-
-    // Emit Settings
-    "noEmitOnError": false,                             // Still emit files even with errors
-    "preserveConstEnums": true,                         // Don't erase const enum declarations
-    "removeComments": false,                            // Keep comments in output
-    "types": ["node"]                                   // Include Node.js type definitions
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "checkJs": false,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "noEmitOnError": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitAny": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": false,
+    "noImplicitThis": true,
+    "noUncheckedIndexedAccess": true,
+    "outDir": "./dist",
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "resolveJsonModule": true,
+    "rootDir": "./src",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
+    "target": "ES2022",
+    "types": [
+      "node"
+    ]
   },
-  "include": [
-    "src/server.ts",
-    "src/types.ts",
-    "src/utils/**/*.ts"
-  ],
   "exclude": [
     "node_modules",
     "dist",
@@ -58,6 +42,11 @@
     "**/*.spec.ts",
     "**/*.js",
     "**/*.jsx"
+  ],
+  "include": [
+    "src/server.ts",
+    "src/types.ts",
+    "src/utils/**/*.ts"
   ],
   "ts-node": {
     "esm": true

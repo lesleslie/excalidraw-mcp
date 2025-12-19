@@ -1,6 +1,7 @@
 """Configuration management for Excalidraw MCP server."""
 
 import os
+import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,14 @@ try:
     _tomli: Any = tomli
 except ImportError:
     _tomli = None
+
+# Import mcp-common security utilities for JWT validation (Phase 3 Security Hardening)
+try:
+    from mcp_common.security import APIKeyValidator
+
+    SECURITY_AVAILABLE = True
+except ImportError:
+    SECURITY_AVAILABLE = False
 
 
 @dataclass
@@ -36,6 +45,72 @@ class SecurityConfig:
 
     def __post_init__(self) -> None:
         pass
+
+    def get_masked_jwt_secret(self) -> str:
+        """Get masked JWT secret for safe logging (Phase 3 Security Hardening).
+
+        Returns:
+            Masked secret string (e.g., "...xyz1") for safe display in logs
+        """
+        if not self.jwt_secret:
+            return "***"
+
+        if SECURITY_AVAILABLE:
+            return APIKeyValidator.mask_key(self.jwt_secret, visible_chars=4)
+
+        # Fallback masking without security module
+        if len(self.jwt_secret) <= 4:
+            return "***"
+        return f"...{self.jwt_secret[-4:]}"
+
+    def validate_jwt_secret_at_startup(self) -> None:
+        """Validate JWT secret at server startup (Phase 3 Security Hardening).
+
+        Raises:
+            SystemExit: If JWT secret is invalid when auth is enabled
+        """
+        # Skip validation if auth is disabled
+        if not self.auth_enabled:
+            return
+
+        # Check if JWT_SECRET is set when auth is enabled
+        if not self.jwt_secret or not self.jwt_secret.strip():
+            print("\n❌ JWT Secret Validation Failed", file=sys.stderr)
+            print("   AUTH_ENABLED is true but JWT_SECRET is not set", file=sys.stderr)
+            print(
+                "   Set JWT_SECRET environment variable for authentication",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        if SECURITY_AVAILABLE:
+            # Use generic validator with minimum 32 characters for JWT secrets
+            validator = APIKeyValidator(min_length=32)
+            try:
+                validator.validate(self.jwt_secret, raise_on_invalid=True)
+                masked_secret = self.get_masked_jwt_secret()
+                print(f"✅ JWT Secret validated: {masked_secret}", file=sys.stderr)
+            except ValueError:
+                print("\n⚠️  JWT Secret Warning", file=sys.stderr)
+                print(
+                    f"   JWT secret appears weak ({len(self.jwt_secret)} characters)",
+                    file=sys.stderr,
+                )
+                print(
+                    "   Minimum 32 characters recommended for security", file=sys.stderr
+                )
+                # Warn but allow for backwards compatibility
+        else:
+            # Basic validation without security module
+            if len(self.jwt_secret) < 16:
+                print("\n⚠️  JWT Secret Warning", file=sys.stderr)
+                print(
+                    f"   JWT secret appears very weak ({len(self.jwt_secret)} characters)",
+                    file=sys.stderr,
+                )
+                print(
+                    "   Minimum 32 characters recommended for security", file=sys.stderr
+                )
 
 
 @dataclass
@@ -208,6 +283,8 @@ class Config:
         self._load_from_pyproject()
         self._load_from_environment()
         self._validate()
+        # Phase 3 Security Hardening: Validate JWT secret at startup
+        self.security.validate_jwt_secret_at_startup()
 
     def _load_from_pyproject(self) -> None:
         """Load MCP configuration from pyproject.toml."""

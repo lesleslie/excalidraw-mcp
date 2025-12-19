@@ -193,38 +193,39 @@ class CanvasHTTPClient:
             jitter=config.server.sync_retry_jitter,
         )
 
+        # Prepare the request function for retry
+        post_request_func = self._create_post_request_func(
+            url, data, endpoint, trace_id
+        )
+
+        # Use enhanced retry with exponential backoff and jitter
+        try:
+            return await retry_async(
+                post_request_func,
+                retry_config=retry_config,
+                retry_on_exceptions=(
+                    httpx.TimeoutException,
+                    httpx.HTTPStatusError,
+                    Exception,
+                ),
+            )
+        except Exception:
+            # Return None on complete failure as per original behavior
+            return None
+
+    def _create_post_request_func(
+        self, url: str, data: dict[str, Any], endpoint: str, trace_id: str
+    ):
+        """Create a function to execute the POST request for retry mechanism."""
+
         async def _post_request() -> dict[str, Any] | None:
             start_time = time.time()
             try:
-                # Prepare headers with tracing
-                headers = {"Content-Type": "application/json"}
-                if config.monitoring.request_tracing_enabled:
-                    headers.update(self._get_tracing_headers(trace_id))
-
-                if self._client is not None:
-                    response = await self._client.post(url, json=data, headers=headers)
-                else:
-                    raise RuntimeError("HTTP client not initialized")
+                response = await self._send_post_request(url, data, trace_id)
                 response_time = time.time() - start_time
-
-                if response.status_code in (200, 201):
-                    self._update_request_metrics(True, response_time, "POST", endpoint)
-                    logger.debug(
-                        f"POST {endpoint} successful (trace: {trace_id}, time: {response_time:.3f}s)"
-                    )
-                    result: dict[str, Any] = response.json()
-                    return result
-                else:
-                    self._update_request_metrics(False, response_time, "POST", endpoint)
-                    logger.warning(
-                        f"Canvas server returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
-                    )
-                    # Raise exception to trigger retry
-                    raise httpx.HTTPStatusError(
-                        f"HTTP {response.status_code}: {response.text}",
-                        request=response.request,
-                        response=response,
-                    )
+                return self._handle_post_response(
+                    response, response_time, endpoint, trace_id
+                )
 
             except httpx.TimeoutException:
                 response_time = time.time() - start_time
@@ -238,20 +239,50 @@ class CanvasHTTPClient:
                 logger.error(f"Canvas server request failed: {e} (trace: {trace_id})")
                 raise
 
-        # Use enhanced retry with exponential backoff and jitter
-        try:
-            return await retry_async(
-                _post_request,
-                retry_config=retry_config,
-                retry_on_exceptions=(
-                    httpx.TimeoutException,
-                    httpx.HTTPStatusError,
-                    Exception,
-                ),
+        return _post_request
+
+    async def _send_post_request(
+        self, url: str, data: dict[str, Any], trace_id: str
+    ) -> httpx.Response:
+        """Send the POST request with proper headers."""
+        # Prepare headers with tracing
+        headers = {"Content-Type": "application/json"}
+        if config.monitoring.request_tracing_enabled:
+            headers.update(self._get_tracing_headers(trace_id))
+
+        if self._client is not None:
+            response = await self._client.post(url, json=data, headers=headers)
+        else:
+            raise RuntimeError("HTTP client not initialized")
+
+        return response
+
+    def _handle_post_response(
+        self,
+        response: httpx.Response,
+        response_time: float,
+        endpoint: str,
+        trace_id: str,
+    ) -> dict[str, Any] | None:
+        """Handle the POST response and return appropriate result."""
+        if response.status_code in (200, 201):
+            self._update_request_metrics(True, response_time, "POST", endpoint)
+            logger.debug(
+                f"POST {endpoint} successful (trace: {trace_id}, time: {response_time:.3f}s)"
             )
-        except Exception:
-            # Return None on complete failure as per original behavior
-            return None
+            result: dict[str, Any] = response.json()
+            return result
+        else:
+            self._update_request_metrics(False, response_time, "POST", endpoint)
+            logger.warning(
+                f"Canvas server returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
+            )
+            # Raise exception to trigger retry
+            raise httpx.HTTPStatusError(
+                f"HTTP {response.status_code}: {response.text}",
+                request=response.request,
+                response=response,
+            )
 
     async def put_json(
         self, endpoint: str, data: dict[str, Any], correlation_id: str | None = None

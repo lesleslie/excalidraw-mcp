@@ -1,0 +1,1454 @@
+[
+  {
+    "complexity": 1,
+    "file_name": "server.py",
+    "function_name": "cleanup_monitoring",
+    "path": "server.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "server.py",
+    "function_name": "get_monitoring_supervisor",
+    "path": "server.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "server.py",
+    "function_name": "get_process_manager",
+    "path": "server.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "server.py",
+    "function_name": "init_background_services",
+    "path": "server.py"
+  },
+  {
+    "complexity": 8,
+    "file_name": "server.py",
+    "function_name": "main",
+    "path": "server.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "retry_utils.py",
+    "function_name": "RetryConfig::__init__",
+    "path": "retry_utils.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "retry_utils.py",
+    "function_name": "calculate_delay",
+    "path": "retry_utils.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "retry_utils.py",
+    "function_name": "retry_decorator",
+    "path": "retry_utils.py"
+  },
+  {
+    "complexity": 12,
+    "file_name": "retry_utils.py",
+    "function_name": "retry_async",
+    "path": "retry_utils.py"
+  },
+  {
+    "complexity": 12,
+    "file_name": "retry_utils.py",
+    "function_name": "retry_sync",
+    "path": "retry_utils.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "Config::__init__",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "Config::_load_from_environment",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "Config::_load_logging_config_from_environment",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "Config::is_development",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "Config::is_production",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "LoggingConfig::__post_init__",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "config.py",
+    "function_name": "SecurityConfig::__post_init__",
+    "path": "config.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "config.py",
+    "function_name": "Config::_load_performance_config_from_environment",
+    "path": "config.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "config.py",
+    "function_name": "Config::_load_security_config_from_environment",
+    "path": "config.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "config.py",
+    "function_name": "Config::_validate",
+    "path": "config.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "config.py",
+    "function_name": "Config::_validate_performance_config",
+    "path": "config.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "config.py",
+    "function_name": "Config::_load_monitoring_config_from_environment",
+    "path": "config.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "config.py",
+    "function_name": "Config::_validate_monitoring_config",
+    "path": "config.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "config.py",
+    "function_name": "Config::_validate_security_config",
+    "path": "config.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "config.py",
+    "function_name": "MonitoringConfig::__post_init__",
+    "path": "config.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "config.py",
+    "function_name": "SecurityConfig::get_masked_jwt_secret",
+    "path": "config.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "config.py",
+    "function_name": "Config::_load_from_pyproject",
+    "path": "config.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "config.py",
+    "function_name": "Config::_load_server_config_from_environment",
+    "path": "config.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "config.py",
+    "function_name": "Config::_validate_server_config",
+    "path": "config.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "config.py",
+    "function_name": "ServerConfig::__post_init__",
+    "path": "config.py"
+  },
+  {
+    "complexity": 8,
+    "file_name": "config.py",
+    "function_name": "SecurityConfig::validate_jwt_secret_at_startup",
+    "path": "config.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::__aenter__",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::__aexit__",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::__init__",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_generate_correlation_id",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::get_request_metrics",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::health_failure_count",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::is_healthy",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::reset_request_metrics",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_ensure_client",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_get_tracing_headers",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::close",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_create_post_request_func",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_handle_post_response",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_send_post_request",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_update_request_metrics",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::post_json",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::_perform_health_check_request",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 10,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::check_health",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 10,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::delete",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 10,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::get_json",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 10,
+    "file_name": "http_client.py",
+    "function_name": "CanvasHTTPClient::put_json",
+    "path": "http_client.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::__init__",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_add_visual_properties",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_numeric_ranges",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::create_element",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_element_type",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_add_line_properties",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_add_shape_properties",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_get_optional_float",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::validate_element_data",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_add_optional_properties",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_is_valid_color",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_coordinates",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_font_size",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_opacity",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_roughness",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_stroke_width",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_colors",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 9,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::_validate_dimensions",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 12,
+    "file_name": "element_factory.py",
+    "function_name": "ElementFactory::prepare_update_data",
+    "path": "element_factory.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "cli.py",
+    "function_name": "_show_missing_log_message",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "cli.py",
+    "function_name": "restart_mcp_server_impl",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "cli.py",
+    "function_name": "get_monitoring_supervisor",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "cli.py",
+    "function_name": "get_process_manager",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "cli.py",
+    "function_name": "_find_log_file",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "cli.py",
+    "function_name": "_show_recent_log_lines",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "cli.py",
+    "function_name": "_follow_log_output",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "cli.py",
+    "function_name": "_stop_process",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "cli.py",
+    "function_name": "find_canvas_server_process",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "cli.py",
+    "function_name": "find_mcp_server_process",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "cli.py",
+    "function_name": "logs_impl",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "cli.py",
+    "function_name": "status_impl",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "cli.py",
+    "function_name": "main",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 14,
+    "file_name": "cli.py",
+    "function_name": "start_mcp_server_impl",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 14,
+    "file_name": "cli.py",
+    "function_name": "stop_mcp_server_impl",
+    "path": "cli.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::__init__",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_check_process_health",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_get_project_root",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_handle_disabled_auto_start",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_signal_handler",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_terminate_current_process",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::add_health_change_callback",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::add_restart_callback",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::add_start_callback",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::add_stop_callback",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::cleanup",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::ensure_running",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::get_restart_count",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::start",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::stop",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_attempt_process_start",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_is_process_healthy",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_reset_process_info",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_start_process",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_wait_for_health",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::restart",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::get_status",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::get_uptime",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_check_health_with_process_check",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_ensure_process_healthy",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_trigger_callbacks",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_is_process_running",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_terminate_existing_process",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_trigger_callbacks_sync",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 9,
+    "file_name": "process_manager.py",
+    "function_name": "CanvasProcessManager::_send_termination_signal",
+    "path": "process_manager.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::__init__",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::_register_tools",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::_ensure_canvas_available",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::query_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::ungroup_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::create_element",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::delete_element",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::lock_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::unlock_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::get_resource",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::_sync_to_canvas",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::group_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 7,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::update_element",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 8,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::align_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 8,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::distribute_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 11,
+    "file_name": "mcp_tools.py",
+    "function_name": "MCPToolsManager::batch_create_elements",
+    "path": "mcp_tools.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "retry_example.py",
+    "function_name": "async_main",
+    "path": "retry_example.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "retry_example.py",
+    "function_name": "main",
+    "path": "retry_example.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "retry_example.py",
+    "function_name": "unreliable_async_function",
+    "path": "retry_example.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "retry_example.py",
+    "function_name": "unreliable_sync_function",
+    "path": "retry_example.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::__init__",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_constant",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_expression",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_initialize_alert_rules",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_send_log_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::clear_alert_history",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::get_active_alerts",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::get_alert_rules",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::get_alert_statistics",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_format_alert_message",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_safe_eval_condition",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::force_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::get_alert_history",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_name",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_resolve_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_send_webhook_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_should_throttle_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_trigger_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_unary_op",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::disable_rule",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::enable_rule",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_bool_op",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 4,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_compare",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_send_alert",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 9,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::check_conditions",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 11,
+    "file_name": "alerts.py",
+    "function_name": "AlertManager::_eval_node",
+    "path": "alerts.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Counter::inc",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Counter::reset",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Gauge::dec",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Gauge::inc",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Gauge::set",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Histogram::average",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "Histogram::reset",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::__init__",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::_initialize_standard_metrics",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::get_all_metrics",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::get_counter",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::get_gauge",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::get_histogram",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::register_counter",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::register_gauge",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::register_histogram",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "metrics.py",
+    "function_name": "Histogram::__post_init__",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::get_metric_history",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::start_collection",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "metrics.py",
+    "function_name": "Histogram::observe",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::increment_counter",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::observe_histogram",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::reset_all_metrics",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::set_gauge",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::stop_collection",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::collect_system_metrics",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::collect_canvas_metrics",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 11,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::get_prometheus_format",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 12,
+    "file_name": "metrics.py",
+    "function_name": "MetricsCollector::_collection_loop",
+    "path": "metrics.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::__init__",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::add_health_change_callback",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::add_restart_callback",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::force_health_check",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::get_metrics_summary",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::get_monitoring_status",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::get_recent_alerts",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::is_running",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::reset_circuit_breaker",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::start_monitoring",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::trigger_restart",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::_handle_health_failure",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::start",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::_handle_health_status",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::_monitoring_loop",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::_perform_monitored_health_check",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::stop",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 10,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::_collect_monitoring_metrics",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 15,
+    "file_name": "supervisor.py",
+    "function_name": "MonitoringSupervisor::_attempt_restart",
+    "path": "supervisor.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_transition_to_closed",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_transition_to_half_open",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_transition_to_open",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::force_close",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::force_open",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::is_closed",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::is_half_open",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::is_healthy",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::is_open",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::reset",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::state",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_should_attempt_recovery",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::get_stats",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 2,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::get_time_until_recovery",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::__init__",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_should_allow_call",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_on_failure",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::_on_success",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 8,
+    "file_name": "circuit_breaker.py",
+    "function_name": "CircuitBreaker::call",
+    "path": "circuit_breaker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::__init__",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::_combine_health_results",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::get_failure_count",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::get_health_summary",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::get_last_healthy_time",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::is_failing",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 0,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::reset_failure_count",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 1,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::get_average_response_time",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::_check_primary_health",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 3,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::_update_health_state",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 5,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::_check_resource_usage",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 6,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::check_health",
+    "path": "health_checker.py"
+  },
+  {
+    "complexity": 8,
+    "file_name": "health_checker.py",
+    "function_name": "HealthChecker::_check_api_health",
+    "path": "health_checker.py"
+  }
+]

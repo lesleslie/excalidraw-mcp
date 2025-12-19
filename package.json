@@ -1,29 +1,10 @@
 {
-  "name": "excalidraw-mcp",
-  "version": "0.1.0",
-  "description": "Advanced real-time canvas server for Excalidraw with WebSocket sync and comprehensive diagram management",
-  "main": "dist/server.js",
-  "type": "module",
-  "scripts": {
-    "canvas": "npm run build:server && node dist/server.js",
-    "build": "npm run build:frontend && npm run build:server",
-    "build:frontend": "vite build",
-    "build:server": "npx tsc",
-    "build:types": "npx tsc --emitDeclarationOnly",
-    "dev": "concurrently \"npm run dev:server\" \"vite\"",
-    "dev:server": "npx tsc --watch",
-    "production": "npm run build && npm run canvas",
-    "start-all": "./start-both.sh",
-    "canvas-bg": "npm run build:server && node dist/server.js &",
-    "start-canvas": "npm run build:server && node dist/server.js",
-    "canvas-for-npx": "./start-canvas-only.sh",
-    "prepublishOnly": "npm run build",
-    "type-check": "npx tsc --noEmit",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "test:unit": "jest --testPathPatterns='unit'",
-    "test:integration": "jest --testPathPatterns='integration'"
+  "author": {
+    "email": "les@wedgwoodwebworks.com",
+    "name": "lesleslie"
+  },
+  "bugs": {
+    "url": "https://github.com/lesleslie/excalidraw_mcp/issues"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.0",
@@ -44,6 +25,7 @@
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.3"
   },
+  "description": "Advanced real-time canvas server for Excalidraw with WebSocket sync and comprehensive diagram management",
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.21",
@@ -65,6 +47,17 @@
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "files": [
+    "src/**/*",
+    "dist/**/*",
+    "*.d.ts",
+    "README.md",
+    "LICENSE"
+  ],
+  "homepage": "https://github.com/lesleslie/excalidraw_mcp#readme",
   "keywords": [
     "mcp",
     "mcp-server",
@@ -80,31 +73,38 @@
     "claude",
     "ai-tools"
   ],
-  "author": {
-    "name": "lesleslie",
-    "email": "les@wedgwoodwebworks.com"
-  },
   "license": "BSD-3-CLAUSE",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lesleslie/excalidraw_mcp.git"
-  },
-  "homepage": "https://github.com/lesleslie/excalidraw_mcp#readme",
-  "bugs": {
-    "url": "https://github.com/lesleslie/excalidraw_mcp/issues"
-  },
-  "engines": {
-    "node": ">=16.0.0"
-  },
+  "main": "dist/server.js",
+  "name": "excalidraw-mcp",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
-  "files": [
-    "src/**/*",
-    "dist/**/*",
-    "*.d.ts",
-    "README.md",
-    "LICENSE"
-  ]
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lesleslie/excalidraw_mcp.git"
+  },
+  "scripts": {
+    "build": "npm run build:frontend && npm run build:server",
+    "build:frontend": "vite build",
+    "build:server": "npx tsc",
+    "build:types": "npx tsc --emitDeclarationOnly",
+    "canvas": "npm run build:server && node dist/server.js",
+    "canvas-bg": "npm run build:server && node dist/server.js &",
+    "canvas-for-npx": "./start-canvas-only.sh",
+    "dev": "concurrently \"npm run dev:server\" \"vite\"",
+    "dev:server": "npx tsc --watch",
+    "prepublishOnly": "npm run build",
+    "production": "npm run build && npm run canvas",
+    "start-all": "./start-both.sh",
+    "start-canvas": "npm run build:server && node dist/server.js",
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:integration": "jest --testPathPatterns='integration'",
+    "test:unit": "jest --testPathPatterns='unit'",
+    "test:watch": "jest --watch",
+    "type-check": "npx tsc --noEmit"
+  },
+  "type": "module",
+  "version": "0.1.0"
 }
