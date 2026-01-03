@@ -158,5 +158,9 @@ def init_background_services() -> None:
     logger.info("Background services initialized")
 
 
+# Export ASGI app for uvicorn (standardized startup pattern)
+http_app = mcp.http_app
+
+
 if __name__ == "__main__":
     main()

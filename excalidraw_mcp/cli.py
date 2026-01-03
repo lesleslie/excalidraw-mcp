@@ -10,16 +10,18 @@ from typing import Any
 
 import psutil
 import typer
-from acb.console import Console
-from acb.depends import depends
-from mcp_common.ui import ServerPanels
+
+# ACB has been removed - using standard logging and Oneiric patterns
+# from acb.console import Console
+# from acb.depends import depends
+# from mcp_common.ui import ServerPanels
 from rich import print as rprint
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor
 from excalidraw_mcp.process_manager import CanvasProcessManager
 
-console = depends.get_sync(Console)
+# console = depends.get_sync(Console)
 
 # Global process manager instance
 _process_manager: CanvasProcessManager | None = None
