@@ -1,24 +1,24 @@
 {
-  "server_name": "excalidraw-mcp",
-  "timestamp": "2026-01-02T12-37-11",
-  "version": "1.0",
   "components": {
-    "server": {
-      "status": "started",
-      "timestamp": "2026-01-02T12:37:11Z",
-      "config": {
-        "http_port": 3042,
-        "http_host": "127.0.0.1",
-        "debug": false
-      }
-    },
     "excalidraw": {
       "status": "initialized",
+      "timestamp": "2026-01-02T12:37:11Z"
+    },
+    "server": {
+      "config": {
+        "debug": false,
+        "http_host": "127.0.0.1",
+        "http_port": 3042
+      },
+      "status": "started",
       "timestamp": "2026-01-02T12:37:11Z"
     }
   },
   "metadata": {
-    "system_time": 1767386231.5224278,
-    "python_version": "3.13"
-  }
+    "python_version": "3.13",
+    "system_time": 1767386231.5224278
+  },
+  "server_name": "excalidraw-mcp",
+  "timestamp": "2026-01-02T12-37-11",
+  "version": "1.0"
 }

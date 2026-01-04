@@ -1,0 +1,1489 @@
+{
+  "functions": [
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::__init__",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::_get_timestamp",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::_update_global_config",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::get_app",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::shutdown",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::startup",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "main",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::health_check",
+      "path": "excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "cli.py",
+      "function_name": "_show_missing_log_message",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "cli.py",
+      "function_name": "restart_mcp_server_impl",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "cli.py",
+      "function_name": "get_monitoring_supervisor",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "cli.py",
+      "function_name": "get_process_manager",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "cli.py",
+      "function_name": "_find_log_file",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "cli.py",
+      "function_name": "_show_recent_log_lines",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "_follow_log_output",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "_stop_process",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "find_canvas_server_process",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "find_mcp_server_process",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "logs_impl",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "cli.py",
+      "function_name": "main",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 14,
+      "file_name": "cli.py",
+      "function_name": "start_mcp_server_impl",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 14,
+      "file_name": "cli.py",
+      "function_name": "status_impl",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 14,
+      "file_name": "cli.py",
+      "function_name": "stop_mcp_server_impl",
+      "path": "excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::__init__",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::_load_from_environment",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::_load_logging_config_from_environment",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::is_development",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::is_production",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "Config::_load_performance_config_from_environment",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "Config::_load_security_config_from_environment",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "Config::_validate",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "LoggingConfig::__post_init__",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_performance_config",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "Config::_load_monitoring_config_from_environment",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_monitoring_config",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_security_config",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "MonitoringConfig::__post_init__",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "SecurityConfig::__post_init__",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "SecurityConfig::get_masked_jwt_secret",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "config.py",
+      "function_name": "Config::_load_from_pyproject",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "config.py",
+      "function_name": "Config::_load_server_config_from_environment",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_server_config",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "config.py",
+      "function_name": "ServerConfig::__post_init__",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "config.py",
+      "function_name": "SecurityConfig::validate_jwt_secret_at_startup",
+      "path": "excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::__init__",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_visual_properties",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_numeric_ranges",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::create_element",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_element_type",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_line_properties",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_shape_properties",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_get_optional_float",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::validate_element_data",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_optional_properties",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_coordinates",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_is_valid_color",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_font_size",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_opacity",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_roughness",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_stroke_width",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_colors",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 9,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_dimensions",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::prepare_update_data",
+      "path": "excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::__aenter__",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::__aexit__",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::__init__",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_generate_correlation_id",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::get_request_metrics",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::health_failure_count",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::is_healthy",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::reset_request_metrics",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_ensure_client",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_get_tracing_headers",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::close",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_create_post_request_func",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_handle_post_response",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_send_post_request",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_update_request_metrics",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::post_json",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_perform_health_check_request",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::check_health",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::delete",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::get_json",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::put_json",
+      "path": "excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::__init__",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_register_tools",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_ensure_canvas_available",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_request_to_dict",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::query_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::ungroup_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::create_element",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::delete_element",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::lock_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::unlock_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::get_resource",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_sync_to_canvas",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::group_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::update_element",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::align_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::distribute_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::batch_create_elements",
+      "path": "excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::__init__",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_constant",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_expression",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_initialize_alert_rules",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_send_log_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::clear_alert_history",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_active_alerts",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_alert_rules",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_alert_statistics",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_format_alert_message",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_safe_eval_condition",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::force_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_alert_history",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_name",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_resolve_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_send_webhook_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_should_throttle_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_trigger_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_unary_op",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::disable_rule",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::enable_rule",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_bool_op",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_compare",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_send_alert",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 9,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::check_conditions",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_node",
+      "path": "excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_transition_to_closed",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_transition_to_half_open",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_transition_to_open",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::force_close",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::force_open",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_closed",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_half_open",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_healthy",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_open",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::reset",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::state",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_should_attempt_recovery",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::get_stats",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::get_time_until_recovery",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::__init__",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_should_allow_call",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_on_failure",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_on_success",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::call",
+      "path": "excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::__init__",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_combine_health_results",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_failure_count",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_health_summary",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_last_healthy_time",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::is_failing",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::reset_failure_count",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_average_response_time",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_check_primary_health",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_update_health_state",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_check_resource_usage",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::check_health",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_check_api_health",
+      "path": "excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Counter::inc",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Counter::reset",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Gauge::dec",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Gauge::inc",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Gauge::set",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::average",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::reset",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::__init__",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::_initialize_standard_metrics",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_all_metrics",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_counter",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_gauge",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_histogram",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::register_counter",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::register_gauge",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::register_histogram",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::__post_init__",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_metric_history",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::start_collection",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::observe",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::increment_counter",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::observe_histogram",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::reset_all_metrics",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::set_gauge",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::stop_collection",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::collect_system_metrics",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::collect_canvas_metrics",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_prometheus_format",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::_collection_loop",
+      "path": "excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::__init__",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::add_health_change_callback",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::add_restart_callback",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::force_health_check",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::get_metrics_summary",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::get_monitoring_status",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::get_recent_alerts",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::is_running",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::reset_circuit_breaker",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::start_monitoring",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::trigger_restart",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_handle_health_failure",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::start",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_handle_health_status",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_monitoring_loop",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_perform_monitored_health_check",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::stop",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_collect_monitoring_metrics",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 15,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_attempt_restart",
+      "path": "excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::__init__",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_check_process_health",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_get_project_root",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_handle_disabled_auto_start",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_signal_handler",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_terminate_current_process",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_health_change_callback",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_restart_callback",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_start_callback",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_stop_callback",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::cleanup",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::ensure_running",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::get_restart_count",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::start",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::stop",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_attempt_process_start",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_is_process_healthy",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_reset_process_info",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_start_process",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_wait_for_health",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::restart",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::get_status",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::get_uptime",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_check_health_with_process_check",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_ensure_process_healthy",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_trigger_callbacks",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_is_process_running",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_terminate_existing_process",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_trigger_callbacks_sync",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 9,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_send_termination_signal",
+      "path": "excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "retry_utils.py",
+      "function_name": "RetryConfig::__init__",
+      "path": "excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "retry_utils.py",
+      "function_name": "calculate_delay",
+      "path": "excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "retry_utils.py",
+      "function_name": "retry_decorator",
+      "path": "excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "retry_utils.py",
+      "function_name": "retry_async",
+      "path": "excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "retry_utils.py",
+      "function_name": "retry_sync",
+      "path": "excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "server.py",
+      "function_name": "cleanup_monitoring",
+      "path": "excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "server.py",
+      "function_name": "get_monitoring_supervisor",
+      "path": "excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "server.py",
+      "function_name": "get_process_manager",
+      "path": "excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "server.py",
+      "function_name": "init_background_services",
+      "path": "excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "server.py",
+      "function_name": "main",
+      "path": "excalidraw_mcp/server.py"
+    }
+  ],
+  "targets": [
+    "/Users/les/Projects/excalidraw-mcp/excalidraw_mcp"
+  ]
+}

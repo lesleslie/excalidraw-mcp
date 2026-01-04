@@ -30,7 +30,7 @@ def test_cli_factory():
     """Test CLI factory creation."""
     print("\nTesting Excalidraw CLI factory...")
     from oneiric.core.cli import MCPServerCLIFactory
-    
+
     config = ExcalidrawConfig()
     cli_factory = MCPServerCLIFactory(
         server_class=ExcalidrawMCPServer,
@@ -46,14 +46,14 @@ def test_cli_factory():
 
 if __name__ == "__main__":
     print("🚀 Starting Excalidraw MCP CLI tests...")
-    
+
     try:
         test_config()
         test_server_creation()
         test_cli_factory()
-        
+
         print("\n🎉 All Excalidraw tests passed! CLI integration is working.")
-        
+
     except Exception as e:
         print(f"\n❌ Test failed: {e}")
         import traceback

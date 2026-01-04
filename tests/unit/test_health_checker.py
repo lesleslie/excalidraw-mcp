@@ -5,6 +5,7 @@ import time
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
+import psutil
 
 from excalidraw_mcp.config import config
 from excalidraw_mcp.monitoring.health_checker import (
@@ -88,7 +89,7 @@ class TestHealthChecker:
         with patch(
             "excalidraw_mcp.monitoring.health_checker.http_client"
         ) as mock_client:
-            mock_client.get_json = AsyncMock(return_value=[{"id": "1"}, {"id": "2"}])
+            mock_client.get_json = AsyncMock(return_value={"elements": [{"id": "1"}, {"id": "2"}]})
 
             result = await health_checker._check_api_health()
 

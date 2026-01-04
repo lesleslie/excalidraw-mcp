@@ -1,0 +1,3595 @@
+{
+  "functions": [
+    {
+      "complexity": 1,
+      "file_name": "retry_example.py",
+      "function_name": "async_main",
+      "path": "./examples/retry_example.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "retry_example.py",
+      "function_name": "main",
+      "path": "./examples/retry_example.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "retry_example.py",
+      "function_name": "unreliable_async_function",
+      "path": "./examples/retry_example.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "retry_example.py",
+      "function_name": "unreliable_sync_function",
+      "path": "./examples/retry_example.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::__init__",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::_get_timestamp",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::_update_global_config",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::get_app",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::shutdown",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::startup",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__main__.py",
+      "function_name": "main",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "__main__.py",
+      "function_name": "ExcalidrawMCPServer::health_check",
+      "path": "./excalidraw_mcp/__main__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "cli.py",
+      "function_name": "_show_missing_log_message",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "cli.py",
+      "function_name": "restart_mcp_server_impl",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "cli.py",
+      "function_name": "get_monitoring_supervisor",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "cli.py",
+      "function_name": "get_process_manager",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "cli.py",
+      "function_name": "_find_log_file",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "cli.py",
+      "function_name": "_show_recent_log_lines",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "_follow_log_output",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "_stop_process",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "find_canvas_server_process",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "find_mcp_server_process",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "logs_impl",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "cli.py",
+      "function_name": "status_impl",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "cli.py",
+      "function_name": "main",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 14,
+      "file_name": "cli.py",
+      "function_name": "start_mcp_server_impl",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 14,
+      "file_name": "cli.py",
+      "function_name": "stop_mcp_server_impl",
+      "path": "./excalidraw_mcp/cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::__init__",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::_load_from_environment",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::_load_logging_config_from_environment",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::is_development",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "Config::is_production",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "LoggingConfig::__post_init__",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "config.py",
+      "function_name": "SecurityConfig::__post_init__",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "Config::_load_performance_config_from_environment",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "Config::_load_security_config_from_environment",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "config.py",
+      "function_name": "Config::_validate",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_performance_config",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "Config::_load_monitoring_config_from_environment",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_monitoring_config",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_security_config",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "MonitoringConfig::__post_init__",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "config.py",
+      "function_name": "SecurityConfig::get_masked_jwt_secret",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "config.py",
+      "function_name": "Config::_load_from_pyproject",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "config.py",
+      "function_name": "Config::_load_server_config_from_environment",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "config.py",
+      "function_name": "Config::_validate_server_config",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "config.py",
+      "function_name": "ServerConfig::__post_init__",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "config.py",
+      "function_name": "SecurityConfig::validate_jwt_secret_at_startup",
+      "path": "./excalidraw_mcp/config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::__init__",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_visual_properties",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_numeric_ranges",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::create_element",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_element_type",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_line_properties",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_shape_properties",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_get_optional_float",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::validate_element_data",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_add_optional_properties",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_is_valid_color",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_coordinates",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_font_size",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_opacity",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_roughness",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_stroke_width",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_colors",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 9,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::_validate_dimensions",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "element_factory.py",
+      "function_name": "ElementFactory::prepare_update_data",
+      "path": "./excalidraw_mcp/element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::__aenter__",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::__aexit__",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::__init__",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_generate_correlation_id",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::get_request_metrics",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::health_failure_count",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::is_healthy",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::reset_request_metrics",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_ensure_client",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_get_tracing_headers",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::close",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_create_post_request_func",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_handle_post_response",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_send_post_request",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_update_request_metrics",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::post_json",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::_perform_health_check_request",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::check_health",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::delete",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::get_json",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "http_client.py",
+      "function_name": "CanvasHTTPClient::put_json",
+      "path": "./excalidraw_mcp/http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::__init__",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_register_tools",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_ensure_canvas_available",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::query_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::ungroup_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::create_element",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::delete_element",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::lock_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::unlock_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::get_resource",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::_sync_to_canvas",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::group_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::update_element",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::align_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::distribute_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "mcp_tools.py",
+      "function_name": "MCPToolsManager::batch_create_elements",
+      "path": "./excalidraw_mcp/mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::__init__",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_constant",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_expression",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_initialize_alert_rules",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_send_log_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::clear_alert_history",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_active_alerts",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_alert_rules",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_alert_statistics",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_format_alert_message",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_safe_eval_condition",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::force_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::get_alert_history",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_name",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_resolve_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_send_webhook_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_should_throttle_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_trigger_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_unary_op",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::disable_rule",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::enable_rule",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_bool_op",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_compare",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_send_alert",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 9,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::check_conditions",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "alerts.py",
+      "function_name": "AlertManager::_eval_node",
+      "path": "./excalidraw_mcp/monitoring/alerts.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_transition_to_closed",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_transition_to_half_open",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_transition_to_open",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::force_close",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::force_open",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_closed",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_half_open",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_healthy",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::is_open",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::reset",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::state",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_should_attempt_recovery",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::get_stats",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::get_time_until_recovery",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::__init__",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_should_allow_call",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_on_failure",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::_on_success",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "circuit_breaker.py",
+      "function_name": "CircuitBreaker::call",
+      "path": "./excalidraw_mcp/monitoring/circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::__init__",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_combine_health_results",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_failure_count",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_health_summary",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_last_healthy_time",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::is_failing",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::reset_failure_count",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::get_average_response_time",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_check_primary_health",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_update_health_state",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_check_resource_usage",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::check_health",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "health_checker.py",
+      "function_name": "HealthChecker::_check_api_health",
+      "path": "./excalidraw_mcp/monitoring/health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Counter::inc",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Counter::reset",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Gauge::dec",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Gauge::inc",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Gauge::set",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::average",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::reset",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::__init__",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::_initialize_standard_metrics",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_all_metrics",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_counter",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_gauge",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_histogram",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::register_counter",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::register_gauge",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::register_histogram",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::__post_init__",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_metric_history",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::start_collection",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "Histogram::observe",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::increment_counter",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::observe_histogram",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::reset_all_metrics",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::set_gauge",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::stop_collection",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::collect_system_metrics",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::collect_canvas_metrics",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::get_prometheus_format",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "metrics.py",
+      "function_name": "MetricsCollector::_collection_loop",
+      "path": "./excalidraw_mcp/monitoring/metrics.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::__init__",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::add_health_change_callback",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::add_restart_callback",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::force_health_check",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::get_metrics_summary",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::get_monitoring_status",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::get_recent_alerts",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::is_running",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::reset_circuit_breaker",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::start_monitoring",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::trigger_restart",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_handle_health_failure",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::start",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_handle_health_status",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_monitoring_loop",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_perform_monitored_health_check",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::stop",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_collect_monitoring_metrics",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 15,
+      "file_name": "supervisor.py",
+      "function_name": "MonitoringSupervisor::_attempt_restart",
+      "path": "./excalidraw_mcp/monitoring/supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::__init__",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_check_process_health",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_get_project_root",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_handle_disabled_auto_start",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_signal_handler",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_terminate_current_process",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_health_change_callback",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_restart_callback",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_start_callback",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::add_stop_callback",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::cleanup",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::ensure_running",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::get_restart_count",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::start",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::stop",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_attempt_process_start",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_is_process_healthy",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_reset_process_info",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_start_process",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_wait_for_health",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::restart",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::get_status",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::get_uptime",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_check_health_with_process_check",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_ensure_process_healthy",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_trigger_callbacks",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_is_process_running",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_terminate_existing_process",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_trigger_callbacks_sync",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 9,
+      "file_name": "process_manager.py",
+      "function_name": "CanvasProcessManager::_send_termination_signal",
+      "path": "./excalidraw_mcp/process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "retry_utils.py",
+      "function_name": "RetryConfig::__init__",
+      "path": "./excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "retry_utils.py",
+      "function_name": "calculate_delay",
+      "path": "./excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "retry_utils.py",
+      "function_name": "retry_decorator",
+      "path": "./excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "retry_utils.py",
+      "function_name": "retry_async",
+      "path": "./excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 12,
+      "file_name": "retry_utils.py",
+      "function_name": "retry_sync",
+      "path": "./excalidraw_mcp/retry_utils.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "server.py",
+      "function_name": "cleanup_monitoring",
+      "path": "./excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "server.py",
+      "function_name": "get_monitoring_supervisor",
+      "path": "./excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "server.py",
+      "function_name": "get_process_manager",
+      "path": "./excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "server.py",
+      "function_name": "init_background_services",
+      "path": "./excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "server.py",
+      "function_name": "main",
+      "path": "./excalidraw_mcp/server.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_cli.py",
+      "function_name": "test_cli_factory",
+      "path": "./test_excalidraw_cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_cli.py",
+      "function_name": "test_config",
+      "path": "./test_excalidraw_cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_cli.py",
+      "function_name": "test_server_creation",
+      "path": "./test_excalidraw_cli.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "async_client",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "delta_compression_test_data",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "element_factory",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "environment_variables",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "event_loop",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "mock_http_client",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "mock_subprocess",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "pytest_configure",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "sample_element_data",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "sample_server_element",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "security_test_data",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "setup_test_environment",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "conftest.py",
+      "function_name": "test_config",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "conftest.py",
+      "function_name": "performance_monitor",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "conftest.py",
+      "function_name": "batch_element_data",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "conftest.py",
+      "function_name": "websocket_mock",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "conftest.py",
+      "function_name": "integration_test_server",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "conftest.py",
+      "function_name": "rate_limiter_mock",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 10,
+      "file_name": "conftest.py",
+      "function_name": "pytest_collection_modifyitems",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 11,
+      "file_name": "conftest.py",
+      "function_name": "mock_canvas_server",
+      "path": "./tests/conftest.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::mcp_tools_manager",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_bulk_element_creation",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_canvas_server_error_response",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_client_context_manager",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_concurrent_element_operations",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_create_element_integration",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_create_element_validation_error",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_delete_element_integration",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_element_lifecycle",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_http_client_connection_error",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_query_elements_integration",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools.py",
+      "function_name": "TestMCPToolsIntegration::test_update_element_integration",
+      "path": "./tests/integration/test_mcp_tools.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::mock_canvas_server",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::mock_config",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_alert_generation_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_automatic_restart_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_callback_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_end_to_end_failure_recovery",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_end_to_end_healthy_monitoring",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_graceful_shutdown_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_monitoring_disabled_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_monitoring_resilience",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_performance_under_load",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_request_tracing_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::monitoring_supervisor",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_circuit_breaker_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_metrics_collection_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "test_monitoring_integration.py",
+      "function_name": "TestMonitoringIntegration::test_resource_monitoring_integration",
+      "path": "./tests/integration/test_monitoring_integration.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_element_creation_performance",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_large_text_element_performance",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_concurrent_element_operations",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_element_update_preparation_performance",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_element_validation_performance",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_thread_safety_performance",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_validation_error_performance",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 6,
+      "file_name": "test_element_performance.py",
+      "function_name": "TestElementPerformance::test_memory_usage_element_creation",
+      "path": "./tests/performance/test_element_performance.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_negative_dimensions_security",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_oversized_input_handling",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_prototype_pollution_prevention",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_sql_injection_prevention",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_unicode_attack_prevention",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_xss_prevention_in_text_elements",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_algorithmic_complexity_attack",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_deep_nested_object_attack",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_injection_in_element_ids",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_invalid_coordinate_values",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_malicious_color_values",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_type_confusion_attacks",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 8,
+      "file_name": "test_input_validation.py",
+      "function_name": "TestInputValidationSecurity::test_numeric_overflow_prevention",
+      "path": "./tests/security/test_input_validation.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_allowed_origins_parsing",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_config_validation_invalid_port",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_config_validation_missing_jwt_secret",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_config_validation_negative_values",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_config_validation_success",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_default_config_creation",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_development_mode_detection",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_environment_variable_loading",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_production_mode_detection",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestSecurityConfig::test_security_config_defaults",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestSecurityConfig::test_security_config_post_init",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestServerConfig::test_server_config_custom_port",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestServerConfig::test_server_config_defaults",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestServerConfig::test_server_config_url_parsing",
+      "path": "./tests/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_runtime_simple.py",
+      "function_name": "test_cache_directory_configuration",
+      "path": "./tests/test_excalidraw_runtime_simple.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_runtime_simple.py",
+      "function_name": "test_cli_factory_creation",
+      "path": "./tests/test_excalidraw_runtime_simple.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_runtime_simple.py",
+      "function_name": "test_excalidraw_health_check",
+      "path": "./tests/test_excalidraw_runtime_simple.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_runtime_simple.py",
+      "function_name": "test_excalidraw_server_creation",
+      "path": "./tests/test_excalidraw_runtime_simple.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_excalidraw_runtime_simple.py",
+      "function_name": "test_oneiric_imports",
+      "path": "./tests/test_excalidraw_runtime_simple.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_excalidraw_runtime_simple.py",
+      "function_name": "test_excalidraw_config",
+      "path": "./tests/test_excalidraw_runtime_simple.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::http_client",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_client_context_manager",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_delete_failure",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_delete_success",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_get_json_success",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_health_check_caching",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_health_check_exception",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_health_check_failure",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_health_check_success",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_health_failure_count",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_post_json_success",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_post_json_timeout",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_post_json_with_retries",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestCanvasHTTPClient::test_put_json_success",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestHealthCacheEntry::test_health_cache_entry_creation",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client.py",
+      "function_name": "TestHealthCacheEntry::test_health_cache_entry_with_failures",
+      "path": "./tests/test_http_client.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::circuit_breaker",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::mock_config",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_circuit_closed_failure",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_circuit_closed_success",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_concurrent_calls",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_config_defaults",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_force_open",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_sync_function_call",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_circuit_half_open_recovery",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_circuit_opens_on_failure_threshold",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_circuit_reset",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_circuit_statistics",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_force_close",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_half_open_failure_reopens_circuit",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_healthy_status",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_recovery_timeout_calculation",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_state_transitions_logged",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_circuit_breaker.py",
+      "function_name": "TestCircuitBreaker::test_half_open_call_limit",
+      "path": "./tests/unit/test_circuit_breaker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_config_immutability",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_initialization",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_multiple_config_instances",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_sensitive_data_not_exposed",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_validation_auth_enabled_without_secret",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_validation_invalid_port",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_validation_negative_values",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_validation_success",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestLoggingConfig::test_default_values",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestLoggingConfig::test_post_init_sensitive_fields",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestPerformanceConfig::test_default_values",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestSecurityConfig::test_default_values",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestSecurityConfig::test_post_init_default_lists",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestServerConfig::test_default_values",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config.py",
+      "function_name": "TestServerConfig::test_url_parsing",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_is_production_mode",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_is_development_mode",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_environment_loading",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 7,
+      "file_name": "test_config.py",
+      "function_name": "TestConfig::test_environment_variable_types",
+      "path": "./tests/unit/test_config.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_health_check_timeout_negative",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_health_check_timeout_positive",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_health_check_timeout_zero",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_token_expiration_negative",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_token_expiration_positive",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_token_expiration_zero",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_websocket_batch_size_negative",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_websocket_batch_size_positive",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_config_coverage.py",
+      "function_name": "test_config_validation_websocket_batch_size_zero",
+      "path": "./tests/unit/test_config_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_coverage_improvements.py",
+      "function_name": "TestCoverageImprovements::test_direct_module_execution_coverage",
+      "path": "./tests/unit/test_coverage_improvements.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_coverage_improvements.py",
+      "function_name": "TestCoverageImprovements::test_main_module_main_function_call",
+      "path": "./tests/unit/test_coverage_improvements.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_coverage_improvements.py",
+      "function_name": "TestCoverageImprovements::test_server_module_main_function_exists",
+      "path": "./tests/unit/test_coverage_improvements.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_color_validation_hex",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_create_basic_rectangle",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_create_line_element",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_create_text_element",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_invalid_color",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_invalid_coordinates",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_invalid_type",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_missing_type",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_negative_dimensions",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_opacity_range",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_stroke_width_range",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_validation_success",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_optional_float_conversion",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_prepare_update_data",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_prepare_update_data_missing_id",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_element_factory.py",
+      "function_name": "TestElementFactory::test_element_creation_performance",
+      "path": "./tests/unit/test_element_factory.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_element_validation_invalid_dimension_not_number",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_element_validation_invalid_font_size_not_number",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_element_validation_invalid_opacity_not_number",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_element_validation_invalid_roughness_not_number",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_element_validation_invalid_stroke_width_not_number",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_line_element_default_dimensions",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_optional_float_conversion_invalid_values",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_prepare_update_data_numeric_conversion",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_prepare_update_data_with_none_values",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_prepare_update_data_with_valid_numeric_values",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_element_factory_coverage.py",
+      "function_name": "test_shape_elements_default_dimensions",
+      "path": "./tests/unit/test_element_factory_coverage.py"
+    },
+    {
+      "complexity": 5,
+      "file_name": "test_final_coverage.py",
+      "function_name": "test_cover_final_missing_lines",
+      "path": "./tests/unit/test_final_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_final_main_blocks.py",
+      "function_name": "test_main_blocks_execute",
+      "path": "./tests/unit/test_final_main_blocks.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::health_checker",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::mock_config",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_api_health_check_degraded",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_api_health_check_failure",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_api_health_check_success",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_combined_health_results",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_comprehensive_health_check",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_health_summary",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_primary_health_check_exception",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_primary_health_check_failure",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_primary_health_check_success",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_resource_monitoring_no_process",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_resource_monitoring_process_not_found",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_resource_monitoring_success",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_resource_monitoring_threshold_exceeded",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_health_state_tracking",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_reset_failure_count",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_health_checker.py",
+      "function_name": "TestHealthChecker::test_response_time_tracking",
+      "path": "./tests/unit/test_health_checker.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::http_client",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_delete_exception",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_get_json_exception",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_get_json_failure",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_health_check_double_check_after_lock",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_health_check_force_bypasses_cache",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_post_json_all_retries_fail",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_post_json_non_success_status_codes_still_retry",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_post_json_retry_logic",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_put_json_exception",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_http_client_coverage.py",
+      "function_name": "TestHttpClientCoverage::test_put_json_failure",
+      "path": "./tests/unit/test_http_client_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__init__.py",
+      "function_name": "TestMainModule::test_main_function_calls_server_main",
+      "path": "./tests/unit/test_main/__init__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__init__.py",
+      "function_name": "TestMainModule::test_main_module_imports_successfully",
+      "path": "./tests/unit/test_main/__init__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "__init__.py",
+      "function_name": "TestMainModule::test_module_has_correct_docstring",
+      "path": "./tests/unit/test_main/__init__.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_main.py",
+      "function_name": "TestMainModule::test_main_function_exists",
+      "path": "./tests/unit/test_main/test_main.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_main.py",
+      "function_name": "TestMainModule::test_main_module_imports_successfully",
+      "path": "./tests/unit/test_main/test_main.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_main.py",
+      "function_name": "TestMainModule::test_module_has_correct_docstring",
+      "path": "./tests/unit/test_main/test_main.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_main.py",
+      "function_name": "TestMainModule::test_module_has_main_block",
+      "path": "./tests/unit/test_main/test_main.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_main_blocks.py",
+      "function_name": "test_main_blocks_execute",
+      "path": "./tests/unit/test_main_blocks.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::mcp_tools_manager",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::mock_mcp",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_align_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_align_elements_missing_data",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_align_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_batch_create_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_batch_create_elements_no_elements",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_batch_create_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_batch_create_elements_too_many_elements",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_delete_element_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_delete_element_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_distribute_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_distribute_elements_missing_data",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_distribute_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_get_resource_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_get_resource_invalid_type",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_get_resource_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_group_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_group_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_group_elements_too_few_elements",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_lock_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_lock_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_query_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_query_elements_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_ungroup_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_ungroup_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_unlock_elements_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_unlock_elements_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_update_element_exception",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_coverage.py",
+      "function_name": "TestMCPToolsCoverage::test_update_element_failure",
+      "path": "./tests/unit/test_mcp_tools_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::mcp_tools_manager",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::mock_mcp",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_align_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_batch_create_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_create_element_factory_exception",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_create_element_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_create_element_sync_failure",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_delete_element_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_distribute_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_ensure_canvas_available_failure",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_ensure_canvas_available_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_get_resource_invalid_type",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_get_resource_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_group_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_lock_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_query_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_register_tools_calls_tool_method",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_sync_to_canvas_create_operation",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_sync_to_canvas_delete_operation",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_sync_to_canvas_exception_handling",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_sync_to_canvas_query_operation",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_sync_to_canvas_unknown_operation",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_sync_to_canvas_update_operation",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_ungroup_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_unlock_elements_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_update_element_success",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 4,
+      "file_name": "test_mcp_tools_unit.py",
+      "function_name": "TestMCPToolsUnit::test_initialization_registers_tools",
+      "path": "./tests/unit/test_mcp_tools_unit.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::mock_config",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::supervisor",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_automatic_restart_trigger",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_callback_management",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_circuit_breaker_reset",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_force_health_check",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_get_metrics_and_alerts",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_health_check_failure",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_health_check_success",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_manual_restart_trigger",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_metrics_collection",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_monitoring_status",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_restart_failure",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_restart_success",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_supervisor_disabled_monitoring",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_supervisor_start_stop",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_monitoring_supervisor.py",
+      "function_name": "TestMonitoringSupervisor::test_monitoring_loop_exception_handling",
+      "path": "./tests/unit/test_monitoring_supervisor.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::process_manager",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_cleanup",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_get_project_root",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_get_status",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_is_process_running_exception_handling",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_is_process_running_no_process",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_is_process_running_pid_does_not_exist",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_is_process_running_process_exited",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_process_manager_initialization",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_reset_process_info",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_restart",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_signal_handler",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_stop",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_terminate_existing_process_already_terminated",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_terminate_existing_process_no_pid",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_terminate_existing_process_other_exception",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager.py",
+      "function_name": "TestCanvasProcessManager::test_terminate_existing_process_successful_termination",
+      "path": "./tests/unit/test_process_manager.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::process_manager",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_ensure_running_auto_start_disabled",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_ensure_running_start_process_failure",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_ensure_running_wait_for_health_failure",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_is_process_healthy_not_running",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_is_process_healthy_success",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_is_process_healthy_unhealthy",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_start_process_exception",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_start_process_success",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_terminate_existing_process_force_kill",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_terminate_existing_process_windows",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_wait_for_health_process_dies",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_wait_for_health_success",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_process_manager_coverage.py",
+      "function_name": "TestProcessManagerCoverage::test_wait_for_health_timeout",
+      "path": "./tests/unit/test_process_manager_coverage.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::setUp",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_calculate_delay_no_jitter",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_async_max_attempts_exceeded",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_async_success",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_sync_max_attempts_exceeded",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_sync_success",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 1,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_calculate_delay_with_jitter",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_async_eventual_success",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_async_with_callback",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_decorator_async",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_decorator_sync",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_sync_eventual_success",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 2,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_sync_with_callback",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 3,
+      "file_name": "test_retry_utils.py",
+      "function_name": "TestRetryUtils::test_retry_async_selective_retry",
+      "path": "./tests/unit/test_retry_utils.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_server.py",
+      "function_name": "TestServerModule::test_init_background_services_server_already_running",
+      "path": "./tests/unit/test_server.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_server.py",
+      "function_name": "TestServerModule::test_init_background_services_server_not_ready",
+      "path": "./tests/unit/test_server.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_server.py",
+      "function_name": "TestServerModule::test_init_background_services_starts_server",
+      "path": "./tests/unit/test_server.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_server.py",
+      "function_name": "TestServerModule::test_main_function_keyboard_interrupt",
+      "path": "./tests/unit/test_server.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_server.py",
+      "function_name": "TestServerModule::test_main_function_normal_execution",
+      "path": "./tests/unit/test_server.py"
+    },
+    {
+      "complexity": 0,
+      "file_name": "test_server.py",
+      "function_name": "TestServerModule::test_main_function_unexpected_exception",
+      "path": "./tests/unit/test_server.py"
+    }
+  ],
+  "targets": [
+    "/Users/les/Projects/excalidraw-mcp"
+  ]
+}

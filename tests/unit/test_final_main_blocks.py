@@ -8,41 +8,47 @@ from pathlib import Path
 
 def test_main_blocks_execute():
     """Test that main blocks in modules execute without error."""
-    project_root = Path(__file__).parent.parent
+    # Test __main__.py by directly importing and verifying the main function exists
+    # The if __name__ == "__main__": guard is tested by importing the module
+    import excalidraw_mcp.__main__ as main_module
 
-    # Test __main__.py execution by running it as a module
-    # This should cover line 9: if __name__ == "__main__": main()
-    # We need to set environment variables to prevent the server from actually starting
-    env = os.environ.copy()
-    env["CANVAS_AUTO_START"] = "false"
+    # Verify main() function exists and is callable
+    assert hasattr(main_module, 'main')
+    assert callable(main_module.main)
 
-    subprocess.run(
-        [sys.executable, "-m", "excalidraw_mcp"],
-        capture_output=True,
-        text=True,
-        cwd=project_root,
-        env=env,
-        timeout=10,
-    )
+    # Test that we can call main() with proper mocking to avoid actual server startup
+    from unittest.mock import patch, Mock
 
-    # The execution should either succeed or fail gracefully
-    # Either way, the attempt to execute covers the missing line
-    # We're mostly checking that it doesn't crash immediately
+    # Mock all the dependencies that would start actual services
+    with patch('excalidraw_mcp.__main__.MCPServerCLIFactory') as mock_factory:
+        mock_instance = Mock()
+        mock_app = Mock()
+        mock_factory.create_server_cli.return_value = mock_instance
+        mock_instance.create_app.return_value = lambda: mock_app()
 
-    # Test server.py execution by importing and calling main directly
-    # This should cover line 67: if __name__ == "__main__": main()
-    subprocess.run(
-        [
-            sys.executable,
-            "-c",
-            "import os; os.environ['CANVAS_AUTO_START'] = 'false'; "
-            "from excalidraw_mcp.server import main; main()",
-        ],
-        capture_output=True,
-        text=True,
-        cwd=project_root,
-        timeout=10,
-    )
+        # Call main - it should complete without hanging
+        main_module.main()
 
-    # The execution should either succeed or fail gracefully
-    # Either way, the attempt to execute covers the missing line
+        # Verify the CLI factory was called correctly
+        mock_factory.create_server_cli.assert_called_once_with(
+            server_class=main_module.ExcalidrawMCPServer,
+            config_class=main_module.ExcalidrawConfig,
+            name="excalidraw-mcp",
+        )
+        mock_instance.create_app.assert_called_once()
+        mock_app.assert_called_once()
+
+    # Test server.py main() function with proper mocking
+    with patch('excalidraw_mcp.server.mcp') as mock_mcp, \
+         patch('excalidraw_mcp.server.init_background_services'), \
+         patch('excalidraw_mcp.server.SERVERPANELS_AVAILABLE', False):
+
+        # Mock the run method to prevent server startup
+        mock_mcp.run = Mock()
+
+        # Import and call main()
+        from excalidraw_mcp.server import main
+        main()
+
+        # Verify mcp.run was called
+        mock_mcp.run.assert_called_once()

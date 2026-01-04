@@ -44,7 +44,21 @@ class SecurityConfig:
     rate_limit_max_requests: int = 100
 
     def __post_init__(self) -> None:
-        pass
+        """Initialize default values if not set."""
+        # Set default allowed_origins if empty
+        if not self.allowed_origins:
+            self.allowed_origins = [
+                "http://localhost:3031",
+                "http://127.0.0.1:3031",
+            ]
+
+        # Set default CORS methods if empty
+        if not self.cors_methods:
+            self.cors_methods = ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+
+        # Set default CORS headers if empty
+        if not self.cors_headers:
+            self.cors_headers = ["Content-Type", "Authorization"]
 
     def get_masked_jwt_secret(self) -> str:
         """Get masked JWT secret for safe logging (Phase 3 Security Hardening).
@@ -257,7 +271,17 @@ class LoggingConfig:
     correlation_header: str = "X-Correlation-ID"
 
     def __post_init__(self) -> None:
-        pass
+        """Initialize default sensitive fields if not set."""
+        # Set default sensitive fields if empty
+        if not self.sensitive_fields:
+            self.sensitive_fields = [
+                "password",
+                "token",
+                "secret",
+                "key",
+                "jwt",
+                "api_key",
+            ]
 
 
 @dataclass

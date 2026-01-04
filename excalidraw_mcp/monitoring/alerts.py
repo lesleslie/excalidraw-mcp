@@ -170,16 +170,23 @@ class AlertManager:
             except Exception as e:
                 logger.error(f"Error evaluating alert rule '{rule.name}': {e}")
 
-    def _eval_expression(self, node: ast.Expression, operators: dict) -> Any:
+    def _eval_expression(
+        self,
+        node: ast.Expression,
+        operators: dict,
+        context: dict[str, Any] | None = None,
+    ) -> Any:
         """Evaluate an expression node."""
-        return self._eval_node(node.body, operators)
+        return self._eval_node(node.body, operators, context)
 
-    def _eval_compare(self, node: ast.Compare, operators: dict) -> bool:
+    def _eval_compare(
+        self, node: ast.Compare, operators: dict, context: dict[str, Any] | None = None
+    ) -> bool:
         """Evaluate a comparison node."""
-        left = self._eval_node(node.left, operators)
+        left = self._eval_node(node.left, operators, context)
         comparisons = []
         for op, comparator in zip(node.ops, node.comparators):
-            right = self._eval_node(comparator, operators)
+            right = self._eval_node(comparator, operators, context)
             if type(op) in operators:
                 comparisons.append(operators[type(op)](left, right))
             else:
@@ -187,9 +194,11 @@ class AlertManager:
             left = right
         return all(comparisons)
 
-    def _eval_bool_op(self, node: ast.BoolOp, operators: dict) -> Any:
+    def _eval_bool_op(
+        self, node: ast.BoolOp, operators: dict, context: dict[str, Any] | None = None
+    ) -> Any:
         """Evaluate a boolean operation node."""
-        values = [self._eval_node(value, operators) for value in node.values]
+        values = [self._eval_node(value, operators, context) for value in node.values]
         if type(node.op) in operators:
             result = values[0]
             for value in values[1:]:
@@ -198,10 +207,14 @@ class AlertManager:
         else:
             raise ValueError(f"Unsupported boolean operator: {node.op}")
 
-    def _eval_unary_op(self, node: ast.UnaryOp, operators: dict) -> Any:
+    def _eval_unary_op(
+        self, node: ast.UnaryOp, operators: dict, context: dict[str, Any] | None = None
+    ) -> Any:
         """Evaluate a unary operation node."""
         if isinstance(node.op, ast.Not) and type(node.op) in operators:
-            return operators[type(node.op)](self._eval_node(node.operand, operators))
+            return operators[type(node.op)](
+                self._eval_node(node.operand, operators, context)
+            )
         else:
             raise ValueError(f"Unsupported unary operator: {node.op}")
 
@@ -221,13 +234,13 @@ class AlertManager:
     ) -> Any:
         """Recursively evaluate an AST node."""
         if isinstance(node, ast.Expression):
-            return self._eval_expression(node, operators)
+            return self._eval_expression(node, operators, context)
         elif isinstance(node, ast.Compare):
-            return self._eval_compare(node, operators)
+            return self._eval_compare(node, operators, context)
         elif isinstance(node, ast.BoolOp):
-            return self._eval_bool_op(node, operators)
+            return self._eval_bool_op(node, operators, context)
         elif isinstance(node, ast.UnaryOp):
-            return self._eval_unary_op(node, operators)
+            return self._eval_unary_op(node, operators, context)
         elif isinstance(node, ast.Constant):
             return self._eval_constant(node)
         elif isinstance(node, ast.Num):  # For Python < 3.8

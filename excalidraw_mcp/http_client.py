@@ -4,6 +4,7 @@ import asyncio
 import logging
 import time
 import uuid
+from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any
 
@@ -215,7 +216,7 @@ class CanvasHTTPClient:
 
     def _create_post_request_func(
         self, url: str, data: dict[str, Any], endpoint: str, trace_id: str
-    ):
+    ) -> Callable[[], Awaitable[dict[str, Any] | None]]:
         """Create a function to execute the POST request for retry mechanism."""
 
         async def _post_request() -> dict[str, Any] | None:

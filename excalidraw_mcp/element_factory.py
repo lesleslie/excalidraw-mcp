@@ -216,8 +216,12 @@ class ElementFactory:
                 except (ValueError, TypeError):
                     errors.append(f"Invalid {dimension}: must be a number")
 
-    def _is_valid_color(self, color: str) -> bool:
+    def _is_valid_color(self, color: Any) -> bool:
         """Validate hex color format."""
+        # Type check first
+        if not isinstance(color, str):
+            return False
+
         # Allow transparent
         if color.lower() == "transparent":
             return True

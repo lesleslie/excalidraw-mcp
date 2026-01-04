@@ -14,8 +14,16 @@ import typer
 # ACB has been removed - using standard logging and Oneiric patterns
 # from acb.console import Console
 # from acb.depends import depends
-# from mcp_common.ui import ServerPanels
 from rich import print as rprint
+
+# Check ServerPanels availability (Phase 3.3 M2: improved pattern)
+try:
+    from mcp_common.ui import ServerPanels
+
+    SERVERPANELS_AVAILABLE = True
+except ImportError:
+    SERVERPANELS_AVAILABLE = False
+    ServerPanels = None  # type: ignore
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor
@@ -267,23 +275,39 @@ def status_impl() -> None:
     else:
         rows.append(["Canvas Server", "[red]Stopped[/red]", "-", "-"])
 
-    ServerPanels.server_status_table(
-        rows,
-        title="Excalidraw MCP Server Status",
-        headers=("Component", "Status", "PID", "Details"),
-    )
+    if SERVERPANELS_AVAILABLE and ServerPanels:
+        ServerPanels.server_status_table(
+            rows,
+            title="Excalidraw MCP Server Status",
+            headers=("Component", "Status", "PID", "Details"),
+        )
+    else:
+        # Fallback to simple output if ServerPanels is not available
+        rprint("[bold]Excalidraw MCP Server Status[/bold]")
+        for row in rows:
+            rprint(" | ".join(row))
 
     # Show configuration info
     config = Config()
-    ServerPanels.config_table(
-        title="Server Configuration",
-        items={
-            "Canvas URL": config.server.express_url,
-            "Canvas Auto-start": config.server.canvas_auto_start,
-            "Monitoring": config.monitoring.enabled,
-            "Health Check Interval": f"{config.monitoring.health_check_interval_seconds}s",
-        },
-    )
+    if SERVERPANELS_AVAILABLE and ServerPanels:
+        ServerPanels.config_table(
+            title="Server Configuration",
+            items={
+                "Canvas URL": config.server.express_url,
+                "Canvas Auto-start": config.server.canvas_auto_start,
+                "Monitoring": config.monitoring.enabled,
+                "Health Check Interval": f"{config.monitoring.health_check_interval_seconds}s",
+            },
+        )
+    else:
+        # Fallback to simple output if ServerPanels is not available
+        rprint("[bold]Server Configuration[/bold]")
+        rprint(f"Canvas URL: {config.server.express_url}")
+        rprint(f"Canvas Auto-start: {config.server.canvas_auto_start}")
+        rprint(f"Monitoring: {config.monitoring.enabled}")
+        rprint(
+            f"Health Check Interval: {config.monitoring.health_check_interval_seconds}s"
+        )
 
 
 def _find_log_file() -> Path | None:
@@ -392,7 +416,7 @@ def main(
 
     # Count how many main actions were requested
     actions = [start_mcp_server, stop_mcp_server, restart_mcp_server, status, logs]
-    action_count = sum(actions)
+    action_count = sum(1 for action in actions if action)
 
     if action_count == 0:
         # No action specified, show help

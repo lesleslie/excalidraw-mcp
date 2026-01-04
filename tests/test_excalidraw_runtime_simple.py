@@ -56,9 +56,10 @@ def test_excalidraw_server_creation():
 
     # Verify runtime components are initialized
     assert server.config is not None
-    assert server.snapshot_manager is not None
-    assert server.cache_manager is not None
-    assert server.health_monitor is not None
+    assert server.runtime is not None
+    assert server.runtime.snapshot_manager is not None
+    assert server.runtime.cache_manager is not None
+    assert server.runtime.health_monitor is not None
     assert server.mcp is not None
 
 

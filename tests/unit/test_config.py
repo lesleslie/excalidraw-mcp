@@ -116,7 +116,7 @@ class TestConfig:
         # Set test environment variables
         test_env = {
             "AUTH_ENABLED": "true",
-            "JWT_SECRET": "test-secret",
+            "JWT_SECRET": "test-secret-minimum-32-characters-long-for-validation",
             "EXPRESS_SERVER_URL": "http://test.com:4000",
             "CANVAS_AUTO_START": "false",
             "MAX_ELEMENTS": "5000",
@@ -135,7 +135,7 @@ class TestConfig:
 
             # Test security config
             assert config.security.auth_enabled is True
-            assert config.security.jwt_secret == "test-secret"
+            assert config.security.jwt_secret == "test-secret-minimum-32-characters-long-for-validation"
             assert "http://localhost:3000" in config.security.allowed_origins
             assert "http://localhost:3001" in config.security.allowed_origins
 
@@ -285,7 +285,7 @@ class TestConfig:
         """Test that environment variables are properly typed."""
         test_env = {
             "AUTH_ENABLED": "true",
-            "JWT_SECRET": "test-secret-key",
+            "JWT_SECRET": "test-secret-key-minimum-32-characters-for-validation",
             "CANVAS_AUTO_START": "false",
             "MAX_ELEMENTS": "2500",
         }

@@ -1,7 +1,7 @@
 """MCP tool implementations for Excalidraw operations."""
 
 import logging
-from typing import Any
+from typing import Any, cast
 
 from fastmcp import FastMCP
 
@@ -48,6 +48,15 @@ class MCPToolsManager:
             raise RuntimeError("Canvas server is not available")
         return True
 
+    @staticmethod
+    def _request_to_dict(request: Any) -> dict[str, Any]:
+        """Convert Pydantic model to dict if needed."""
+        if hasattr(request, "model_dump"):
+            return cast(dict[str, Any], request.model_dump())
+        elif hasattr(request, "dict"):
+            return cast(dict[str, Any], request.dict())
+        return cast(dict[str, Any], request)
+
     async def _sync_to_canvas(
         self, operation: str, data: dict[str, Any]
     ) -> dict[str, Any] | None:
@@ -79,8 +88,10 @@ class MCPToolsManager:
     async def create_element(self, request: dict[str, Any]) -> dict[str, Any]:
         """Create a new element on the canvas."""
         try:
+            request_data = self._request_to_dict(request)
+
             # Create element with factory
-            element_data = self.element_factory.create_element(request)
+            element_data = self.element_factory.create_element(request_data)
 
             # Sync to canvas
             result = await self._sync_to_canvas("create", element_data)
@@ -105,7 +116,8 @@ class MCPToolsManager:
     async def update_element(self, request: dict[str, Any]) -> dict[str, Any]:
         """Update an existing element."""
         try:
-            request_data = request
+            request_data = self._request_to_dict(request)
+
             element_id = request_data.get("id")
 
             if not element_id:
@@ -154,8 +166,10 @@ class MCPToolsManager:
     async def query_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Query elements from the canvas."""
         try:
+            request_data = self._request_to_dict(request)
+
             # Sync to canvas
-            result = await self._sync_to_canvas("query", request)
+            result = await self._sync_to_canvas("query", request_data)
 
             if result:
                 elements = result.get("elements", [])
@@ -180,7 +194,8 @@ class MCPToolsManager:
     async def batch_create_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Create multiple elements in one operation."""
         try:
-            request_data = request
+            request_data = self._request_to_dict(request)
+
             elements_data = request_data.get("elements", [])
 
             if not elements_data:
@@ -278,7 +293,8 @@ class MCPToolsManager:
     async def align_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Align elements to a specific position."""
         try:
-            request_data = request
+            request_data = self._request_to_dict(request)
+
             element_ids = request_data.get("elementIds", [])
             alignment = request_data.get("alignment")
 
@@ -306,7 +322,8 @@ class MCPToolsManager:
     async def distribute_elements(self, request: dict[str, Any]) -> dict[str, Any]:
         """Distribute elements evenly."""
         try:
-            request_data = request
+            request_data = self._request_to_dict(request)
+
             element_ids = request_data.get("elementIds", [])
             direction = request_data.get("direction")
 

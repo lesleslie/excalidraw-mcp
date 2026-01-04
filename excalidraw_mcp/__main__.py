@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Excalidraw MCP Server - Oneiric CLI Entry Point."""
+"""Excalidraw MCP Server - Module entry point for Oneiric CLI integration."""
+
+from typing import Any
 
 from mcp_common.cli import MCPServerCLIFactory
 from mcp_common.server import BaseOneiricServerMixin, create_runtime_components
@@ -35,8 +37,7 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
 
         # Initialize runtime components using mcp-common helper
         self.runtime = create_runtime_components(
-            server_name="excalidraw-mcp",
-            cache_dir=config.cache_dir or ".oneiric_cache"
+            server_name="excalidraw-mcp", cache_dir=config.cache_dir or ".oneiric_cache"
         )
 
     def _update_global_config(self) -> None:
@@ -44,9 +45,8 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
         # Update server settings from config
         from excalidraw_mcp.config import config as global_config
 
-        global_config.server.host = self.config.http_host
-        global_config.server.port = self.config.http_port
-        global_config.server.debug = self.config.debug
+        global_config.server.express_host = self.config.http_host
+        global_config.server.express_port = self.config.http_port
 
     async def startup(self) -> None:
         """Server startup lifecycle hook."""
@@ -85,9 +85,10 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
     def _get_timestamp(self) -> str:
         """Get current timestamp in ISO format."""
         import time
+
         return time.strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    async def health_check(self):
+    async def health_check(self) -> Any:
         """Perform health check."""
         # Build base health components using mixin helper
         base_components = await self._build_health_components()
@@ -112,12 +113,12 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
         # Create health response
         return self.runtime.health_monitor.create_health_response(base_components)
 
-    def get_app(self):
+    def get_app(self) -> Any:
         """Get the ASGI application."""
         return self.mcp.http_app
 
 
-def main():
+def main() -> None:
     """Main entry point for Excalidraw MCP Server."""
 
     # Create CLI factory using mcp-common's enhanced factory
@@ -125,12 +126,10 @@ def main():
         server_class=ExcalidrawMCPServer,
         config_class=ExcalidrawConfig,
         name="excalidraw-mcp",
-        description="Excalidraw MCP Server - Diagram management via Excalidraw API",
     )
 
     # Create and run CLI
-    app = cli_factory.create_app()
-    app()
+    cli_factory.create_app()()
 
 
 if __name__ == "__main__":
