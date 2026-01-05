@@ -26,7 +26,6 @@ requires-python = ">=3.13"
 dependencies = [
     "fastmcp>=2.11.3",
     "httpx[http2]>=0.28.1",
-    "mcp-common>=0.4.4",
     "oneiric>=0.3.6",
     "pydantic>=2.11.7",
     "psutil>=6.1.1",
@@ -34,6 +33,7 @@ dependencies = [
     "cryptography>=45.0.6",
     "typer>=0.15.1",
     "rich>=13.9.4",
+    "mcp-common>=0.4.7",
 ]
 
 [project.license]
@@ -258,9 +258,6 @@ exclude-deps = [
     "cryptography",
     "pyjwt",
 ]
-
-[tool.uv.sources.mcp-common]
-path = "../mcp-common"
 
 [dependency-groups]
 dev = [

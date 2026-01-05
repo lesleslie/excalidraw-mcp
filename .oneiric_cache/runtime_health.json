@@ -1,0 +1,10 @@
+{
+  "orchestrator_pid": 19110,
+  "updated_at": "2026-01-05T14:24:41.255876+00:00",
+  "watchers_running": false,
+  "remote_enabled": false,
+  "last_remote_sync_at": null,
+  "last_remote_error": null,
+  "lifecycle_state": {},
+  "activity_state": {}
+}
