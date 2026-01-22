@@ -1,1 +1,72 @@
-{"last_event": {}, "last_workflow": {"workflow": "crackerjack", "node_count": 6, "entry_nodes": ["configuration"], "nodes": [{"node": "configuration", "task": "configuration", "depends_on": [], "duration_ms": 2.1172830020077527, "attempts": 1, "retry_policy": null}, {"node": "fast_hooks", "task": "fast_hooks", "depends_on": ["configuration"], "duration_ms": 83686.82346702553, "attempts": 1, "retry_policy": null}, {"node": "tests", "task": "tests", "depends_on": ["fast_hooks"], "duration_ms": 172351.8082590017, "attempts": 1, "retry_policy": null}, {"node": "comprehensive_hooks", "task": "comprehensive_hooks", "depends_on": ["tests"], "duration_ms": 30337.497753993375, "attempts": 1, "retry_policy": null}, {"node": "publishing", "task": "publishing", "depends_on": ["comprehensive_hooks"], "duration_ms": 0.5116429820191115, "attempts": 1, "retry_policy": null}, {"node": "commit", "task": "commit", "depends_on": ["publishing"], "duration_ms": 0.17250198288820684, "attempts": 1, "retry_policy": null}], "total_duration_ms": 286378.9309079875, "recorded_at": "2026-01-22T18:19:54.876931+00:00"}}
+{
+  "last_event": {},
+  "last_workflow": {
+    "entry_nodes": [
+      "configuration"
+    ],
+    "node_count": 6,
+    "nodes": [
+      {
+        "attempts": 1,
+        "depends_on": [],
+        "duration_ms": 2.1172830020077527,
+        "node": "configuration",
+        "retry_policy": null,
+        "task": "configuration"
+      },
+      {
+        "attempts": 1,
+        "depends_on": [
+          "configuration"
+        ],
+        "duration_ms": 83686.82346702553,
+        "node": "fast_hooks",
+        "retry_policy": null,
+        "task": "fast_hooks"
+      },
+      {
+        "attempts": 1,
+        "depends_on": [
+          "fast_hooks"
+        ],
+        "duration_ms": 172351.8082590017,
+        "node": "tests",
+        "retry_policy": null,
+        "task": "tests"
+      },
+      {
+        "attempts": 1,
+        "depends_on": [
+          "tests"
+        ],
+        "duration_ms": 30337.497753993375,
+        "node": "comprehensive_hooks",
+        "retry_policy": null,
+        "task": "comprehensive_hooks"
+      },
+      {
+        "attempts": 1,
+        "depends_on": [
+          "comprehensive_hooks"
+        ],
+        "duration_ms": 0.5116429820191115,
+        "node": "publishing",
+        "retry_policy": null,
+        "task": "publishing"
+      },
+      {
+        "attempts": 1,
+        "depends_on": [
+          "publishing"
+        ],
+        "duration_ms": 0.17250198288820684,
+        "node": "commit",
+        "retry_policy": null,
+        "task": "commit"
+      }
+    ],
+    "recorded_at": "2026-01-22T18:19:54.876931+00:00",
+    "total_duration_ms": 286378.9309079875,
+    "workflow": "crackerjack"
+  }
+}
