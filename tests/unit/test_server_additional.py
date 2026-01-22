@@ -1,6 +1,5 @@
 """Additional tests to improve coverage for server module."""
 
-import asyncio
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
@@ -20,28 +19,28 @@ class TestServerModuleAdditional:
     def test_get_process_manager_caching(self):
         """Test that get_process_manager returns the same instance."""
         import excalidraw_mcp.server as server_module
-        
+
         # Clear any existing instance
         server_module.process_manager = None
-        
+
         # Get the manager twice
         manager1 = get_process_manager()
         manager2 = get_process_manager()
-        
+
         # They should be the same instance
         assert manager1 is manager2
 
     def test_get_monitoring_supervisor_caching(self):
         """Test that get_monitoring_supervisor returns the same instance."""
         import excalidraw_mcp.server as server_module
-        
+
         # Clear any existing instance
         server_module.monitoring_supervisor = None
-        
+
         # Get the supervisor twice
         supervisor1 = get_monitoring_supervisor()
         supervisor2 = get_monitoring_supervisor()
-        
+
         # They should be the same instance
         assert supervisor1 is supervisor2
 
@@ -71,10 +70,10 @@ class TestServerModuleAdditional:
         """Test main function without ServerPanels available."""
         # Mock the mcp.run method to avoid actually starting the server
         mock_mcp.run = Mock()
-        
+
         # Call main function
         main()
-        
+
         # Check that logger.info was called (fallback message)
         mock_logger.info.assert_called()
 
@@ -158,10 +157,10 @@ class TestServerModuleAdditional:
         """Test cleanup_monitoring function when supervisor is running."""
         mock_supervisor.is_running = True
         mock_supervisor.stop = AsyncMock()
-        
+
         # Call the function
         cleanup_monitoring()
-        
+
         # Check that stop was called
         # Note: We can't directly test asyncio.create_task call easily,
         # but we know the function should run without errors
@@ -170,10 +169,10 @@ class TestServerModuleAdditional:
     def test_cleanup_monitoring_not_running(self, mock_supervisor):
         """Test cleanup_monitoring function when supervisor is not running."""
         mock_supervisor.is_running = False
-        
+
         # Call the function
         cleanup_monitoring()
-        
+
         # Should not raise an exception
 
     def test_http_app_property(self):

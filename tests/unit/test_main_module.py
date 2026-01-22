@@ -1,11 +1,10 @@
 """Unit tests for __main__ module."""
 
-import asyncio
-from unittest.mock import AsyncMock, Mock, patch, MagicMock
+from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from excalidraw_mcp.__main__ import ExcalidrawMCPServer, ExcalidrawConfig, main
+from excalidraw_mcp.__main__ import ExcalidrawConfig, ExcalidrawMCPServer, main
 
 
 class TestMainModule:

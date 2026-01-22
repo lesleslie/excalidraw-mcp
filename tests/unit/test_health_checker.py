@@ -4,8 +4,8 @@ import asyncio
 import time
 from unittest.mock import AsyncMock, Mock, patch
 
-import pytest
 import psutil
+import pytest
 
 from excalidraw_mcp.config import config
 from excalidraw_mcp.monitoring.health_checker import (

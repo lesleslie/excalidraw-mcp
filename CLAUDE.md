@@ -176,6 +176,45 @@ The system provides these MCP tools for diagram creation:
 
 ### Process Lifecycle Management
 
+```mermaid
+stateDiagram-v2
+    [*] --> Stopped: MCP Server initializes
+    Stopped --> Starting: First tool use
+    Starting --> Running: Health check passes
+    Starting --> Unhealthy: Health check fails
+
+    Running --> Running: Periodic health checks OK
+    Running --> Unhealthy: Health check fails
+
+    Unhealthy --> Recovering: Circuit breaker opens
+    Unhealthy --> Stopped: Max retries exceeded
+
+    Recovering --> Running: Recovery succeeds
+    Recovering --> Stopped: Max retries exceeded
+
+    Running --> Stopped: MCP server exits
+    Stopped --> [*]: Cleanup complete
+
+    note right of Starting
+        Auto-start on first tool use
+        Configurable timeout
+    end note
+
+    note right of Running
+        Continuous monitoring
+        Multi-point health checks
+        Resource usage tracking
+    end note
+
+    note right of Unhealthy
+        Failure counter increments
+        Circuit breaker engages
+        Exponential backoff
+    end note
+```
+
+**Lifecycle Features:**
+
 - **Auto-start**: Python MCP server automatically launches canvas server on first tool use
 - **Continuous Monitoring**: MonitoringSupervisor provides background health monitoring with configurable intervals
 - **Multi-Point Health Checks**: Validates `/health` and `/api/elements` endpoints plus resource usage
@@ -186,6 +225,30 @@ The system provides these MCP tools for diagram creation:
 - **Event Hooks**: Process lifecycle events trigger monitoring callbacks for observability
 
 ### Element Synchronization Flow
+
+```mermaid
+sequenceDiagram
+    participant AI as AI Agent<br/>(Claude)
+    participant MCP as MCP Server<br/>(Python)
+    participant HTTP as HTTP Client<br/>(httpx)
+    participant API as Canvas API<br/>(Express)
+    participant WS as WebSocket Server
+    participant UI as React Frontend<br/>(Excalidraw)
+
+    AI->>MCP: 1. create_element(tool_call)
+    MCP->>MCP: 2. Validate with Pydantic
+    MCP->>HTTP: 3. POST /api/elements
+    HTTP->>API: 4. Send element data
+    API->>API: 5. Store in memory<br/>(version + timestamp)
+    API->>WS: 6. Broadcast element_created
+    WS->>UI: 7. WebSocket message
+    UI->>UI: 8. Convert to Excalidraw format
+    UI->>UI: 9. Render in canvas
+
+    Note over AI,UI: Total time: <100ms typical
+```
+
+**Flow Steps:**
 
 1. **MCP Tool Call** → Python server validates and processes request
 1. **HTTP API Call** → Python server sends element data to TypeScript server
@@ -277,18 +340,49 @@ The system includes a comprehensive monitoring infrastructure with automatic rec
 
 ### Monitoring Architecture
 
+```mermaid
+graph TB
+    subgraph "Orchestration Layer"
+        MS[MonitoringSupervisor<br/>Health Checks<br/>Auto-Recovery<br/>Lifecycle Hooks]
+    end
+
+    subgraph "Health Monitoring"
+        HC[HealthChecker<br/>Multi-endpoint Validation<br/>Resource Monitoring<br/>Failure Tracking]
+    end
+
+    subgraph "Protection Layer"
+        CB[CircuitBreaker<br/>State Management<br/>Exponential Backoff<br/>Request Protection]
+    end
+
+    subgraph "Observability"
+        MET[MetricsCollector<br/>Prometheus Format<br/>15+ Metrics]
+        AL[AlertManager<br/>6 Alert Rules<br/>Deduplication<br/>Throttling]
+    end
+
+    subgraph "Target System"
+        CS[Canvas Server<br/>Express.js API<br/>WebSocket Server]
+    end
+
+    MS --> HC
+    MS --> CB
+    MS --> MET
+    MS --> AL
+
+    HC --> CS
+    CB --> CS
+
+    MET --> MS
+    AL --> MS
+
+    style MS fill:#e1f5ff
+    style HC fill:#fff3e0
+    style CB fill:#ffebee
+    style MET fill:#f3e5f5
+    style AL fill:#e8f5e9
+    style CS fill:#fce4ec
 ```
-┌─────────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│ MonitoringSupervisor│───▶│   HealthChecker  │───▶│ Canvas Server   │
-│  (Orchestration)    │    │   (Multi-check)  │    │   (Health API)  │
-└─────────────────────┘    └──────────────────┘    └─────────────────┘
-           │                          │
-           ▼                          ▼
-┌─────────────────────┐    ┌──────────────────┐
-│  Circuit Breaker    │    │  Metrics & Alerts│
-│ (Failure Protection)│    │   (Observability) │
-└─────────────────────┘    └──────────────────┘
-```
+
+**Monitoring Components:**
 
 ### Core Components
 
@@ -301,12 +395,86 @@ The system includes a comprehensive monitoring infrastructure with automatic rec
 
 #### HealthChecker (`excalidraw_mcp/monitoring/health_checker.py`)
 
+```mermaid
+flowchart TD
+    Start[Start Health Check] --> CheckHealth{Check /health}
+    CheckHealth -->|Pass| CheckAPI{Check /api/elements}
+    CheckHealth -->|Fail| RecordFailure1[Record Failure]
+
+    CheckAPI -->|Pass| CheckResources{Check Resources}
+    CheckAPI -->|Fail| RecordFailure2[Record Failure]
+
+    CheckResources -->|Pass| IncrementSuccess[Increment Success Count]
+    CheckResources -->|Warning| Degraded[Mark as DEGRADED]
+    CheckResources -->|Critical| RecordFailure3[Record Failure]
+
+    RecordFailure1 --> CheckThreshold{Failure Threshold?}
+    RecordFailure2 --> CheckThreshold
+    RecordFailure3 --> CheckThreshold
+
+    IncrementSuccess --> Reset[Reset Failure Count]
+    Reset --> HealthyReturn[Return: HEALTHY]
+
+    Degraded --> DegradedReturn[Return: DEGRADED]
+
+    CheckThreshold -->|Below| UnhealthyReturn[Return: UNHEALTHY]
+    CheckThreshold -->|At or Above| TriggerRecovery{Max Retries?}
+
+    TriggerRecovery -->|Below| AttemptRecovery[Attempt Recovery]
+    TriggerRecovery -->|At or Above| FailureReturn[Return: UNHEALTHY<br/>Stop Recovery]
+
+    AttemptRecovery --> RecoveryCheck{Recovery Succeeds?}
+    RecoveryCheck -->|Yes| RecoveringReturn[Return: RECOVERING]
+    RecoveryCheck -->|No| CheckThreshold
+
+    style Start fill:#e8f5e9
+    style HealthyReturn fill:#c8e6c9
+    style DegradedReturn fill:#fff9c4
+    style UnhealthyReturn fill:#ffcdd2
+    style RecoveringReturn fill:#b2dfdb
+```
+
+**HealthChecker Features:**
+
 - **Multi-Endpoint Validation**: Checks `/health` and `/api/elements` endpoints
 - **Resource Monitoring**: CPU, memory, and thread usage tracking via psutil
 - **Health Status Levels**: HEALTHY, DEGRADED, UNHEALTHY, RECOVERING states
 - **Failure Count Tracking**: Progressive failure detection with reset capability
 
 #### Circuit Breaker (`excalidraw_mcp/monitoring/circuit_breaker.py`)
+
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED: Initialize
+    CLOSED --> OPEN: Failures > threshold
+    CLOSED --> CLOSED: Request succeeds
+
+    OPEN --> HALF_OPEN: Timeout expires
+    OPEN --> OPEN: Timeout not expired
+
+    HALF_OPEN --> CLOSED: Request succeeds
+    HALF_OPEN --> OPEN: Request fails
+
+    note right of CLOSED
+        Normal operation
+        Requests pass through
+        Failure counter increments
+    end note
+
+    note right of OPEN
+        Circuit tripped
+        Requests blocked immediately
+        Exponential backoff timer
+    end note
+
+    note right of HALF_OPEN
+        Testing recovery
+        Single request allowed
+        Closes on success
+    end note
+```
+
+**Circuit Breaker Features:**
 
 - **Three States**: CLOSED (normal), OPEN (failing), HALF_OPEN (recovery testing)
 - **Exponential Backoff**: Progressive timeout increases during failures
@@ -360,3 +528,88 @@ python -c "from excalidraw_mcp.monitoring.metrics import MetricsCollector; mc = 
 - **Security test data** for XSS, injection, and overflow testing
 - **Performance monitoring** with memory and execution time tracking
 - **WebSocket mocks** with message queue simulation for real-time testing
+
+<!-- CRACKERJACK INTEGRATION START -->
+
+This project uses crackerjack for Python project management and quality assurance.
+
+For optimal development experience with this crackerjack - enabled project, use these specialized agents:
+
+- **🏗️ crackerjack-architect**: Expert in crackerjack's modular architecture and Python project management patterns. **Use PROACTIVELY** for all feature development, architectural decisions, and ensuring code follows crackerjack standards from the start.
+
+- **🐍 python-pro**: Modern Python development with type hints, async/await patterns, and clean architecture
+
+- **🧪 pytest-hypothesis-specialist**: Advanced testing patterns, property-based testing, and test optimization
+
+- **🧪 crackerjack-test-specialist**: Advanced testing specialist for complex testing scenarios and coverage optimization
+
+- **🏗️ backend-architect**: System design, API architecture, and service integration patterns
+
+- **🔒 security-auditor**: Security analysis, vulnerability detection, and secure coding practices
+
+```bash
+
+Task tool with subagent_type ="crackerjack-architect" for feature planning
+
+
+Task tool with subagent_type ="python-pro" for code implementation
+
+
+Task tool with subagent_type ="pytest-hypothesis-specialist" for test development
+
+
+Task tool with subagent_type ="security-auditor" for security analysis
+```
+
+**💡 Pro Tip**: The crackerjack-architect agent automatically ensures code follows crackerjack patterns from the start, eliminating the need for retrofitting and quality fixes.
+
+This project follows crackerjack's clean code philosophy:
+
+- **EVERY LINE OF CODE IS A LIABILITY**: The best code is no code
+
+- **DRY (Don't Repeat Yourself)**: If you write it twice, you're doing it wrong
+
+- **YAGNI (You Ain't Gonna Need It)**: Build only what's needed NOW
+
+- **KISS (Keep It Simple, Stupid)**: Complexity is the enemy of maintainability
+
+- \*\*Cognitive complexity ≤15 \*\*per function (automatically enforced)
+
+- **Coverage ratchet system**: Never decrease coverage, always improve toward 100%
+
+- **Type annotations required**: All functions must have return type hints
+
+- **Security patterns**: No hardcoded paths, proper temp file handling
+
+- **Python 3.13+ modern patterns**: Use `|` unions, pathlib over os.path
+
+```bash
+
+python -m crackerjack
+
+
+python -m crackerjack - t
+
+
+python -m crackerjack - - ai - agent - t
+
+
+python -m crackerjack - a patch
+```
+
+1. **Plan with crackerjack-architect**: Ensure proper architecture from the start
+1. **Implement with python-pro**: Follow modern Python patterns
+1. **Test comprehensively**: Use pytest-hypothesis-specialist for robust testing
+1. **Run quality checks**: `python -m crackerjack -t` before committing
+1. **Security review**: Use security-auditor for final validation
+
+- **Use crackerjack-architect agent proactively** for all significant code changes
+- **Never reduce test coverage** - the ratchet system only allows improvements
+- **Follow crackerjack patterns** - the tools will enforce quality automatically
+- **Leverage AI agent auto-fixing** - `python -m crackerjack --ai-agent -t` for autonomous quality fixes
+
+______________________________________________________________________
+
+- This project is enhanced by crackerjack's intelligent Python project management.\*
+
+<!-- CRACKERJACK INTEGRATION END -->

@@ -6,17 +6,22 @@ Tests import paths, configuration loading, and basic lifecycle operations.
 
 import pytest
 
+
 # Test 1: Verify Oneiric modules can be imported
 def test_oneiric_imports():
     """Test that Oneiric runtime modules are accessible."""
     # Core CLI imports
     from oneiric.core.cli import MCPServerCLIFactory
     from oneiric.core.config import OneiricMCPConfig
+    from oneiric.runtime.cache import RuntimeCacheManager
+    from oneiric.runtime.mcp_health import (
+        HealthCheckResponse,
+        HealthMonitor,
+        HealthStatus,
+    )
 
     # Runtime imports
     from oneiric.runtime.snapshot import RuntimeSnapshotManager
-    from oneiric.runtime.cache import RuntimeCacheManager
-    from oneiric.runtime.mcp_health import HealthCheckResponse, HealthStatus, HealthMonitor
 
     # Verify classes exist
     assert MCPServerCLIFactory is not None
@@ -99,6 +104,7 @@ def test_cache_directory_configuration():
 def test_cli_factory_creation():
     """Test that MCPServerCLIFactory can be created for Excalidraw."""
     from oneiric.core.cli import MCPServerCLIFactory
+
     from excalidraw_mcp.__main__ import ExcalidrawConfig, ExcalidrawMCPServer
 
     # Create CLI factory

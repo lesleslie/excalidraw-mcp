@@ -1,31 +1,21 @@
 """Additional tests to improve coverage for CLI module."""
 
-import subprocess
-import sys
-from unittest.mock import Mock, patch, MagicMock
+from unittest.mock import Mock, patch
 
 import psutil
-import pytest
 
 from excalidraw_mcp.cli import (
     _find_log_file,
+    _follow_log_output,
     _show_missing_log_message,
     _show_recent_log_lines,
-    _follow_log_output,
+    _stop_process,
     find_canvas_server_process,
     find_mcp_server_process,
-    get_monitoring_supervisor,
-    get_process_manager,
     logs_impl,
-    main,
-    restart_mcp_server_impl,
     start_mcp_server_impl,
-    status_impl,
     stop_mcp_server_impl,
-    _stop_process
 )
-from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor
-from excalidraw_mcp.process_manager import CanvasProcessManager
 
 
 class TestCLIModuleAdditional:
@@ -100,9 +90,9 @@ class TestCLIModuleAdditional:
             "MCP server - killed",
             "Canvas server - killed",
         ]
-        
+
         stop_mcp_server_impl(force=True)
-        
+
         assert mock_stop_process.call_count == 2
 
     def test_stop_process_kill(self):
@@ -110,7 +100,7 @@ class TestCLIModuleAdditional:
         mock_process = Mock()
         mock_process.pid = 1234
         mock_process.kill = Mock(return_value=None)
-        
+
         result = _stop_process(mock_process, "Test Process", force=True, timeout=5)
         assert "killed" in result
         mock_process.kill.assert_called_once()
@@ -122,7 +112,7 @@ class TestCLIModuleAdditional:
         mock_process.terminate = Mock(return_value=None)
         mock_process.wait.side_effect = psutil.TimeoutExpired(5)
         mock_process.kill = Mock(return_value=None)
-        
+
         result = _stop_process(mock_process, "Test Process", force=False, timeout=5)
         assert "force killed" in result
         mock_process.kill.assert_called_once()
@@ -132,7 +122,7 @@ class TestCLIModuleAdditional:
         mock_process = Mock()
         mock_process.pid = 1234
         mock_process.kill.side_effect = psutil.NoSuchProcess(1234)
-        
+
         result = _stop_process(mock_process, "Test Process", force=True, timeout=5)
         assert "already stopped" in result
 
@@ -141,7 +131,7 @@ class TestCLIModuleAdditional:
         mock_process = Mock()
         mock_process.pid = 1234
         mock_process.kill.side_effect = Exception("Test error")
-        
+
         result = _stop_process(mock_process, "Test Process", force=True, timeout=5)
         assert "failed to stop" in result
 
@@ -149,9 +139,8 @@ class TestCLIModuleAdditional:
     def test_find_log_file_multiple_paths(self, mock_home):
         """Test _find_log_file with multiple path options."""
         # Create real Path objects but patch the ones that shouldn't exist
-        from pathlib import Path
         import tempfile
-        import os
+        from pathlib import Path
 
         # Create a temporary directory to act as "home"
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -176,7 +165,7 @@ class TestCLIModuleAdditional:
     def test_show_missing_log_message_output(self, mock_rprint):
         """Test _show_missing_log_message output."""
         _show_missing_log_message()
-        
+
         # Check that rprint was called with expected messages
         assert mock_rprint.call_count >= 2
 
@@ -187,12 +176,12 @@ class TestCLIModuleAdditional:
         """Test logs_impl with follow option."""
         mock_log_file = Mock()
         mock_find_log_file.return_value = mock_log_file
-        
+
         # Since _follow_log_output runs an infinite loop, we need to mock it to avoid hanging
         mock_follow.side_effect = KeyboardInterrupt()
-        
+
         logs_impl(follow=True)
-        
+
         mock_follow.assert_called_once_with(mock_log_file)
 
     @patch("excalidraw_mcp.cli._find_log_file")
@@ -201,16 +190,16 @@ class TestCLIModuleAdditional:
         """Test logs_impl with specific number of lines."""
         mock_log_file = Mock()
         mock_find_log_file.return_value = mock_log_file
-        
+
         logs_impl(lines=25)
-        
+
         mock_show_lines.assert_called_once_with(mock_log_file, 25)
 
     @patch("excalidraw_mcp.cli.Path.home")
     def test_find_log_file_all_missing(self, mock_home):
         """Test _find_log_file when all paths are missing."""
-        from pathlib import Path
         import tempfile
+        from pathlib import Path
 
         # Create a temporary empty directory to act as "home"
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -223,13 +212,12 @@ class TestCLIModuleAdditional:
     def test_follow_log_output(self):
         """Test _follow_log_output function."""
         import time
-        from io import StringIO
-        
+
         # Create a mock file that returns some content then blocks
         mock_file = Mock()
         lines = ["line1\n", "line2\n"]
         call_count = 0
-        
+
         def readline_side_effect():
             nonlocal call_count
             if call_count < len(lines):
@@ -240,28 +228,27 @@ class TestCLIModuleAdditional:
                 # Simulate blocking by returning empty string
                 time.sleep(0.1)  # Small delay to avoid tight loop
                 return ""
-        
+
         mock_file.readline = Mock(side_effect=readline_side_effect)
-        
+
         # We'll test this by mocking print to capture output
-        with patch("builtins.print") as mock_print:
+        with patch("builtins.print"):
             # Run for a short time then interrupt
             import threading
             def run_follow():
                 _follow_log_output(mock_file)
-            
+
             thread = threading.Thread(target=run_follow)
             thread.daemon = True
             thread.start()
-            
+
             # Wait a bit then stop
             time.sleep(0.2)
-            
+
             # The thread will continue running, but we can at least verify it started
 
     def test_show_recent_log_lines(self):
         """Test _show_recent_log_lines function."""
-        from io import StringIO
         from pathlib import Path
         from unittest.mock import mock_open
 

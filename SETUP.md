@@ -34,6 +34,24 @@ npm run dev
 npm run production
 ```
 
+### Quick Start Visual Flow
+
+**Setup Steps:**
+
+1. **Clone Repository** → `git clone https://github.com/lesleslie/excalidraw-mcp.git`
+1. **Install Dependencies** → `uv sync && npm install`
+1. **Build Project** → `npm run build`
+1. **Start Server** → `uv run python excalidraw_mcp/server.py`
+1. **Access Canvas** → Open http://localhost:3031
+
+**Key Points:**
+
+- 🚀 Auto-start: Canvas server starts automatically on first tool use
+- 💚 Health check: Monitor at http://localhost:3031/health
+- ⚡ Real-time: WebSocket sync updates all connected clients instantly
+- 🔄 Monitoring: Python server auto-restarts canvas on failures
+- 🐛 Debug mode: Set `DEBUG=true` for detailed logging
+
 ### Individual Services
 
 ```bash

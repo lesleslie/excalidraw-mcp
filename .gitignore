@@ -29,3 +29,48 @@ docs/
 /.coverage
 /coverage/
 .codespellrc
+
+# Crackerjack patterns
+
+
+
+
+# Build/Distribution
+# Caches
+# Coverage
+# Crackerjack specific
+# Development
+*.egg-info/
+*.excalidraw
+*.log
+*.pyc
+*/__pycache__/
+.DS_STORE
+.claude/
+.codespellrc
+.coverage*
+.crackerjack-*
+.cursor/
+.env
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.venv/
+/.benchmarks/
+/.coverage
+/.envrc
+/.mcp.json
+/build/
+/coverage.xml
+/coverage/
+/dist/
+/pytest-results.xml
+__pycache__/
+crackerjack-ai-debug-*.log
+crackerjack-debug-*.log
+dist/
+docs/
+htmlcov/
+node_modules/
+package-lock.json
+public/dist/

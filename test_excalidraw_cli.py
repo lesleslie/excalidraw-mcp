@@ -2,9 +2,11 @@
 """Test script for Excalidraw MCP CLI."""
 
 import sys
+
 sys.path.insert(0, "/Users/les/Projects/oneiric")
 
 from excalidraw_mcp.__main__ import ExcalidrawConfig, ExcalidrawMCPServer
+
 
 def test_config():
     """Test configuration loading."""
@@ -31,7 +33,7 @@ def test_cli_factory():
     print("\nTesting Excalidraw CLI factory...")
     from oneiric.core.cli import MCPServerCLIFactory
 
-    config = ExcalidrawConfig()
+    ExcalidrawConfig()
     cli_factory = MCPServerCLIFactory(
         server_class=ExcalidrawMCPServer,
         config_class=ExcalidrawConfig,

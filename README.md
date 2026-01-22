@@ -30,17 +30,29 @@ A **dual-language MCP (Model Context Protocol) server** that combines **Excalidr
 
 ## 🏛️ Architecture Overview
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   AI Agent      │───▶│   MCP Server     │───▶│  Canvas Server  │
-│   (Claude)      │    │    (Python)      │    │ (Express.js)    │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                                         │
-                                                         ▼
-                                               ┌─────────────────┐
-                                               │  Frontend       │
-                                               │  (React + WS)   │
-                                               └─────────────────┘
+```mermaid
+sequenceDiagram
+    participant AI as AI Agent<br/>(Claude)
+    participant MCP as MCP Server<br/>(Python FastMCP)
+    participant Canvas as Canvas Server<br/>(Express.js)
+    participant WS as WebSocket Server
+    participant UI as React Frontend<br/>(Excalidraw)
+
+    AI->>MCP: MCP Tool Call<br/>(create_element)
+    activate MCP
+    MCP->>MCP: Validate Request<br/>(Pydantic)
+    MCP->>Canvas: HTTP POST<br/>/api/elements
+    activate Canvas
+    Canvas->>Canvas: Store Element<br/>(in-memory Map)
+    Canvas->>WS: Broadcast Update
+    WS->>UI: WebSocket Message<br/>(element_created)
+    deactivate Canvas
+    UI->>UI: Render in Excalidraw
+    MCP-->>AI: Tool Response
+    deactivate MCP
+
+    Note over MCP,Canvas: Auto-management: Python server<br/>monitors and restarts canvas server
+    Note over WS,UI: Real-time: All connected clients<br/>receive updates simultaneously
 ```
 
 **Hybrid Architecture Benefits:**
@@ -130,6 +142,24 @@ npm run dev
 # Or production mode
 npm run production
 ```
+
+**Development Workflow:**
+
+1. **Setup** → `uv sync && npm install && npm run build`
+1. **Development** → `npm run dev` (TypeScript watch + Vite dev server)
+1. **Testing** → `pytest` (Python) + `npm test` (TypeScript)
+1. **Quality Checks** → `uv run ruff check` + `npm run type-check`
+1. **Iterate** → Make changes, tests auto-reload
+1. **Commit** → All quality checks pass
+
+**Development Modes:**
+
+| Mode | Command | Use Case |
+|------|---------|----------|
+| **Dev** | `npm run dev` | Active development with hot-reload |
+| **Build** | `npm run build` | Compile TypeScript + React |
+| **Canvas** | `npm run canvas` | Start canvas server only |
+| **Production** | `npm run production` | Full build + start |
 
 ## 🔧 Available Scripts
 
@@ -408,6 +438,53 @@ The canvas server provides these REST endpoints:
 - **Server Element Types**: Enhanced element types with metadata
 
 ## 🐛 Troubleshooting
+
+```mermaid
+flowchart TD
+    Start[Issue Detected] --> IssueType{What's the problem?}
+
+    IssueType -->|Canvas Not Loading| CanvasCheck{Build succeeded?}
+    IssueType -->|Elements Not Syncing| SyncCheck{Canvas server<br/>running?}
+    IssueType -->|WebSocket Issues| WSVerify{Check console<br/>for errors}
+    IssueType -->|Build Errors| BuildClean{Node version<br/>OK?}
+    IssueType -->|Python Errors| DepCheck{uv sync<br/>succeeded?}
+
+    CanvasCheck -->|No| A1[Run npm run build]
+    CanvasCheck -->|Yes| A2{Server running?}
+
+    A2 -->|No| A3[Check port 3031<br/>lsof -i :3031]
+    A2 -->|Yes| A4{Health check OK?}
+
+    A4 -->|No| A5[Review console logs]
+    A4 -->|Yes| A6[Check firewall]
+
+    SyncCheck -->|No| B1[Python auto-starts<br/>canvas server]
+    SyncCheck -->|Yes| B2{ENABLE_CANVAS_SYNC<br/>= true?}
+
+    B2 -->|No| B3[Set env variable]
+    B2 -->|Yes| B4{/health OK?}
+
+    B4 -->|No| B5[Check canvas<br/>server logs]
+    B4 -->|Yes| B6[Verify WebSocket<br/>connection]
+
+    WSVerify -->|Errors found| C1[Check firewall<br/>settings]
+    WSVerify -->|No errors| C2[Refresh browser<br/>page]
+
+    BuildClean -->|No| D1[Delete node_modules<br/>npm install]
+    BuildClean -->|Yes| D2[Run type-check<br/>npm run type-check]
+
+    DepCheck -->|No| E1[Run uv sync]
+    DepCheck -->|Yes| E2{Python 3.13+?}
+
+    E2 -->|No| E3[Install Python 3.13]
+    E2 -->|Yes| E4[Check uv<br/>installation]
+
+    style Start fill:#e3f2fd
+    style A1 fill:#c8e6c9
+    style A6 fill:#ffcdd2
+    style B1 fill:#c8e6c9
+    style E4 fill:#fff9c4
+```
 
 ### **Canvas Not Loading**
 

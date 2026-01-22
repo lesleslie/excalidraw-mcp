@@ -1,16 +1,11 @@
 """Unit tests for CLI module."""
 
-import subprocess
 import sys
-from unittest.mock import AsyncMock, Mock, patch, MagicMock
-
-import psutil
-import pytest
+from unittest.mock import AsyncMock, Mock, patch
 
 from excalidraw_mcp.cli import (
     _find_log_file,
     _show_missing_log_message,
-    _show_recent_log_lines,
     find_canvas_server_process,
     find_mcp_server_process,
     get_monitoring_supervisor,
@@ -63,7 +58,7 @@ class TestCLIModule:
         # Create mock process
         mock_proc = Mock()
         mock_proc.info = {"cmdline": ["python", "-m", "excalidraw_mcp.server", "arg1"]}
-        
+
         mock_process_iter.return_value = [mock_proc]
 
         result = find_mcp_server_process()
@@ -82,7 +77,7 @@ class TestCLIModule:
         # Create mock process
         mock_proc = Mock()
         mock_proc.info = {"cmdline": ["node", "src/server.js", "arg1"]}
-        
+
         mock_process_iter.return_value = [mock_proc]
 
         result = find_canvas_server_process()
@@ -94,7 +89,7 @@ class TestCLIModule:
         # Create mock process
         mock_proc = Mock()
         mock_proc.info = {"cmdline": ["node", "dist/server.js", "arg1"]}
-        
+
         mock_process_iter.return_value = [mock_proc]
 
         result = find_canvas_server_process()
@@ -112,9 +107,9 @@ class TestCLIModule:
     def test_start_mcp_server_impl_already_running(self, mock_rprint, mock_find_proc):
         """Test start_mcp_server_impl when already running."""
         mock_find_proc.return_value = Mock(pid=1234)
-        
+
         start_mcp_server_impl()
-        
+
         mock_rprint.assert_called_once()
         assert "already running" in str(mock_rprint.call_args)
 
@@ -154,9 +149,9 @@ class TestCLIModule:
         mock_get_sup.return_value = mock_supervisor
         mock_pm = Mock()
         mock_get_pm.return_value = mock_pm
-        
+
         start_mcp_server_impl(background=False, monitoring=True)
-        
+
         # Should run the async function
         assert mock_asyncio_run.called
 
@@ -169,9 +164,9 @@ class TestCLIModule:
         """Test stop_mcp_server_impl when no processes are running."""
         mock_find_mcp.return_value = None
         mock_find_canvas.return_value = None
-        
+
         stop_mcp_server_impl()
-        
+
         mock_rprint.assert_called_once()
         assert "No MCP server processes found" in str(mock_rprint.call_args)
 
@@ -191,9 +186,9 @@ class TestCLIModule:
             "MCP server terminated",
             "Canvas server terminated",
         ]
-        
+
         stop_mcp_server_impl()
-        
+
         assert mock_stop_process.call_count == 2
 
     @patch("excalidraw_mcp.cli.stop_mcp_server_impl")
@@ -205,7 +200,7 @@ class TestCLIModule:
     ):
         """Test restart_mcp_server_impl."""
         restart_mcp_server_impl()
-        
+
         mock_stop.assert_called_once()
         mock_sleep.assert_called_once_with(2)
         mock_start.assert_called_once_with(background=False)
@@ -239,7 +234,7 @@ class TestCLIModule:
         mock_path_instance = Mock()
         mock_path_instance.exists.return_value = True
         mock_path.return_value = mock_path_instance
-        
+
         result = _find_log_file()
         assert result is mock_path_instance
 
@@ -264,7 +259,7 @@ class TestCLIModule:
     def test_show_missing_log_message(self, mock_rprint):
         """Test _show_missing_log_message."""
         _show_missing_log_message()
-        
+
         # Should print two messages
         assert mock_rprint.call_count >= 1
 
@@ -273,15 +268,14 @@ class TestCLIModule:
     def test_logs_impl_no_log_file(self, mock_show_missing, mock_find_log_file):
         """Test logs_impl when no log file is found."""
         mock_find_log_file.return_value = None
-        
+
         logs_impl()
-        
+
         mock_show_missing.assert_called_once()
 
     @patch("excalidraw_mcp.cli.rprint")
     def test_main_no_action(self, mock_rprint):
         """Test main function with no action specified."""
-        from typer.models import OptionInfo
 
         # Call main with default False values (simulating no CLI flags set)
         result = main(
@@ -306,12 +300,11 @@ class TestCLIModule:
         """Test main function with multiple actions (should raise error)."""
         # This would typically be handled by typer, but we can test the logic
         # by directly calling main with multiple flags set to True
-        import sys
         from io import StringIO
 
         # Capture stderr to check for error message
         old_stderr = sys.stderr
-        sys.stderr = captured_stderr = StringIO()
+        sys.stderr = StringIO()
 
         try:
             # This would normally be caught by typer, but let's test the validation

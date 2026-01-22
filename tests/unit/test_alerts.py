@@ -1,8 +1,7 @@
 """Unit tests for alerts module."""
 
-import asyncio
 import time
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import patch
 
 import pytest
 
@@ -108,8 +107,8 @@ class TestAlertsModule:
         await manager.check_conditions(metrics)
 
         # Check that alerts were processed
-        active_alerts = manager.get_active_alerts()
-        history = manager.get_alert_history()
+        manager.get_active_alerts()
+        manager.get_alert_history()
 
     @patch("excalidraw_mcp.monitoring.alerts.config")
     @pytest.mark.asyncio

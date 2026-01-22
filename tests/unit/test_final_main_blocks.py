@@ -1,9 +1,5 @@
 """Test to cover the final missing lines in __main__.py and server.py"""
 
-import os
-import subprocess
-import sys
-from pathlib import Path
 
 
 def test_main_blocks_execute():
@@ -17,7 +13,7 @@ def test_main_blocks_execute():
     assert callable(main_module.main)
 
     # Test that we can call main() with proper mocking to avoid actual server startup
-    from unittest.mock import patch, Mock
+    from unittest.mock import Mock, patch
 
     # Mock all the dependencies that would start actual services
     with patch('excalidraw_mcp.__main__.MCPServerCLIFactory') as mock_factory:

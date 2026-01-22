@@ -2,11 +2,9 @@
 
 import asyncio
 import time
-from collections import deque
 from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
-import psutil
 
 from excalidraw_mcp.monitoring.metrics import (
     Counter,
