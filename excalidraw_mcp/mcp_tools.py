@@ -39,6 +39,13 @@ class MCPToolsManager:
         self.mcp.tool("lock_elements")(self.lock_elements)
         self.mcp.tool("unlock_elements")(self.unlock_elements)
 
+        # Export/Import tools
+        self.mcp.tool("export_svg")(self.export_svg)
+        self.mcp.tool("export_json")(self.export_json)
+        self.mcp.tool("get_scene")(self.get_scene)
+        self.mcp.tool("import_elements")(self.import_elements)
+        self.mcp.tool("clear_canvas")(self.clear_canvas)
+
         # Resource access
         self.mcp.tool("get_resource")(self.get_resource)
 
@@ -391,6 +398,169 @@ class MCPToolsManager:
         except Exception as e:
             logger.error(f"Element unlocking failed: {e}")
             return {"success": False, "error": f"Element unlocking failed: {e}"}
+
+    # Export/Import Tools
+
+    async def export_svg(self) -> dict[str, Any]:
+        """Export the canvas as SVG.
+        
+        Returns the SVG content as a string that can be saved to a file.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.get_text("/api/export/svg")
+
+            if result:
+                return {
+                    "success": True,
+                    "svg": result,
+                    "content_type": "image/svg+xml",
+                    "message": "Exported canvas to SVG successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to export canvas to SVG",
+                }
+
+        except Exception as e:
+            logger.error(f"SVG export failed: {e}")
+            return {"success": False, "error": f"SVG export failed: {e}"}
+
+    async def export_json(self) -> dict[str, Any]:
+        """Export the canvas as Excalidraw JSON format.
+        
+        Returns the complete Excalidraw-compatible JSON that can be
+        opened in Excalidraw or saved as a .excalidraw file.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.get_json("/api/export/json")
+
+            if result:
+                return {
+                    "success": True,
+                    "data": result,
+                    "content_type": "application/json",
+                    "message": "Exported canvas to Excalidraw JSON successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to export canvas to JSON",
+                }
+
+        except Exception as e:
+            logger.error(f"JSON export failed: {e}")
+            return {"success": False, "error": f"JSON export failed: {e}"}
+
+    async def get_scene(self) -> dict[str, Any]:
+        """Get the full scene data including elements and app state.
+        
+        Returns complete scene information including all elements,
+        application state, and metadata.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.get_json("/api/scene")
+
+            if result and result.get("success"):
+                return {
+                    "success": True,
+                    "scene": result.get("scene"),
+                    "element_count": result.get("elementCount", 0),
+                    "timestamp": result.get("timestamp"),
+                    "message": "Retrieved scene data successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to retrieve scene data",
+                }
+
+        except Exception as e:
+            logger.error(f"Scene retrieval failed: {e}")
+            return {"success": False, "error": f"Scene retrieval failed: {e}"}
+
+    async def import_elements(self, request: dict[str, Any]) -> dict[str, Any]:
+        """Import elements from Excalidraw JSON format.
+        
+        Args:
+            request: Dictionary containing:
+                - elements: List of Excalidraw elements to import
+                - replace: Optional bool, if True clears canvas before import
+        
+        Example:
+            import_elements({
+                "elements": [{"type": "rectangle", "x": 0, "y": 0, ...}],
+                "replace": False
+            })
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            request_data = self._request_to_dict(request)
+            
+            elements = request_data.get("elements", [])
+            replace = request_data.get("replace", False)
+
+            if not elements:
+                return {
+                    "success": False,
+                    "error": "No elements provided for import",
+                }
+
+            import_data = {
+                "elements": elements,
+                "replace": replace,
+            }
+
+            result = await http_client.post_json("/api/import", import_data)
+
+            if result and result.get("success"):
+                return {
+                    "success": True,
+                    "count": result.get("count", 0),
+                    "total_elements": result.get("totalElements", 0),
+                    "message": result.get("message", "Import completed"),
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": result.get("error", "Failed to import elements"),
+                }
+
+        except Exception as e:
+            logger.error(f"Import failed: {e}")
+            return {"success": False, "error": f"Import failed: {e}"}
+
+    async def clear_canvas(self) -> dict[str, Any]:
+        """Clear all elements from the canvas.
+        
+        This permanently deletes all elements. Use with caution.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.delete("/api/elements")
+
+            if result:
+                return {
+                    "success": True,
+                    "message": "Canvas cleared successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to clear canvas",
+                }
+
+        except Exception as e:
+            logger.error(f"Clear canvas failed: {e}")
+            return {"success": False, "error": f"Clear canvas failed: {e}"}
 
     # Resource Access
 
