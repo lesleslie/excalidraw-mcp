@@ -57,6 +57,14 @@ packages = [
     "excalidraw_mcp",
 ]
 
+# Include canvas server dist in package for uvx support
+[tool.hatch.build.targets.wheel.force-include]
+"dist/server.js" = "excalidraw_mcp/dist/server.js"
+"dist/types.js" = "excalidraw_mcp/dist/types.js"
+"dist/frontend" = "excalidraw_mcp/dist/frontend"
+"dist/assets" = "excalidraw_mcp/dist/assets"
+"dist/utils" = "excalidraw_mcp/dist/utils"
+
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = [
