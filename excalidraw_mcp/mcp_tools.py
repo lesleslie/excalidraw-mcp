@@ -6,6 +6,7 @@ from typing import Any, cast
 from fastmcp import FastMCP
 
 from .element_factory import ElementFactory
+from .export_service import export_service
 from .http_client import http_client
 from .process_manager import process_manager
 
@@ -38,6 +39,14 @@ class MCPToolsManager:
         self.mcp.tool("distribute_elements")(self.distribute_elements)
         self.mcp.tool("lock_elements")(self.lock_elements)
         self.mcp.tool("unlock_elements")(self.unlock_elements)
+
+        # Export/Import tools
+        self.mcp.tool("convert_excalidraw_to_svg")(self.convert_excalidraw_to_svg)
+        self.mcp.tool("convert_excalidraw_to_png")(self.convert_excalidraw_to_png)
+        self.mcp.tool("export_json")(self.export_json)
+        self.mcp.tool("get_scene")(self.get_scene)
+        self.mcp.tool("import_elements")(self.import_elements)
+        self.mcp.tool("clear_canvas")(self.clear_canvas)
 
         # Resource access
         self.mcp.tool("get_resource")(self.get_resource)
@@ -391,6 +400,257 @@ class MCPToolsManager:
         except Exception as e:
             logger.error(f"Element unlocking failed: {e}")
             return {"success": False, "error": f"Element unlocking failed: {e}"}
+
+    # Export/Import Tools
+
+    async def convert_excalidraw_to_svg(
+        self,
+        excalidraw_file: str,
+        output_file: str = "",
+        background_color: str = "#ffffff",
+    ) -> dict[str, Any]:
+        """Convert an .excalidraw file to SVG format.
+        
+        Args:
+            excalidraw_file: Path to the .excalidraw file to convert (INPUT).
+            output_file: Path where to save the SVG (OUTPUT). Defaults to same directory as input.
+            background_color: Background color (default: "#ffffff"). Use "transparent" for none.
+        
+        Returns:
+            Dict with 'output_file' path where SVG was saved.
+        
+        Example:
+            convert_excalidraw_to_svg(
+                excalidraw_file="/docs/diagram.excalidraw"
+            )  # Saves to /docs/diagram.svg
+        """
+        try:
+            if not excalidraw_file:
+                return {
+                    "success": False,
+                    "error": "excalidraw_file is required. Provide path to the .excalidraw file to convert.",
+                }
+
+            if not export_service.is_available:
+                return {
+                    "success": False,
+                    "error": "Playwright not installed. Install with: pip install playwright && playwright install chromium",
+                }
+
+            from pathlib import Path
+            input_path = Path(excalidraw_file)
+            if not output_file:
+                output_file = str(input_path.with_suffix(".svg"))
+
+            svg_content = await export_service.export_svg(excalidraw_file, background_color)
+            Path(output_file).write_text(svg_content, encoding="utf-8")
+
+            return {
+                "success": True,
+                "output_file": output_file,
+                "excalidraw_file": excalidraw_file,
+                "background_color": background_color,
+                "message": f"Converted {excalidraw_file} → {output_file}",
+            }
+
+        except FileNotFoundError as e:
+            return {"success": False, "error": str(e)}
+        except Exception as e:
+            logger.error(f"SVG conversion failed: {e}")
+            return {"success": False, "error": f"SVG conversion failed: {e}"}
+
+    async def convert_excalidraw_to_png(
+        self,
+        excalidraw_file: str,
+        output_file: str = "",
+        background_color: str = "#ffffff",
+    ) -> dict[str, Any]:
+        """Convert an .excalidraw file to PNG format.
+        
+        Args:
+            excalidraw_file: Path to the .excalidraw file to convert (INPUT).
+            output_file: Path where to save the PNG (OUTPUT). Defaults to same directory as input.
+            background_color: Background color (default: "#ffffff"). Use "transparent" for none.
+        
+        Returns:
+            Dict with 'output_file' path where PNG was saved.
+        
+        Example:
+            convert_excalidraw_to_png(
+                excalidraw_file="/docs/diagram.excalidraw"
+            )  # Saves to /docs/diagram.png
+        """
+        try:
+            if not excalidraw_file:
+                return {
+                    "success": False,
+                    "error": "excalidraw_file is required. Provide path to the .excalidraw file to convert.",
+                }
+
+            if not export_service.is_available:
+                return {
+                    "success": False,
+                    "error": "Playwright not installed. Install with: pip install playwright && playwright install chromium",
+                }
+
+            from pathlib import Path
+            input_path = Path(excalidraw_file)
+            if not output_file:
+                output_file = str(input_path.with_suffix(".png"))
+
+            png_bytes = await export_service.export_png(excalidraw_file, background_color)
+            Path(output_file).write_bytes(png_bytes)
+
+            return {
+                "success": True,
+                "output_file": output_file,
+                "size_bytes": len(png_bytes),
+                "excalidraw_file": excalidraw_file,
+                "background_color": background_color,
+                "message": f"Converted {excalidraw_file} → {output_file}",
+            }
+
+            return result
+
+        except FileNotFoundError as e:
+            return {"success": False, "error": str(e)}
+        except Exception as e:
+            logger.error(f"PNG conversion failed: {e}")
+            return {"success": False, "error": f"PNG conversion failed: {e}"}
+
+    async def export_json(self) -> dict[str, Any]:
+        """Export the canvas as Excalidraw JSON format.
+        
+        Returns the complete Excalidraw-compatible JSON that can be
+        opened in Excalidraw or saved as a .excalidraw file.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.get_json("/api/export/json")
+
+            if result:
+                return {
+                    "success": True,
+                    "data": result,
+                    "content_type": "application/json",
+                    "message": "Exported canvas to Excalidraw JSON successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to export canvas to JSON",
+                }
+
+        except Exception as e:
+            logger.error(f"JSON export failed: {e}")
+            return {"success": False, "error": f"JSON export failed: {e}"}
+
+    async def get_scene(self) -> dict[str, Any]:
+        """Get the full scene data including elements and app state.
+        
+        Returns complete scene information including all elements,
+        application state, and metadata.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.get_json("/api/scene")
+
+            if result and result.get("success"):
+                return {
+                    "success": True,
+                    "scene": result.get("scene"),
+                    "element_count": result.get("elementCount", 0),
+                    "timestamp": result.get("timestamp"),
+                    "message": "Retrieved scene data successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to retrieve scene data",
+                }
+
+        except Exception as e:
+            logger.error(f"Scene retrieval failed: {e}")
+            return {"success": False, "error": f"Scene retrieval failed: {e}"}
+
+    async def import_elements(self, request: dict[str, Any]) -> dict[str, Any]:
+        """Import elements from Excalidraw JSON format.
+        
+        Args:
+            request: Dictionary containing:
+                - elements: List of Excalidraw elements to import
+                - replace: Optional bool, if True clears canvas before import
+        
+        Example:
+            import_elements({
+                "elements": [{"type": "rectangle", "x": 0, "y": 0, ...}],
+                "replace": False
+            })
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            request_data = self._request_to_dict(request)
+            
+            elements = request_data.get("elements", [])
+            replace = request_data.get("replace", False)
+
+            if not elements:
+                return {
+                    "success": False,
+                    "error": "No elements provided for import",
+                }
+
+            import_data = {
+                "elements": elements,
+                "replace": replace,
+            }
+
+            result = await http_client.post_json("/api/import", import_data)
+
+            if result and result.get("success"):
+                return {
+                    "success": True,
+                    "count": result.get("count", 0),
+                    "total_elements": result.get("totalElements", 0),
+                    "message": result.get("message", "Import completed"),
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": result.get("error", "Failed to import elements"),
+                }
+
+        except Exception as e:
+            logger.error(f"Import failed: {e}")
+            return {"success": False, "error": f"Import failed: {e}"}
+
+    async def clear_canvas(self) -> dict[str, Any]:
+        """Clear all elements from the canvas.
+        
+        This permanently deletes all elements. Use with caution.
+        """
+        try:
+            await self._ensure_canvas_available()
+
+            result = await http_client.delete("/api/elements")
+
+            if result:
+                return {
+                    "success": True,
+                    "message": "Canvas cleared successfully",
+                }
+            else:
+                return {
+                    "success": False,
+                    "error": "Failed to clear canvas",
+                }
+
+        except Exception as e:
+            logger.error(f"Clear canvas failed: {e}")
+            return {"success": False, "error": f"Clear canvas failed: {e}"}
 
     # Resource Access
 
