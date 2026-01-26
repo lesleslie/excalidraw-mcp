@@ -6,6 +6,7 @@ from typing import Any, cast
 from fastmcp import FastMCP
 
 from .element_factory import ElementFactory
+from .export_service import export_service
 from .http_client import http_client
 from .process_manager import process_manager
 
@@ -40,7 +41,8 @@ class MCPToolsManager:
         self.mcp.tool("unlock_elements")(self.unlock_elements)
 
         # Export/Import tools
-        self.mcp.tool("export_svg")(self.export_svg)
+        self.mcp.tool("convert_excalidraw_to_svg")(self.convert_excalidraw_to_svg)
+        self.mcp.tool("convert_excalidraw_to_png")(self.convert_excalidraw_to_png)
         self.mcp.tool("export_json")(self.export_json)
         self.mcp.tool("get_scene")(self.get_scene)
         self.mcp.tool("import_elements")(self.import_elements)
@@ -401,32 +403,120 @@ class MCPToolsManager:
 
     # Export/Import Tools
 
-    async def export_svg(self) -> dict[str, Any]:
-        """Export the canvas as SVG.
+    async def convert_excalidraw_to_svg(
+        self,
+        excalidraw_file: str,
+        output_file: str = "",
+        background_color: str = "#ffffff",
+    ) -> dict[str, Any]:
+        """Convert an .excalidraw file to SVG format.
         
-        Returns the SVG content as a string that can be saved to a file.
+        Args:
+            excalidraw_file: Path to the .excalidraw file to convert (INPUT).
+            output_file: Path where to save the SVG (OUTPUT). Defaults to same directory as input.
+            background_color: Background color (default: "#ffffff"). Use "transparent" for none.
+        
+        Returns:
+            Dict with 'output_file' path where SVG was saved.
+        
+        Example:
+            convert_excalidraw_to_svg(
+                excalidraw_file="/docs/diagram.excalidraw"
+            )  # Saves to /docs/diagram.svg
         """
         try:
-            await self._ensure_canvas_available()
-
-            result = await http_client.get_text("/api/export/svg")
-
-            if result:
-                return {
-                    "success": True,
-                    "svg": result,
-                    "content_type": "image/svg+xml",
-                    "message": "Exported canvas to SVG successfully",
-                }
-            else:
+            if not excalidraw_file:
                 return {
                     "success": False,
-                    "error": "Failed to export canvas to SVG",
+                    "error": "excalidraw_file is required. Provide path to the .excalidraw file to convert.",
                 }
 
+            if not export_service.is_available:
+                return {
+                    "success": False,
+                    "error": "Playwright not installed. Install with: pip install playwright && playwright install chromium",
+                }
+
+            from pathlib import Path
+            input_path = Path(excalidraw_file)
+            if not output_file:
+                output_file = str(input_path.with_suffix(".svg"))
+
+            svg_content = await export_service.export_svg(excalidraw_file, background_color)
+            Path(output_file).write_text(svg_content, encoding="utf-8")
+
+            return {
+                "success": True,
+                "output_file": output_file,
+                "excalidraw_file": excalidraw_file,
+                "background_color": background_color,
+                "message": f"Converted {excalidraw_file} → {output_file}",
+            }
+
+        except FileNotFoundError as e:
+            return {"success": False, "error": str(e)}
         except Exception as e:
-            logger.error(f"SVG export failed: {e}")
-            return {"success": False, "error": f"SVG export failed: {e}"}
+            logger.error(f"SVG conversion failed: {e}")
+            return {"success": False, "error": f"SVG conversion failed: {e}"}
+
+    async def convert_excalidraw_to_png(
+        self,
+        excalidraw_file: str,
+        output_file: str = "",
+        background_color: str = "#ffffff",
+    ) -> dict[str, Any]:
+        """Convert an .excalidraw file to PNG format.
+        
+        Args:
+            excalidraw_file: Path to the .excalidraw file to convert (INPUT).
+            output_file: Path where to save the PNG (OUTPUT). Defaults to same directory as input.
+            background_color: Background color (default: "#ffffff"). Use "transparent" for none.
+        
+        Returns:
+            Dict with 'output_file' path where PNG was saved.
+        
+        Example:
+            convert_excalidraw_to_png(
+                excalidraw_file="/docs/diagram.excalidraw"
+            )  # Saves to /docs/diagram.png
+        """
+        try:
+            if not excalidraw_file:
+                return {
+                    "success": False,
+                    "error": "excalidraw_file is required. Provide path to the .excalidraw file to convert.",
+                }
+
+            if not export_service.is_available:
+                return {
+                    "success": False,
+                    "error": "Playwright not installed. Install with: pip install playwright && playwright install chromium",
+                }
+
+            from pathlib import Path
+            input_path = Path(excalidraw_file)
+            if not output_file:
+                output_file = str(input_path.with_suffix(".png"))
+
+            png_bytes = await export_service.export_png(excalidraw_file, background_color)
+            Path(output_file).write_bytes(png_bytes)
+
+            return {
+                "success": True,
+                "output_file": output_file,
+                "size_bytes": len(png_bytes),
+                "excalidraw_file": excalidraw_file,
+                "background_color": background_color,
+                "message": f"Converted {excalidraw_file} → {output_file}",
+            }
+
+            return result
+
+        except FileNotFoundError as e:
+            return {"success": False, "error": str(e)}
+        except Exception as e:
+            logger.error(f"PNG conversion failed: {e}")
+            return {"success": False, "error": f"PNG conversion failed: {e}"}
 
     async def export_json(self) -> dict[str, Any]:
         """Export the canvas as Excalidraw JSON format.

@@ -4,9 +4,24 @@ import {
   convertToExcalidrawElements,
   CaptureUpdateAction,
   ExcalidrawAPIRefValue,
-  ExcalidrawElement
+  ExcalidrawElement,
+  exportToSvg,
+  exportToBlob
 } from '@excalidraw/excalidraw'
 import '@excalidraw/excalidraw/index.css'
+
+// Extend Window interface for export API
+declare global {
+  interface Window {
+    __excalidrawExport?: {
+      toSvg: (backgroundColor?: string) => Promise<string>;
+      toPng: (backgroundColor?: string) => Promise<string>;
+      getElements: () => ExcalidrawElement[];
+      loadElements: (elements: any[], appState?: any) => void;
+      isReady: () => boolean;
+    };
+  }
+}
 
 // Type definitions
 interface ServerElement {
@@ -156,6 +171,76 @@ function App(): JSX.Element {
       }
     }
   }, [excalidrawAPI, isConnected])
+
+  // Expose export API for Playwright/headless access
+  useEffect(() => {
+    if (excalidrawAPI) {
+      window.__excalidrawExport = {
+        toSvg: async (backgroundColor: string = '#ffffff'): Promise<string> => {
+          const elements = excalidrawAPI.getSceneElements();
+          const files = excalidrawAPI.getFiles();
+          const svg = await exportToSvg({
+            elements,
+            appState: {
+              exportWithDarkMode: false,
+              exportBackground: true,
+              viewBackgroundColor: backgroundColor,
+            },
+            files,
+            exportPadding: 20,
+          });
+          return svg.outerHTML;
+        },
+        toPng: async (backgroundColor: string = '#ffffff'): Promise<string> => {
+          const elements = excalidrawAPI.getSceneElements();
+          const files = excalidrawAPI.getFiles();
+          const blob = await exportToBlob({
+            elements,
+            appState: {
+              exportWithDarkMode: false,
+              exportBackground: true,
+              viewBackgroundColor: backgroundColor,
+            },
+            files,
+            mimeType: 'image/png',
+            quality: 1,
+          });
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        },
+        getElements: (): ExcalidrawElement[] => {
+          return excalidrawAPI.getSceneElements() as ExcalidrawElement[];
+        },
+        loadElements: (elements: any[], appState?: any): void => {
+          // Convert and load elements into the canvas
+          const cleanedElements = elements.map((el: any) => {
+            const { createdAt, updatedAt, version, syncedAt, source, syncTimestamp, ...clean } = el;
+            return clean;
+          });
+          const convertedElements = convertToExcalidrawElements(cleanedElements, { regenerateIds: false });
+          excalidrawAPI.updateScene({
+            elements: convertedElements,
+            appState: appState ? {
+              ...appState,
+              viewBackgroundColor: appState.viewBackgroundColor || '#ffffff',
+            } : undefined,
+            captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+          });
+        },
+        isReady: (): boolean => {
+          return excalidrawAPI !== null;
+        },
+      };
+    }
+
+    return () => {
+      delete window.__excalidrawExport;
+    };
+  }, [excalidrawAPI])
 
   const loadExistingElements = async (): Promise<void> => {
     try {
