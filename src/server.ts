@@ -361,7 +361,8 @@ app.post('/api/elements/batch', (req: Request, res: Response) => {
 
     elementsToCreate.forEach(elementData => {
       const params = CreateElementSchema.parse(elementData);
-      const id = generateId();
+      // IMPORTANT: Preserve passed IDs for proper MCP sync, generate only if missing
+      const id = params.id || generateId();
       const element: ServerElement = {
         id,
         ...params,
@@ -980,9 +981,10 @@ app.delete('/api/elements', (req: Request, res: Response) => {
     const count = elements.size;
     elements.clear();
 
-    // Broadcast clear event
+    // Broadcast clear event with element count before clear for verification
     broadcast({
       type: 'elements_cleared',
+      deletedCount: count,
       count: 0,
       timestamp: new Date().toISOString()
     });

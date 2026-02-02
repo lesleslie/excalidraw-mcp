@@ -204,6 +204,19 @@ export interface BatchCreatedMessage extends WebSocketMessage {
   elements: ServerElement[];
 }
 
+export interface ElementsClearedMessage extends WebSocketMessage {
+  type: 'elements_cleared';
+  deletedCount: number;
+  count: number;
+  timestamp: string;
+}
+
+export interface ElementsImportedMessage extends WebSocketMessage {
+  type: 'elements_imported';
+  count: number;
+  timestamp: string;
+}
+
 export interface SyncStatusMessage extends WebSocketMessage {
   type: 'sync_status';
   elementCount: number;
