@@ -39,6 +39,7 @@ class MCPToolsManager:
         self.mcp.tool("ungroup_elements")(self.ungroup_elements)
         self.mcp.tool("align_elements")(self.align_elements)
         self.mcp.tool("distribute_elements")(self.distribute_elements)
+        self.mcp.tool("layout_elements")(self.layout_elements)
         self.mcp.tool("lock_elements")(self.lock_elements)
         self.mcp.tool("unlock_elements")(self.unlock_elements)
 
@@ -396,6 +397,49 @@ class MCPToolsManager:
         except Exception as e:
             logger.error(f"Element distribution failed: {e}")
             return {"success": False, "error": f"Element distribution failed: {e}"}
+
+    async def layout_elements(self, request: dict[str, Any]) -> dict[str, Any]:
+        """Auto-layout elements using Dagre graph layout algorithm.
+        
+        Arranges nodes in a directed graph and updates arrow positions.
+        
+        Args:
+            request: Dictionary with optional keys:
+                - elementIds: List of element IDs to layout (default: all elements)
+                - direction: Layout direction - TB, BT, LR, RL (default: TB)
+                - nodeSpacing: Horizontal spacing between nodes (default: 50)
+                - rankSpacing: Vertical spacing between ranks (default: 100)
+        """
+        try:
+            request_data = self._request_to_dict(request)
+
+            layout_data = {
+                "elementIds": request_data.get("elementIds"),
+                "direction": request_data.get("direction", "TB"),
+                "nodeSpacing": request_data.get("nodeSpacing", 50),
+                "rankSpacing": request_data.get("rankSpacing", 100),
+            }
+
+            result = await http_client.post_json("/api/elements/layout", layout_data)
+
+            if result and result.get("success"):
+                return {
+                    "success": True,
+                    "message": result.get("message", "Layout applied successfully"),
+                    "direction": result.get("direction"),
+                    "nodeCount": result.get("nodeCount"),
+                    "arrowCount": result.get("arrowCount"),
+                }
+            else:
+                error_msg = result.get("error") if result else "Failed to layout elements"
+                return {
+                    "success": False,
+                    "error": error_msg,
+                }
+
+        except Exception as e:
+            logger.error(f"Element layout failed: {e}")
+            return {"success": False, "error": f"Element layout failed: {e}"}
 
     async def lock_elements(self, element_ids: list[str]) -> dict[str, Any]:
         """Lock elements to prevent modification."""
