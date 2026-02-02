@@ -84,11 +84,22 @@ class CanvasProcessManager:
             return await self._ensure_process_healthy()
 
     async def _is_process_healthy(self) -> bool:
-        """Check if the current process is running and healthy."""
-        if not self._is_process_running():
+        """Check if the current process is running and healthy.
+        
+        First checks HTTP health (works even if canvas was started externally).
+        Then verifies we own the process if we have a reference to it.
+        """
+        # Check HTTP health first - works even if canvas was started externally
+        # (e.g., by init_background_services or another process)
+        if await http_client.check_health():
+            return True
+        
+        # If we have a process reference, check if it's still running
+        if self._is_process_running():
+            # Process running but health check failed - might be starting up
             return False
 
-        return await http_client.check_health()
+        return False
 
     def _is_process_running(self) -> bool:
         """Check if the canvas server process is running."""
