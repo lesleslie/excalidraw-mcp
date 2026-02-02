@@ -6,14 +6,10 @@ import subprocess
 import sys
 import time
 from pathlib import Path
-from typing import Any
+from typing import Annotated, Any
 
 import psutil
 import typer
-
-# ACB has been removed - using standard logging and Oneiric patterns
-# from acb.console import Console
-# from acb.depends import depends
 from rich import print as rprint
 
 # Check ServerPanels availability (Phase 3.3 M2: improved pattern)
@@ -28,8 +24,6 @@ except ImportError:
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor
 from excalidraw_mcp.process_manager import CanvasProcessManager
-
-# console = depends.get_sync(Console)
 
 # Global process manager instance
 _process_manager: CanvasProcessManager | None = None
@@ -78,87 +72,6 @@ def find_canvas_server_process() -> psutil.Process | None:
     return None
 
 
-def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> None:
-    """Implementation for starting MCP server."""
-    # Check if already running
-    existing_proc = find_mcp_server_process()
-    if existing_proc:
-        rprint(
-            f"[yellow]MCP server already running (PID: {existing_proc.pid})[/yellow]"
-        )
-        return
-
-    rprint("[green]Starting Excalidraw MCP server...[/green]")
-
-    try:
-        if background:
-            # Start in background
-            subprocess.Popen(
-                [sys.executable, "-m", "excalidraw_mcp.server"],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                start_new_session=True,
-            )
-
-            # Wait a moment and check if it started
-            time.sleep(2)
-            proc = find_mcp_server_process()
-            if proc:
-                rprint(
-                    f"[green]✓ MCP server started in background (PID: {proc.pid})[/green]"
-                )
-            else:
-                rprint("[red]✗ Failed to start MCP server in background[/red]")
-                sys.exit(1)
-        else:
-            # Start in foreground with optional monitoring
-            if monitoring:
-                # Start with monitoring supervisor
-                async def run_with_monitoring() -> None:
-                    supervisor = get_monitoring_supervisor()
-                    process_manager = get_process_manager()
-
-                    # Set up signal handlers for graceful shutdown
-                    def signal_handler(signum: int, frame: Any) -> None:
-                        rprint(
-                            "\n[yellow]Received shutdown signal, stopping servers...[/yellow]"
-                        )
-                        asyncio.create_task(supervisor.stop())
-                        asyncio.create_task(process_manager.stop())
-                        sys.exit(0)
-
-                    signal.signal(signal.SIGINT, signal_handler)
-                    signal.signal(signal.SIGTERM, signal_handler)
-
-                    # Start monitoring
-                    await supervisor.start()
-
-                    # Keep the process running
-                    try:
-                        # Import and run the main server
-                        from excalidraw_mcp.server import main
-
-                        await main()  # type: ignore
-                    finally:
-                        await supervisor.stop()
-
-                asyncio.run(run_with_monitoring())
-            else:
-                # Start without monitoring
-                from excalidraw_mcp.server import main
-
-                asyncio.run(main())  # type: ignore
-
-    except KeyboardInterrupt:
-        rprint("\n[yellow]Shutting down MCP server...[/yellow]")
-        # Clean up any running processes
-        process_manager = get_process_manager()
-        asyncio.run(process_manager.stop())
-    except Exception as e:
-        rprint(f"[red]Failed to start MCP server: {e}[/red]")
-        sys.exit(1)
-
-
 def _stop_process(
     process: psutil.Process, process_name: str, force: bool, timeout: int
 ) -> str:
@@ -181,8 +94,234 @@ def _stop_process(
         return f"{process_name} - failed to stop: {e}"
 
 
-def stop_mcp_server_impl(force: bool = False) -> None:
-    """Implementation for stopping MCP server."""
+def _find_log_file() -> Path | None:
+    """Find the log file in common locations."""
+    log_paths = [
+        Path("excalidraw-mcp.log"),
+        Path("logs/excalidraw-mcp.log"),
+        Path.home() / "tmp" / "excalidraw-mcp.log",
+        Path.home() / ".local" / "state" / "excalidraw-mcp" / "server.log",
+    ]
+
+    for path in log_paths:
+        if path.exists():
+            return path
+    return None
+
+
+def _show_missing_log_message() -> None:
+    """Show message when log file is not found."""
+    rprint("[yellow]No log file found. Logs may be going to stdout/stderr.[/yellow]")
+    rprint("Try running the server with output redirection:")
+    rprint("  [cyan]excalidraw-mcp serve > server.log 2>&1[/cyan]")
+
+
+def _follow_log_output(log_file: Path) -> None:
+    """Follow log output (basic implementation)."""
+    with log_file.open() as f:
+        # Move to end of file
+        f.seek(0, 2)
+        while True:
+            line = f.readline()
+            if line:
+                print(line.rstrip())
+            else:
+                time.sleep(0.1)
+
+
+def _show_recent_log_lines(log_file: Path, lines: int) -> None:
+    """Show recent lines from log file."""
+    with log_file.open() as f:
+        # Read all lines and show last N
+        all_lines = f.readlines()
+        recent_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
+        for line in recent_lines:
+            print(line.rstrip())
+
+
+# Create the main app with subcommands
+app = typer.Typer(
+    name="excalidraw-mcp",
+    help="Excalidraw MCP Server - Create and manage Excalidraw diagrams via MCP.",
+    no_args_is_help=True,
+)
+
+
+@app.command()
+def serve(
+    stdio: Annotated[
+        bool,
+        typer.Option(
+            "--stdio",
+            help="Run in stdio mode for MCP clients (Claude Desktop, etc.)",
+        ),
+    ] = False,
+    http: Annotated[
+        bool,
+        typer.Option(
+            "--http",
+            help="Run in HTTP mode (default if no transport specified)",
+        ),
+    ] = False,
+    background: Annotated[
+        bool,
+        typer.Option(
+            "--background", "-b",
+            help="Run server in background (detached process)",
+        ),
+    ] = False,
+    monitoring: Annotated[
+        bool,
+        typer.Option(
+            "--monitoring/--no-monitoring",
+            help="Enable monitoring supervisor",
+        ),
+    ] = True,
+) -> None:
+    """Start the Excalidraw MCP server.
+    
+    Examples:
+        excalidraw-mcp serve --stdio    # For Claude Desktop / MCP clients
+        excalidraw-mcp serve --http     # HTTP mode on localhost:3032
+        excalidraw-mcp serve -b         # Run in background
+    """
+    # Determine transport mode
+    if stdio and http:
+        rprint("[red]Error: Cannot specify both --stdio and --http[/red]")
+        raise typer.Exit(1)
+    
+    if stdio:
+        _serve_stdio()
+    elif background:
+        _serve_background(monitoring=monitoring)
+    else:
+        # Default to HTTP mode (foreground)
+        _serve_http(monitoring=monitoring)
+
+
+def _serve_stdio() -> None:
+    """Run MCP server in stdio mode for Claude Desktop / MCP clients."""
+    try:
+        # Import triggers auto-start of canvas server if CANVAS_AUTO_START=true
+        from excalidraw_mcp.server import mcp
+        
+        # Run in stdio mode (blocking)
+        mcp.run()
+    except KeyboardInterrupt:
+        pass  # Graceful shutdown
+    except Exception as e:
+        # Log to stderr since stdout is used for MCP protocol
+        print(f"Error running stdio server: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def _serve_http(monitoring: bool = True) -> None:
+    """Run MCP server in HTTP mode (foreground)."""
+    # Check if already running
+    existing_proc = find_mcp_server_process()
+    if existing_proc:
+        rprint(
+            f"[yellow]MCP server already running (PID: {existing_proc.pid})[/yellow]"
+        )
+        return
+
+    rprint("[green]Starting Excalidraw MCP server...[/green]")
+
+    try:
+        if monitoring:
+            # Start with monitoring supervisor
+            async def run_with_monitoring() -> None:
+                supervisor = get_monitoring_supervisor()
+                process_manager = get_process_manager()
+
+                # Set up signal handlers for graceful shutdown
+                def signal_handler(signum: int, frame: Any) -> None:
+                    rprint(
+                        "\n[yellow]Received shutdown signal, stopping servers...[/yellow]"
+                    )
+                    asyncio.create_task(supervisor.stop())
+                    asyncio.create_task(process_manager.stop())
+                    sys.exit(0)
+
+                signal.signal(signal.SIGINT, signal_handler)
+                signal.signal(signal.SIGTERM, signal_handler)
+
+                # Start monitoring
+                await supervisor.start()
+
+                # Keep the process running
+                try:
+                    # Import and run the main server
+                    from excalidraw_mcp.server import main
+
+                    await main()  # type: ignore
+                finally:
+                    await supervisor.stop()
+
+            asyncio.run(run_with_monitoring())
+        else:
+            # Start without monitoring
+            from excalidraw_mcp.server import main
+
+            asyncio.run(main())  # type: ignore
+
+    except KeyboardInterrupt:
+        rprint("\n[yellow]Shutting down MCP server...[/yellow]")
+        # Clean up any running processes
+        process_manager = get_process_manager()
+        asyncio.run(process_manager.stop())
+    except Exception as e:
+        rprint(f"[red]Failed to start MCP server: {e}[/red]")
+        sys.exit(1)
+
+
+def _serve_background(monitoring: bool = True) -> None:
+    """Run MCP server in background (detached)."""
+    # Check if already running
+    existing_proc = find_mcp_server_process()
+    if existing_proc:
+        rprint(
+            f"[yellow]MCP server already running (PID: {existing_proc.pid})[/yellow]"
+        )
+        return
+
+    rprint("[green]Starting Excalidraw MCP server in background...[/green]")
+
+    try:
+        subprocess.Popen(
+            [sys.executable, "-m", "excalidraw_mcp.server"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True,
+        )
+
+        # Wait a moment and check if it started
+        time.sleep(2)
+        proc = find_mcp_server_process()
+        if proc:
+            rprint(
+                f"[green]✓ MCP server started in background (PID: {proc.pid})[/green]"
+            )
+        else:
+            rprint("[red]✗ Failed to start MCP server in background[/red]")
+            sys.exit(1)
+
+    except Exception as e:
+        rprint(f"[red]Failed to start MCP server: {e}[/red]")
+        sys.exit(1)
+
+
+@app.command()
+def stop(
+    force: Annotated[
+        bool,
+        typer.Option(
+            "--force", "-f",
+            help="Force kill server processes immediately",
+        ),
+    ] = False,
+) -> None:
+    """Stop the Excalidraw MCP server and canvas server."""
     mcp_proc = find_mcp_server_process()
     canvas_proc = find_canvas_server_process()
 
@@ -219,22 +358,42 @@ def stop_mcp_server_impl(force: bool = False) -> None:
         rprint("[yellow]No processes were stopped[/yellow]")
 
 
-def restart_mcp_server_impl(background: bool = False, monitoring: bool = True) -> None:
-    """Implementation for restarting MCP server."""
+@app.command()
+def restart(
+    background: Annotated[
+        bool,
+        typer.Option(
+            "--background", "-b",
+            help="Run server in background after restart",
+        ),
+    ] = False,
+    monitoring: Annotated[
+        bool,
+        typer.Option(
+            "--monitoring/--no-monitoring",
+            help="Enable monitoring supervisor",
+        ),
+    ] = True,
+) -> None:
+    """Restart the Excalidraw MCP server."""
     rprint("[yellow]Restarting Excalidraw MCP server...[/yellow]")
 
     # Stop existing servers
-    stop_mcp_server_impl()
+    stop(force=False)
 
     # Wait a moment for processes to fully stop
     time.sleep(2)
 
     # Start server again
-    start_mcp_server_impl(background=background)
+    if background:
+        _serve_background(monitoring=monitoring)
+    else:
+        _serve_http(monitoring=monitoring)
 
 
-def status_impl() -> None:
-    """Implementation for showing status."""
+@app.command()
+def status() -> None:
+    """Show status of MCP server and canvas server."""
     rows: list[list[str]] = []
 
     # Check MCP server
@@ -310,53 +469,24 @@ def status_impl() -> None:
         )
 
 
-def _find_log_file() -> Path | None:
-    """Find the log file in common locations."""
-    log_paths = [
-        Path("excalidraw-mcp.log"),
-        Path("logs/excalidraw-mcp.log"),
-        Path.home() / "tmp" / "excalidraw-mcp.log",
-        Path.home() / ".local" / "state" / "excalidraw-mcp" / "server.log",
-    ]
-
-    for path in log_paths:
-        if path.exists():
-            return path
-    return None
-
-
-def _show_missing_log_message() -> None:
-    """Show message when log file is not found."""
-    rprint("[yellow]No log file found. Logs may be going to stdout/stderr.[/yellow]")
-    rprint("Try running the server with output redirection:")
-    rprint("  [cyan]excalidraw-mcp --start-mcp-server > server.log 2>&1[/cyan]")
-
-
-def _follow_log_output(log_file: Path) -> None:
-    """Follow log output (basic implementation)."""
-    with log_file.open() as f:
-        # Move to end of file
-        f.seek(0, 2)
-        while True:
-            line = f.readline()
-            if line:
-                print(line.rstrip())
-            else:
-                time.sleep(0.1)
-
-
-def _show_recent_log_lines(log_file: Path, lines: int) -> None:
-    """Show recent lines from log file."""
-    with log_file.open() as f:
-        # Read all lines and show last N
-        all_lines = f.readlines()
-        recent_lines = all_lines[-lines:] if len(all_lines) > lines else all_lines
-        for line in recent_lines:
-            print(line.rstrip())
-
-
-def logs_impl(lines: int = 50, follow: bool = False) -> None:
-    """Implementation for showing logs."""
+@app.command()
+def logs(
+    lines: Annotated[
+        int,
+        typer.Option(
+            "--lines", "-n",
+            help="Number of recent log lines to show",
+        ),
+    ] = 50,
+    follow: Annotated[
+        bool,
+        typer.Option(
+            "--follow", "-f",
+            help="Follow log output (like tail -f)",
+        ),
+    ] = False,
+) -> None:
+    """Show server logs."""
     log_file = _find_log_file()
 
     if not log_file:
@@ -374,76 +504,16 @@ def logs_impl(lines: int = 50, follow: bool = False) -> None:
         rprint(f"[red]Error reading logs: {e}[/red]")
 
 
-def main(
-    start_mcp_server: bool = typer.Option(
-        False, "--start-mcp-server", help="Start the Excalidraw MCP server"
-    ),
-    stop_mcp_server: bool = typer.Option(
-        False, "--stop-mcp-server", help="Stop the Excalidraw MCP server"
-    ),
-    restart_mcp_server: bool = typer.Option(
-        False, "--restart-mcp-server", help="Restart the Excalidraw MCP server"
-    ),
-    status: bool = typer.Option(
-        False, "--status", help="Show status of MCP server and canvas server"
-    ),
-    logs: bool = typer.Option(False, "--logs", help="Show server logs (if available)"),
-    background: bool = typer.Option(
-        False,
-        "--background",
-        "-b",
-        help="Run MCP server in background (for start/restart commands)",
-    ),
-    force: bool = typer.Option(
-        False, "--force", "-f", help="Force kill server processes (for stop command)"
-    ),
-    monitoring: bool = typer.Option(
-        True,
-        "--monitoring/--no-monitoring",
-        help="Enable monitoring supervisor (for start/restart commands)",
-    ),
-    lines: int = typer.Option(
-        50,
-        "--lines",
-        "-n",
-        help="Number of recent log lines to show (for logs command)",
-    ),
-    follow: bool = typer.Option(
-        False, "--follow", help="Follow log output (for logs command)"
-    ),
+# Keep backward compatibility aliases
+@app.command(hidden=True)
+def start(
+    background: Annotated[bool, typer.Option("--background", "-b")] = False,
+    monitoring: Annotated[bool, typer.Option("--monitoring/--no-monitoring")] = True,
 ) -> None:
-    """CLI for managing Excalidraw MCP server."""
+    """[Deprecated] Use 'serve' instead."""
+    rprint("[yellow]Note: 'start' is deprecated, use 'serve' instead[/yellow]")
+    serve(stdio=False, http=True, background=background, monitoring=monitoring)
 
-    # Count how many main actions were requested
-    actions = [start_mcp_server, stop_mcp_server, restart_mcp_server, status, logs]
-    action_count = sum(1 for action in actions if action)
-
-    if action_count == 0:
-        # No action specified, show help
-        rprint(
-            "[yellow]No action specified. Use --help to see available options.[/yellow]"
-        )
-        return
-    elif action_count > 1:
-        # Multiple actions specified
-        rprint("[red]Error: Only one action can be specified at a time.[/red]")
-        sys.exit(1)
-
-    # Execute the requested action
-    if start_mcp_server:
-        start_mcp_server_impl(background=background, monitoring=monitoring)
-    elif stop_mcp_server:
-        stop_mcp_server_impl(force=force)
-    elif restart_mcp_server:
-        restart_mcp_server_impl(background=background, monitoring=monitoring)
-    elif status:
-        status_impl()
-    elif logs:
-        logs_impl()
-
-
-app = typer.Typer()
-app.command()(main)
 
 if __name__ == "__main__":
     app()

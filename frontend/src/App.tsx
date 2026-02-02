@@ -4,9 +4,24 @@ import {
   convertToExcalidrawElements,
   CaptureUpdateAction,
   ExcalidrawAPIRefValue,
-  ExcalidrawElement
+  ExcalidrawElement,
+  exportToSvg,
+  exportToBlob
 } from '@excalidraw/excalidraw'
 import '@excalidraw/excalidraw/index.css'
+
+// Extend Window interface for export API
+declare global {
+  interface Window {
+    __excalidrawExport?: {
+      toSvg: (backgroundColor?: string) => Promise<string>;
+      toPng: (backgroundColor?: string) => Promise<string>;
+      getElements: () => ExcalidrawElement[];
+      loadElements: (elements: any[], appState?: any) => void;
+      isReady: () => boolean;
+    };
+  }
+}
 
 // Type definitions
 interface ServerElement {
@@ -73,8 +88,16 @@ const cleanElementForExcalidraw = (element: ServerElement): Partial<ExcalidrawEl
     syncedAt,
     source,
     syncTimestamp,
+    label,
     ...cleanElement
   } = element;
+  
+  // Convert label.text to text for Excalidraw compatibility
+  // Excalidraw text elements use 'text' property directly
+  if (label && label.text && !cleanElement.text) {
+    cleanElement.text = label.text;
+  }
+  
   return cleanElement;
 }
 
@@ -134,6 +157,7 @@ function App(): JSX.Element {
   // Sync state management
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
+  const [fetchStatus, setFetchStatus] = useState<SyncStatus>('idle')
 
   // WebSocket connection
   useEffect(() => {
@@ -157,6 +181,76 @@ function App(): JSX.Element {
     }
   }, [excalidrawAPI, isConnected])
 
+  // Expose export API for Playwright/headless access
+  useEffect(() => {
+    if (excalidrawAPI) {
+      window.__excalidrawExport = {
+        toSvg: async (backgroundColor: string = '#ffffff'): Promise<string> => {
+          const elements = excalidrawAPI.getSceneElements();
+          const files = excalidrawAPI.getFiles();
+          const svg = await exportToSvg({
+            elements,
+            appState: {
+              exportWithDarkMode: false,
+              exportBackground: true,
+              viewBackgroundColor: backgroundColor,
+            },
+            files,
+            exportPadding: 20,
+          });
+          return svg.outerHTML;
+        },
+        toPng: async (backgroundColor: string = '#ffffff'): Promise<string> => {
+          const elements = excalidrawAPI.getSceneElements();
+          const files = excalidrawAPI.getFiles();
+          const blob = await exportToBlob({
+            elements,
+            appState: {
+              exportWithDarkMode: false,
+              exportBackground: true,
+              viewBackgroundColor: backgroundColor,
+            },
+            files,
+            mimeType: 'image/png',
+            quality: 1,
+          });
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+        },
+        getElements: (): ExcalidrawElement[] => {
+          return excalidrawAPI.getSceneElements() as ExcalidrawElement[];
+        },
+        loadElements: (elements: any[], appState?: any): void => {
+          // Convert and load elements into the canvas
+          const cleanedElements = elements.map((el: any) => {
+            const { createdAt, updatedAt, version, syncedAt, source, syncTimestamp, ...clean } = el;
+            return clean;
+          });
+          const convertedElements = convertToExcalidrawElements(cleanedElements, { regenerateIds: false });
+          excalidrawAPI.updateScene({
+            elements: convertedElements,
+            appState: appState ? {
+              ...appState,
+              viewBackgroundColor: appState.viewBackgroundColor || '#ffffff',
+            } : undefined,
+            captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+          });
+        },
+        isReady: (): boolean => {
+          return excalidrawAPI !== null;
+        },
+      };
+    }
+
+    return () => {
+      delete window.__excalidrawExport;
+    };
+  }, [excalidrawAPI])
+
   const loadExistingElements = async (): Promise<void> => {
     try {
       const response = await fetch('/api/elements')
@@ -164,11 +258,61 @@ function App(): JSX.Element {
 
       if (result.success && result.elements && result.elements.length > 0) {
         const cleanedElements = result.elements.map(cleanElementForExcalidraw)
-        const convertedElements = convertToExcalidrawElements(cleanedElements, { regenerateIds: false })
-        excalidrawAPI?.updateScene({ elements: convertedElements })
+        const validatedElements = validateAndFixBindings(cleanedElements)
+        // CRITICAL: Use regenerateIds: false to preserve backend IDs
+        const convertedElements = convertToExcalidrawElements(validatedElements, { regenerateIds: false })
+        excalidrawAPI?.updateScene({
+          elements: convertedElements,
+          captureUpdate: CaptureUpdateAction.NEVER
+        })
+        console.log(`Loaded ${convertedElements.length} elements from backend`)
       }
     } catch (error) {
       console.error('Error loading existing elements:', error)
+    }
+  }
+
+  // Fetch elements from backend (replaces canvas with backend state)
+  const fetchFromBackend = async (): Promise<void> => {
+    if (!excalidrawAPI) {
+      console.warn('Excalidraw API not available')
+      return
+    }
+
+    setFetchStatus('syncing')
+
+    try {
+      const response = await fetch('/api/elements')
+      const result: ApiResponse = await response.json()
+
+      if (result.success && result.elements) {
+        const cleanedElements = result.elements.map(cleanElementForExcalidraw)
+        const validatedElements = validateAndFixBindings(cleanedElements)
+        const convertedElements = convertToExcalidrawElements(validatedElements, { regenerateIds: false })
+        
+        excalidrawAPI.updateScene({
+          elements: convertedElements,
+          captureUpdate: CaptureUpdateAction.IMMEDIATELY
+        })
+        
+        setFetchStatus('success')
+        console.log(`Fetched ${result.elements.length} elements from backend`)
+        
+        // Reset status after 2 seconds
+        setTimeout(() => setFetchStatus('idle'), 2000)
+      } else {
+        // No elements in backend - clear canvas
+        excalidrawAPI.updateScene({
+          elements: [],
+          captureUpdate: CaptureUpdateAction.IMMEDIATELY
+        })
+        setFetchStatus('success')
+        console.log('Backend has no elements, canvas cleared')
+        setTimeout(() => setFetchStatus('idle'), 2000)
+      }
+    } catch (error) {
+      setFetchStatus('error')
+      console.error('Fetch error:', error)
     }
   }
 
@@ -228,7 +372,8 @@ function App(): JSX.Element {
           if (data.elements && data.elements.length > 0) {
             const cleanedElements = data.elements.map(cleanElementForExcalidraw)
             const validatedElements = validateAndFixBindings(cleanedElements)
-            const convertedElements = convertToExcalidrawElements(validatedElements)
+            // Use regenerateIds: false to preserve backend IDs
+            const convertedElements = convertToExcalidrawElements(validatedElements, { regenerateIds: false })
             excalidrawAPI.updateScene({
               elements: convertedElements,
               captureUpdate: CaptureUpdateAction.NEVER
@@ -238,8 +383,15 @@ function App(): JSX.Element {
 
         case 'element_created':
           if (data.element) {
+            // Check for duplicate - skip if element with same ID already exists
+            const existingElement = currentElements.find(el => el.id === data.element!.id)
+            if (existingElement) {
+              console.log(`Skipping duplicate element: ${data.element.id}`)
+              break
+            }
             const cleanedNewElement = cleanElementForExcalidraw(data.element)
-            const newElement = convertToExcalidrawElements([cleanedNewElement])
+            // Use regenerateIds: false to preserve backend ID
+            const newElement = convertToExcalidrawElements([cleanedNewElement], { regenerateIds: false })
             const updatedElementsAfterCreate = [...currentElements, ...newElement]
             excalidrawAPI.updateScene({
               elements: updatedElementsAfterCreate,
@@ -251,7 +403,8 @@ function App(): JSX.Element {
         case 'element_updated':
           if (data.element) {
             const cleanedUpdatedElement = cleanElementForExcalidraw(data.element)
-            const convertedUpdatedElement = convertToExcalidrawElements([cleanedUpdatedElement])[0]
+            // Use regenerateIds: false to preserve backend ID
+            const convertedUpdatedElement = convertToExcalidrawElements([cleanedUpdatedElement], { regenerateIds: false })[0]
             const updatedElements = currentElements.map(el =>
               el.id === data.element!.id ? convertedUpdatedElement : el
             )
@@ -275,12 +428,15 @@ function App(): JSX.Element {
         case 'elements_batch_created':
           if (data.elements) {
             const cleanedBatchElements = data.elements.map(cleanElementForExcalidraw)
-            const batchElements = convertToExcalidrawElements(cleanedBatchElements)
+            const validatedBatchElements = validateAndFixBindings(cleanedBatchElements)
+            // CRITICAL: Use regenerateIds: false to preserve backend IDs for proper sync
+            const batchElements = convertToExcalidrawElements(validatedBatchElements, { regenerateIds: false })
             const updatedElementsAfterBatch = [...currentElements, ...batchElements]
             excalidrawAPI.updateScene({
               elements: updatedElementsAfterBatch,
               captureUpdate: CaptureUpdateAction.NEVER
             })
+            console.log(`Batch created: ${batchElements.length} elements added`)
           }
           break
 
@@ -291,6 +447,21 @@ function App(): JSX.Element {
 
         case 'sync_status':
           console.log(`Server sync status: ${data.count} elements`)
+          break
+
+        case 'elements_cleared':
+          // Backend cleared all elements - sync frontend
+          console.log(`Canvas cleared: ${data.deletedCount || 0} elements removed`)
+          excalidrawAPI.updateScene({
+            elements: [],
+            captureUpdate: CaptureUpdateAction.NEVER
+          })
+          break
+
+        case 'elements_imported':
+          // Elements imported - refresh from backend to get full state
+          console.log(`Elements imported: ${data.count} elements`)
+          fetchFromBackend()
           break
 
         default:
@@ -416,6 +587,7 @@ function App(): JSX.Element {
               className={`btn-primary ${syncStatus === 'syncing' ? 'btn-loading' : ''}`}
               onClick={syncToBackend}
               disabled={syncStatus === 'syncing' || !excalidrawAPI}
+              title="Push canvas elements to backend (replaces backend state)"
             >
               {syncStatus === 'syncing' && <span className="spinner"></span>}
               {syncStatus === 'syncing' ? 'Syncing...' : 'Sync to Backend'}
@@ -427,7 +599,7 @@ function App(): JSX.Element {
                 <span className="sync-success">✅ Synced</span>
               )}
               {syncStatus === 'error' && (
-                <span className="sync-error">❌ Sync Failed</span>
+                <span className="sync-error">❌ Failed</span>
               )}
               {lastSyncTime && syncStatus === 'idle' && (
                 <span className="sync-time">

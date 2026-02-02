@@ -412,6 +412,49 @@ class CanvasHTTPClient:
             logger.error(f"Canvas server GET request failed: {e} (trace: {trace_id})")
             return None
 
+    async def get_text(
+        self, endpoint: str, correlation_id: str | None = None
+    ) -> str | None:
+        """GET text/plain or other non-JSON data from canvas server."""
+        trace_id = correlation_id or self._generate_correlation_id()
+        await self._ensure_client()
+        url = f"{config.server.express_url}{endpoint}"
+
+        start_time = time.time()
+        try:
+            headers = (
+                self._get_tracing_headers(trace_id)
+                if config.monitoring.request_tracing_enabled
+                else {}
+            )
+
+            if self._client is not None:
+                response = await self._client.get(url, headers=headers)
+            else:
+                raise RuntimeError("HTTP client not initialized")
+            response_time = time.time() - start_time
+
+            if response.status_code == 200:
+                self._update_request_metrics(True, response_time, "GET", endpoint)
+                logger.debug(
+                    f"GET {endpoint} (text) successful (trace: {trace_id}, time: {response_time:.3f}s)"
+                )
+                return response.text
+            else:
+                self._update_request_metrics(False, response_time, "GET", endpoint)
+                logger.warning(
+                    f"Canvas server GET (text) returned HTTP {response.status_code}: {response.text} (trace: {trace_id})"
+                )
+                return None
+
+        except Exception as e:
+            response_time = time.time() - start_time
+            self._update_request_metrics(False, response_time, "GET", endpoint)
+            logger.error(
+                f"Canvas server GET (text) request failed: {e} (trace: {trace_id})"
+            )
+            return None
+
     @property
     def health_failure_count(self) -> int:
         """Get the current health check failure count."""

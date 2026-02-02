@@ -84,11 +84,22 @@ class CanvasProcessManager:
             return await self._ensure_process_healthy()
 
     async def _is_process_healthy(self) -> bool:
-        """Check if the current process is running and healthy."""
-        if not self._is_process_running():
+        """Check if the current process is running and healthy.
+        
+        First checks HTTP health (works even if canvas was started externally).
+        Then verifies we own the process if we have a reference to it.
+        """
+        # Check HTTP health first - works even if canvas was started externally
+        # (e.g., by init_background_services or another process)
+        if await http_client.check_health():
+            return True
+        
+        # If we have a process reference, check if it's still running
+        if self._is_process_running():
+            # Process running but health check failed - might be starting up
             return False
 
-        return await http_client.check_health()
+        return False
 
     def _is_process_running(self) -> bool:
         """Check if the canvas server process is running."""
@@ -118,16 +129,19 @@ class CanvasProcessManager:
     async def _start_process(self) -> bool:
         """Start the canvas server process."""
         try:
-            project_root = self._get_project_root()
-            logger.info(f"Starting canvas server from {project_root}")
+            server_js = self._find_server_js()
+            if not server_js:
+                logger.error("Could not find canvas server (dist/server.js)")
+                return False
+            logger.info(f"Starting canvas server from {server_js}")
 
             # Kill any existing process
             self._terminate_existing_process()
 
-            # Start new process
+            # Start new process using node directly (works with uvx)
             self.process = subprocess.Popen(
-                ["npm", "run", "canvas"],
-                cwd=project_root,
+                ["node", str(server_js)],
+                cwd=server_js.parent,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 preexec_fn=os.setsid if os.name != "nt" else None,
@@ -236,6 +250,32 @@ class CanvasProcessManager:
         if was_running:
             # Trigger stop callbacks when process info is reset (if event loop exists)
             self._trigger_callbacks_sync(self._on_stop_callbacks, None, "stopped")
+
+    def _find_server_js(self) -> Path | None:
+        """Find the canvas server.js file.
+        
+        Looks in multiple locations to support both:
+        - Local development (project root/dist/server.js)
+        - uvx installation (package/dist/server.js bundled in wheel)
+        """
+        current_file = Path(__file__).resolve()
+        package_dir = current_file.parent  # excalidraw_mcp/
+        
+        # Candidate locations for server.js
+        candidates = [
+            # Bundled in package (uvx/pip install)
+            package_dir / "dist" / "server.js",
+            # Development: project root
+            package_dir.parent / "dist" / "server.js",
+        ]
+        
+        for candidate in candidates:
+            if candidate.exists():
+                logger.debug(f"Found canvas server at: {candidate}")
+                return candidate
+        
+        logger.warning(f"Canvas server not found. Searched: {candidates}")
+        return None
 
     def _get_project_root(self) -> Path:
         """Get the project root directory."""

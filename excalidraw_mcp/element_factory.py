@@ -16,8 +16,9 @@ class ElementFactory:
 
     def create_element(self, element_data: dict[str, Any]) -> dict[str, Any]:
         """Create a new element with proper defaults and validation."""
-        # Generate unique ID
-        element_id = str(uuid.uuid4())
+        # Preserve passed ID if provided, otherwise generate new one
+        # This is CRITICAL for proper sync between MCP and canvas server
+        element_id = element_data.get("id") or str(uuid.uuid4())
 
         # Get current timestamp
         current_time = datetime.now(UTC).isoformat() + "Z"

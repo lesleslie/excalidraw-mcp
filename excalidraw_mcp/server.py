@@ -7,6 +7,7 @@ import asyncio
 import atexit
 import importlib.util
 import logging
+from pathlib import Path
 from typing import Any
 
 from fastmcp import FastMCP
@@ -105,7 +106,7 @@ def main() -> None:
             logger.info("  Endpoint: http://localhost:3032/mcp")
             logger.info("  Canvas management & real-time sync enabled")
 
-        # Initialize services first using a simple approach
+        # Ensure canvas is running (idempotent - checks if already running first)
         init_background_services()
 
         # Run the FastMCP server in HTTP mode
@@ -120,9 +121,9 @@ def main() -> None:
 
 def init_background_services() -> None:
     """Initialize background services without asyncio conflicts."""
+    import os
     import subprocess
     import time
-    from pathlib import Path
 
     # Start canvas server directly via subprocess if not running
     try:
@@ -133,15 +134,23 @@ def init_background_services() -> None:
         logger.info("Canvas server already running")
     except (requests.RequestException, ConnectionError, OSError):
         logger.info("Starting canvas server...")
-        # Dynamically resolve project root (deployment-safe)
-        project_root = Path(__file__).parent.parent.resolve()
 
-        # Start canvas server in background
+        # Find server.js (same logic as process_manager for uvx compatibility)
+        server_js = _find_server_js()
+        if not server_js:
+            logger.error("Could not find canvas server (dist/server.js)")
+            logger.warning("Canvas server will not be started")
+            return
+
+        logger.info(f"Starting canvas server from {server_js}")
+
+        # Start canvas server in background using node directly (works with uv run/uvx)
         subprocess.Popen(
-            ["npm", "run", "canvas"],
-            cwd=str(project_root),
+            ["node", str(server_js)],
+            cwd=str(server_js.parent),
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
+            preexec_fn=os.setsid if os.name != "nt" else None,
         )
 
         # Wait for it to be ready
@@ -158,8 +167,70 @@ def init_background_services() -> None:
     logger.info("Background services initialized")
 
 
+def _find_server_js() -> Path | None:
+    """Find the canvas server.js file.
+
+    Looks in multiple locations to support both:
+    - Local development (project root/dist/server.js)
+    - uv run/uvx installation (package/dist/server.js bundled in wheel)
+    """
+    current_file = Path(__file__).resolve()
+    package_dir = current_file.parent  # excalidraw_mcp/
+
+    # Candidate locations for server.js
+    candidates = [
+        # Bundled in package (uvx/pip install)
+        package_dir / "dist" / "server.js",
+        # Development: project root
+        package_dir.parent / "dist" / "server.js",
+    ]
+
+    for candidate in candidates:
+        if candidate.exists():
+            logger.debug(f"Found canvas server at: {candidate}")
+            return candidate
+
+    logger.warning(f"Canvas server not found. Searched: {candidates}")
+    return None
+
+
 # Export ASGI app for uvicorn (standardized startup pattern)
 http_app = mcp.http_app
+
+
+def ensure_canvas_running() -> None:
+    """Ensure canvas server is running.
+
+    This checks if canvas is already running and starts it if not.
+    Unlike auto-start, this always attempts to start the canvas
+    regardless of the CANVAS_AUTO_START setting.
+    """
+    init_background_services()
+
+
+# Track if auto-start has been performed to avoid duplicate calls
+_canvas_auto_started = False
+
+
+def _auto_start_canvas() -> None:
+    """Auto-start canvas on module load if configured.
+    
+    Only runs once per process, even if module is re-imported.
+    """
+    global _canvas_auto_started
+    if _canvas_auto_started:
+        return
+    
+    from .config import config
+
+    if config.server.canvas_auto_start:
+        logger.info("CANVAS_AUTO_START enabled, starting canvas server...")
+        init_background_services()
+        _canvas_auto_started = True
+
+
+# Perform auto-start check on module import
+_auto_start_canvas()
 
 
 if __name__ == "__main__":

@@ -5,6 +5,9 @@ import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dagre = require('@dagrejs/dagre');
 import logger from './utils/logger.js';
 import {
   elements,
@@ -105,7 +108,30 @@ const CreateElementSchema = z.object({
     text: z.string()
   }).optional(),
   fontSize: z.number().optional(),
-  fontFamily: z.string().optional()
+  fontFamily: z.string().optional(),
+  // Arrow/Line specific properties
+  points: z.array(z.array(z.number())).optional(),
+  startBinding: z.object({
+    elementId: z.string(),
+    focus: z.number().optional(),
+    gap: z.number().optional()
+  }).optional(),
+  endBinding: z.object({
+    elementId: z.string(),
+    focus: z.number().optional(),
+    gap: z.number().optional()
+  }).optional(),
+  start: z.object({
+    id: z.string(),
+    type: z.string().optional()
+  }).optional(),
+  end: z.object({
+    id: z.string(),
+    type: z.string().optional()
+  }).optional(),
+  elbowed: z.boolean().optional(),
+  startArrowhead: z.string().nullable().optional(),
+  endArrowhead: z.string().nullable().optional()
 });
 
 const UpdateElementSchema = z.object({
@@ -361,7 +387,8 @@ app.post('/api/elements/batch', (req: Request, res: Response) => {
 
     elementsToCreate.forEach(elementData => {
       const params = CreateElementSchema.parse(elementData);
-      const id = generateId();
+      // IMPORTANT: Preserve passed IDs for proper MCP sync, generate only if missing
+      const id = params.id || generateId();
       const element: ServerElement = {
         id,
         ...params,
@@ -479,6 +506,383 @@ app.post('/api/elements/sync', (req: Request, res: Response) => {
   }
 });
 
+// ============================================
+// Element Organization Endpoints
+// ============================================
+
+// Align elements
+app.post('/api/elements/align', (req: Request, res: Response) => {
+  try {
+    const { elementIds, alignment } = req.body;
+
+    if (!Array.isArray(elementIds) || elementIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'elementIds array is required'
+      });
+    }
+
+    const validAlignments = ['left', 'center', 'right', 'top', 'middle', 'bottom'];
+    if (!alignment || !validAlignments.includes(alignment)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid alignment. Must be one of: ${validAlignments.join(', ')}`
+      });
+    }
+
+    // Get elements to align
+    const toAlign: ServerElement[] = [];
+    for (const id of elementIds) {
+      const el = elements.get(id);
+      if (el) toAlign.push(el);
+    }
+
+    if (toAlign.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least 2 elements are required for alignment'
+      });
+    }
+
+    // Calculate alignment target
+    let target: number;
+    switch (alignment) {
+      case 'left':
+        target = Math.min(...toAlign.map(el => el.x));
+        toAlign.forEach(el => { el.x = target; el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'right':
+        target = Math.max(...toAlign.map(el => el.x + (el.width || 0)));
+        toAlign.forEach(el => { el.x = target - (el.width || 0); el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'center':
+        const minX = Math.min(...toAlign.map(el => el.x));
+        const maxX = Math.max(...toAlign.map(el => el.x + (el.width || 0)));
+        target = (minX + maxX) / 2;
+        toAlign.forEach(el => { el.x = target - (el.width || 0) / 2; el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'top':
+        target = Math.min(...toAlign.map(el => el.y));
+        toAlign.forEach(el => { el.y = target; el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'bottom':
+        target = Math.max(...toAlign.map(el => el.y + (el.height || 0)));
+        toAlign.forEach(el => { el.y = target - (el.height || 0); el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'middle':
+        const minY = Math.min(...toAlign.map(el => el.y));
+        const maxY = Math.max(...toAlign.map(el => el.y + (el.height || 0)));
+        target = (minY + maxY) / 2;
+        toAlign.forEach(el => { el.y = target - (el.height || 0) / 2; el.updatedAt = new Date().toISOString(); });
+        break;
+    }
+
+    // Update elements in storage
+    toAlign.forEach(el => elements.set(el.id, el));
+
+    // Broadcast update
+    broadcast({
+      type: 'elements_synced',
+      count: toAlign.length,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({
+      success: true,
+      message: `Aligned ${toAlign.length} elements to ${alignment}`,
+      alignedCount: toAlign.length
+    });
+
+  } catch (error) {
+    logger.error('Align error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Distribute elements evenly
+app.post('/api/elements/distribute', (req: Request, res: Response) => {
+  try {
+    const { elementIds, direction } = req.body;
+
+    if (!Array.isArray(elementIds) || elementIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'elementIds array is required'
+      });
+    }
+
+    const validDirections = ['horizontal', 'vertical'];
+    if (!direction || !validDirections.includes(direction)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid direction. Must be one of: ${validDirections.join(', ')}`
+      });
+    }
+
+    // Get elements to distribute
+    const toDistribute: ServerElement[] = [];
+    for (const id of elementIds) {
+      const el = elements.get(id);
+      if (el) toDistribute.push(el);
+    }
+
+    if (toDistribute.length < 3) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least 3 elements are required for distribution'
+      });
+    }
+
+    if (direction === 'horizontal') {
+      // Sort by x position
+      toDistribute.sort((a, b) => a.x - b.x);
+      const first = toDistribute[0]!;
+      const last = toDistribute[toDistribute.length - 1]!;
+      const totalWidth = (last.x + (last.width || 0)) - first.x;
+      const totalElementWidth = toDistribute.reduce((sum, el) => sum + (el.width || 0), 0);
+      const gap = (totalWidth - totalElementWidth) / (toDistribute.length - 1);
+      
+      let currentX = first.x;
+      toDistribute.forEach((el, i) => {
+        if (i > 0) {
+          el.x = currentX;
+          el.updatedAt = new Date().toISOString();
+        }
+        currentX += (el.width || 0) + gap;
+      });
+    } else {
+      // Sort by y position
+      toDistribute.sort((a, b) => a.y - b.y);
+      const first = toDistribute[0]!;
+      const last = toDistribute[toDistribute.length - 1]!;
+      const totalHeight = (last.y + (last.height || 0)) - first.y;
+      const totalElementHeight = toDistribute.reduce((sum, el) => sum + (el.height || 0), 0);
+      const gap = (totalHeight - totalElementHeight) / (toDistribute.length - 1);
+      
+      let currentY = first.y;
+      toDistribute.forEach((el, i) => {
+        if (i > 0) {
+          el.y = currentY;
+          el.updatedAt = new Date().toISOString();
+        }
+        currentY += (el.height || 0) + gap;
+      });
+    }
+
+    // Update elements in storage
+    toDistribute.forEach(el => elements.set(el.id, el));
+
+    // Broadcast update
+    broadcast({
+      type: 'elements_synced',
+      count: toDistribute.length,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({
+      success: true,
+      message: `Distributed ${toDistribute.length} elements ${direction}ly`,
+      distributedCount: toDistribute.length
+    });
+
+  } catch (error) {
+    logger.error('Distribute error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Auto-layout elements using Dagre (directed graph layout)
+app.post('/api/elements/layout', (req: Request, res: Response) => {
+  try {
+    const { 
+      elementIds, 
+      direction = 'TB',  // TB (top-bottom), BT, LR, RL
+      nodeSpacing = 50,
+      rankSpacing = 100,
+      align = 'UL'  // UL, UR, DL, DR, or undefined for center
+    } = req.body;
+
+    // If elementIds provided, only layout those elements
+    // Otherwise, layout all non-arrow elements and reconnect arrows
+    let nodesToLayout: ServerElement[] = [];
+    let arrowsToUpdate: ServerElement[] = [];
+
+    if (elementIds && Array.isArray(elementIds) && elementIds.length > 0) {
+      for (const id of elementIds) {
+        const el = elements.get(id);
+        if (el) {
+          if (el.type === 'arrow' || el.type === 'line') {
+            arrowsToUpdate.push(el);
+          } else {
+            nodesToLayout.push(el);
+          }
+        }
+      }
+    } else {
+      // Layout all elements
+      for (const el of elements.values()) {
+        if (el.type === 'arrow' || el.type === 'line') {
+          arrowsToUpdate.push(el);
+        } else {
+          nodesToLayout.push(el);
+        }
+      }
+    }
+
+    if (nodesToLayout.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No elements to layout (excluding arrows/lines)'
+      });
+    }
+
+    // Create Dagre graph
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({
+      rankdir: direction,
+      nodesep: nodeSpacing,
+      ranksep: rankSpacing,
+      align: align
+    });
+    g.setDefaultEdgeLabel(() => ({}));
+
+    // Add nodes - use element dimensions
+    for (const el of nodesToLayout) {
+      g.setNode(el.id, {
+        width: el.width || 100,
+        height: el.height || 50,
+        element: el
+      });
+    }
+
+    // Add edges from arrows that have startBinding/endBinding or start/end IDs
+    for (const arrow of arrowsToUpdate) {
+      // Check for bound arrows (using startBinding/endBinding or start/end)
+      const startId = arrow.startBinding?.elementId || arrow.start?.id;
+      const endId = arrow.endBinding?.elementId || arrow.end?.id;
+      
+      if (startId && endId && g.hasNode(startId) && g.hasNode(endId)) {
+        g.setEdge(startId, endId, { arrowId: arrow.id });
+      }
+    }
+
+    // Run layout algorithm
+    dagre.layout(g);
+
+    // Apply new positions to nodes
+    const updatedNodes: ServerElement[] = [];
+    for (const nodeId of g.nodes()) {
+      const node = g.node(nodeId);
+      if (node && node.element) {
+        const el = node.element as ServerElement;
+        // Dagre returns center coordinates, convert to top-left
+        el.x = node.x - (node.width / 2);
+        el.y = node.y - (node.height / 2);
+        el.updatedAt = new Date().toISOString();
+        elements.set(el.id, el);
+        updatedNodes.push(el);
+      }
+    }
+
+    // Update arrow points to connect to new node positions
+    const updatedArrows: ServerElement[] = [];
+    for (const arrow of arrowsToUpdate) {
+      const startId = arrow.startBinding?.elementId || arrow.start?.id;
+      const endId = arrow.endBinding?.elementId || arrow.end?.id;
+      
+      if (startId && endId) {
+        const startEl = elements.get(startId);
+        const endEl = elements.get(endId);
+        
+        if (startEl && endEl) {
+          // Calculate connection points (center of each element)
+          const startCenterX = startEl.x + (startEl.width || 100) / 2;
+          const startCenterY = startEl.y + (startEl.height || 50) / 2;
+          const endCenterX = endEl.x + (endEl.width || 100) / 2;
+          const endCenterY = endEl.y + (endEl.height || 50) / 2;
+
+          // Update arrow position and points
+          arrow.x = startCenterX;
+          arrow.y = startCenterY;
+          arrow.points = [
+            [0, 0],
+            [endCenterX - startCenterX, endCenterY - startCenterY]
+          ];
+          arrow.updatedAt = new Date().toISOString();
+          elements.set(arrow.id, arrow);
+          updatedArrows.push(arrow);
+        }
+      }
+    }
+
+    // Broadcast update
+    broadcast({
+      type: 'elements_synced',
+      count: updatedNodes.length + updatedArrows.length,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({
+      success: true,
+      message: `Laid out ${updatedNodes.length} nodes and updated ${updatedArrows.length} arrows`,
+      direction,
+      nodeCount: updatedNodes.length,
+      arrowCount: updatedArrows.length
+    });
+
+  } catch (error) {
+    logger.error('Layout error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Lock/unlock elements
+app.post('/api/elements/lock', (req: Request, res: Response) => {
+  try {
+    const { elementIds, locked } = req.body;
+
+    if (!Array.isArray(elementIds) || elementIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'elementIds array is required'
+      });
+    }
+
+    const updatedElements: ServerElement[] = [];
+    for (const id of elementIds) {
+      const el = elements.get(id);
+      if (el) {
+        el.locked = locked;
+        el.updatedAt = new Date().toISOString();
+        elements.set(id, el);
+        updatedElements.push(el);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `${locked ? 'Locked' : 'Unlocked'} ${updatedElements.length} elements`,
+      updatedCount: updatedElements.length
+    });
+
+  } catch (error) {
+    logger.error('Lock error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
 // Serve the frontend
 app.get('/', (req: Request, res: Response) => {
   const htmlFile = path.join(__dirname, '../dist/frontend/index.html');
@@ -489,6 +893,296 @@ app.get('/', (req: Request, res: Response) => {
     }
   });
 });
+
+// ============================================
+// Export Endpoints
+// ============================================
+
+// Export as SVG
+app.get('/api/export/svg', (req: Request, res: Response) => {
+  try {
+    const elementsArray = Array.from(elements.values());
+    
+    if (elementsArray.length === 0) {
+      return res.status(404).json({
+        success: false,
+        error: 'No elements to export'
+      });
+    }
+
+    // Calculate bounding box
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    elementsArray.forEach(el => {
+      minX = Math.min(minX, el.x);
+      minY = Math.min(minY, el.y);
+      maxX = Math.max(maxX, el.x + (el.width || 100));
+      maxY = Math.max(maxY, el.y + (el.height || 100));
+    });
+
+    const padding = 20;
+    const width = maxX - minX + padding * 2;
+    const height = maxY - minY + padding * 2;
+
+    // Generate SVG representation
+    let svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="${minX - padding} ${minY - padding} ${width} ${height}" width="${width}" height="${height}">
+  <style>
+    .excalidraw-text { font-family: 'Virgil', 'Comic Sans MS', cursive; }
+  </style>
+  <g class="excalidraw-elements">
+`;
+
+    elementsArray.forEach(el => {
+      const stroke = el.strokeColor || '#000000';
+      const fill = el.backgroundColor || 'transparent';
+      const strokeWidth = el.strokeWidth || 1;
+      const opacity = el.opacity !== undefined ? el.opacity / 100 : 1;
+
+      switch (el.type) {
+        case 'rectangle':
+          svgContent += `    <rect x="${el.x}" y="${el.y}" width="${el.width || 100}" height="${el.height || 100}" stroke="${stroke}" fill="${fill}" stroke-width="${strokeWidth}" opacity="${opacity}" rx="3" />\n`;
+          break;
+        case 'ellipse':
+          const cx = el.x + (el.width || 100) / 2;
+          const cy = el.y + (el.height || 100) / 2;
+          const rx = (el.width || 100) / 2;
+          const ry = (el.height || 100) / 2;
+          svgContent += `    <ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" stroke="${stroke}" fill="${fill}" stroke-width="${strokeWidth}" opacity="${opacity}" />\n`;
+          break;
+        case 'diamond':
+          const dw = el.width || 100;
+          const dh = el.height || 100;
+          const points = `${el.x + dw/2},${el.y} ${el.x + dw},${el.y + dh/2} ${el.x + dw/2},${el.y + dh} ${el.x},${el.y + dh/2}`;
+          svgContent += `    <polygon points="${points}" stroke="${stroke}" fill="${fill}" stroke-width="${strokeWidth}" opacity="${opacity}" />\n`;
+          break;
+        case 'text':
+          const text = el.text || '';
+          const fontSize = el.fontSize || 20;
+          svgContent += `    <text x="${el.x}" y="${el.y + fontSize}" class="excalidraw-text" font-size="${fontSize}" fill="${stroke}" opacity="${opacity}">${escapeXml(text)}</text>\n`;
+          break;
+        case 'line':
+        case 'arrow':
+          const x2 = el.x + (el.width || 100);
+          const y2 = el.y + (el.height || 0);
+          svgContent += `    <line x1="${el.x}" y1="${el.y}" x2="${x2}" y2="${y2}" stroke="${stroke}" stroke-width="${strokeWidth}" opacity="${opacity}"`;
+          if (el.type === 'arrow') {
+            svgContent += ` marker-end="url(#arrowhead)"`;
+          }
+          svgContent += ` />\n`;
+          break;
+        default:
+          // For other element types, render as a rectangle placeholder
+          svgContent += `    <rect x="${el.x}" y="${el.y}" width="${el.width || 50}" height="${el.height || 50}" stroke="${stroke}" fill="${fill}" stroke-width="${strokeWidth}" opacity="${opacity}" stroke-dasharray="5,5" />\n`;
+      }
+    });
+
+    svgContent += `  </g>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#000" />
+    </marker>
+  </defs>
+</svg>`;
+
+    res.setHeader('Content-Type', 'image/svg+xml');
+    res.setHeader('Content-Disposition', 'attachment; filename="excalidraw-export.svg"');
+    res.send(svgContent);
+
+  } catch (error) {
+    logger.error('Error exporting SVG:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Helper function to escape XML special characters
+function escapeXml(text: string): string {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+// Export as Excalidraw JSON format
+app.get('/api/export/json', (req: Request, res: Response) => {
+  try {
+    const elementsArray = Array.from(elements.values());
+    
+    // Clean elements for Excalidraw format (remove server metadata)
+    const cleanedElements = elementsArray.map(el => {
+      const { createdAt, updatedAt, version, syncedAt, source, syncTimestamp, ...cleanEl } = el;
+      return cleanEl;
+    });
+
+    const excalidrawData = {
+      type: 'excalidraw',
+      version: 2,
+      source: 'excalidraw-mcp',
+      elements: cleanedElements,
+      appState: {
+        viewBackgroundColor: '#ffffff',
+        gridSize: null
+      },
+      files: {}
+    };
+
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', 'attachment; filename="excalidraw-export.excalidraw"');
+    res.json(excalidrawData);
+
+  } catch (error) {
+    logger.error('Error exporting JSON:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Get full scene data
+app.get('/api/scene', (req: Request, res: Response) => {
+  try {
+    const elementsArray = Array.from(elements.values());
+    
+    res.json({
+      success: true,
+      scene: {
+        type: 'excalidraw',
+        version: 2,
+        elements: elementsArray,
+        appState: {
+          viewBackgroundColor: '#ffffff',
+          gridSize: null,
+          currentItemStrokeColor: '#000000',
+          currentItemBackgroundColor: 'transparent',
+          currentItemFillStyle: 'hachure',
+          currentItemStrokeWidth: 1,
+          currentItemRoughness: 1,
+          currentItemOpacity: 100
+        },
+        files: {}
+      },
+      elementCount: elementsArray.length,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('Error fetching scene:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Import Excalidraw JSON
+app.post('/api/import', (req: Request, res: Response) => {
+  try {
+    const importData = req.body;
+    
+    // Validate import data structure
+    if (!importData || !Array.isArray(importData.elements)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid import data. Expected { elements: [...] } or Excalidraw JSON format'
+      });
+    }
+
+    const { elements: importElements, replace = false } = importData;
+
+    // Optionally clear existing elements
+    if (replace) {
+      elements.clear();
+      logger.info('Cleared existing elements for import');
+    }
+
+    let importedCount = 0;
+    const importedElements: ServerElement[] = [];
+
+    importElements.forEach((el: any) => {
+      try {
+        const elementId = el.id || generateId();
+        const element: ServerElement = {
+          ...el,
+          id: elementId,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          version: 1,
+          source: 'import'
+        };
+        
+        elements.set(elementId, element);
+        importedElements.push(element);
+        importedCount++;
+      } catch (err) {
+        logger.warn('Failed to import element:', err);
+      }
+    });
+
+    // Broadcast import event
+    broadcast({
+      type: 'elements_imported',
+      count: importedCount,
+      timestamp: new Date().toISOString()
+    });
+
+    logger.info(`Imported ${importedCount} elements`);
+
+    res.json({
+      success: true,
+      message: `Successfully imported ${importedCount} elements`,
+      count: importedCount,
+      elements: importedElements,
+      totalElements: elements.size
+    });
+
+  } catch (error) {
+    logger.error('Error importing:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Clear all elements (bulk delete)
+app.delete('/api/elements', (req: Request, res: Response) => {
+  try {
+    const count = elements.size;
+    elements.clear();
+
+    // Broadcast clear event with element count before clear for verification
+    broadcast({
+      type: 'elements_cleared',
+      deletedCount: count,
+      count: 0,
+      timestamp: new Date().toISOString()
+    });
+
+    logger.info(`Cleared all ${count} elements`);
+
+    res.json({
+      success: true,
+      message: `Successfully deleted ${count} elements`,
+      deletedCount: count
+    });
+
+  } catch (error) {
+    logger.error('Error clearing elements:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// ============================================
+// System Endpoints
+// ============================================
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {

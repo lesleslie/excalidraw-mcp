@@ -136,6 +136,29 @@ export interface ServerElement extends Omit<ExcalidrawElementBase, 'id'> {
   label?: {
     text: string;
   };
+  // Arrow/Line specific properties
+  points?: number[][];
+  startBinding?: {
+    elementId: string;
+    focus?: number;
+    gap?: number;
+  };
+  endBinding?: {
+    elementId: string;
+    focus?: number;
+    gap?: number;
+  };
+  start?: {
+    id: string;
+    type?: string;
+  };
+  end?: {
+    id: string;
+    type?: string;
+  };
+  elbowed?: boolean;
+  startArrowhead?: string | null;
+  endArrowhead?: string | null;
 }
 
 // API Response types
@@ -175,6 +198,8 @@ export type WebSocketMessageType =
   | 'element_deleted'
   | 'elements_batch_created'
   | 'elements_synced'
+  | 'elements_imported'
+  | 'elements_cleared'
   | 'sync_status';
 
 export interface InitialElementsMessage extends WebSocketMessage {
@@ -200,6 +225,19 @@ export interface ElementDeletedMessage extends WebSocketMessage {
 export interface BatchCreatedMessage extends WebSocketMessage {
   type: 'elements_batch_created';
   elements: ServerElement[];
+}
+
+export interface ElementsClearedMessage extends WebSocketMessage {
+  type: 'elements_cleared';
+  deletedCount: number;
+  count: number;
+  timestamp: string;
+}
+
+export interface ElementsImportedMessage extends WebSocketMessage {
+  type: 'elements_imported';
+  count: number;
+  timestamp: string;
 }
 
 export interface SyncStatusMessage extends WebSocketMessage {
