@@ -1,10 +1,12 @@
 """MCP tool implementations for Excalidraw operations."""
 
+import asyncio
 import logging
 from typing import Any, cast
 
 from fastmcp import FastMCP
 
+from .config import config
 from .element_factory import ElementFactory
 from .export_service import export_service
 from .http_client import http_client
@@ -51,11 +53,44 @@ class MCPToolsManager:
         # Resource access
         self.mcp.tool("get_resource")(self.get_resource)
 
-    async def _ensure_canvas_available(self) -> bool:
-        """Ensure canvas server is available before operations."""
-        if not await process_manager.ensure_running():
-            raise RuntimeError("Canvas server is not available")
-        return True
+    async def _ensure_canvas_available(self, timeout: float | None = None) -> bool:
+        """Ensure canvas server is available before operations.
+        
+        Args:
+            timeout: Optional timeout in seconds. Defaults to config.server.tool_timeout_seconds.
+                     Use 0 or None for no timeout (falls back to startup timeout).
+        
+        Raises:
+            asyncio.TimeoutError: If canvas not available within timeout
+            RuntimeError: If canvas server fails to start
+        """
+        effective_timeout = timeout if timeout is not None else config.server.tool_timeout_seconds
+        
+        try:
+            if effective_timeout > 0:
+                result = await asyncio.wait_for(
+                    process_manager.ensure_running(),
+                    timeout=effective_timeout
+                )
+            else:
+                result = await process_manager.ensure_running()
+                
+            if not result:
+                raise RuntimeError("Canvas server is not available")
+            return True
+            
+        except asyncio.TimeoutError:
+            logger.warning(f"Canvas availability check timed out after {effective_timeout}s")
+            raise
+
+    def _canvas_unavailable_response(self, operation: str) -> dict[str, Any]:
+        """Return a graceful error response when canvas is unavailable."""
+        return {
+            "success": False,
+            "error": f"Canvas server unavailable for {operation}. The operation cannot be completed.",
+            "hint": "Try running 'excalidraw-mcp serve' to start the canvas server, or check CANVAS_AUTO_START setting.",
+            "recoverable": True,
+        }
 
     @staticmethod
     def _request_to_dict(request: Any) -> dict[str, Any]:
@@ -510,8 +545,6 @@ class MCPToolsManager:
                 "message": f"Converted {excalidraw_file} → {output_file}",
             }
 
-            return result
-
         except FileNotFoundError as e:
             return {"success": False, "error": str(e)}
         except Exception as e:
@@ -530,7 +563,10 @@ class MCPToolsManager:
         _ = request  # Unused, for MCP client compatibility
         try:
             await self._ensure_canvas_available()
+        except asyncio.TimeoutError:
+            return self._canvas_unavailable_response("export_json")
 
+        try:
             result = await http_client.get_json("/api/export/json")
 
             if result:
@@ -562,7 +598,10 @@ class MCPToolsManager:
         _ = request  # Unused, for MCP client compatibility
         try:
             await self._ensure_canvas_available()
+        except asyncio.TimeoutError:
+            return self._canvas_unavailable_response("get_scene")
 
+        try:
             result = await http_client.get_json("/api/scene")
 
             if result and result.get("success"):
@@ -647,7 +686,10 @@ class MCPToolsManager:
         _ = request  # Unused, for MCP client compatibility
         try:
             await self._ensure_canvas_available()
+        except asyncio.TimeoutError:
+            return self._canvas_unavailable_response("clear_canvas")
 
+        try:
             result = await http_client.delete("/api/elements")
 
             if result:

@@ -155,6 +155,9 @@ class ServerConfig:
     startup_timeout_seconds: int = 30
     startup_retry_delay_seconds: float = 1.0
     graceful_shutdown_timeout_seconds: float = 10.0
+    
+    # MCP tool timeout (shorter than startup for responsiveness)
+    tool_timeout_seconds: float = 5.0
 
     def __post_init__(self) -> None:
         """Validate and parse configuration."""
