@@ -479,6 +479,235 @@ app.post('/api/elements/sync', (req: Request, res: Response) => {
   }
 });
 
+// ============================================
+// Element Organization Endpoints
+// ============================================
+
+// Align elements
+app.post('/api/elements/align', (req: Request, res: Response) => {
+  try {
+    const { elementIds, alignment } = req.body;
+
+    if (!Array.isArray(elementIds) || elementIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'elementIds array is required'
+      });
+    }
+
+    const validAlignments = ['left', 'center', 'right', 'top', 'middle', 'bottom'];
+    if (!alignment || !validAlignments.includes(alignment)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid alignment. Must be one of: ${validAlignments.join(', ')}`
+      });
+    }
+
+    // Get elements to align
+    const toAlign: ServerElement[] = [];
+    for (const id of elementIds) {
+      const el = elements.get(id);
+      if (el) toAlign.push(el);
+    }
+
+    if (toAlign.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least 2 elements are required for alignment'
+      });
+    }
+
+    // Calculate alignment target
+    let target: number;
+    switch (alignment) {
+      case 'left':
+        target = Math.min(...toAlign.map(el => el.x));
+        toAlign.forEach(el => { el.x = target; el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'right':
+        target = Math.max(...toAlign.map(el => el.x + (el.width || 0)));
+        toAlign.forEach(el => { el.x = target - (el.width || 0); el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'center':
+        const minX = Math.min(...toAlign.map(el => el.x));
+        const maxX = Math.max(...toAlign.map(el => el.x + (el.width || 0)));
+        target = (minX + maxX) / 2;
+        toAlign.forEach(el => { el.x = target - (el.width || 0) / 2; el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'top':
+        target = Math.min(...toAlign.map(el => el.y));
+        toAlign.forEach(el => { el.y = target; el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'bottom':
+        target = Math.max(...toAlign.map(el => el.y + (el.height || 0)));
+        toAlign.forEach(el => { el.y = target - (el.height || 0); el.updatedAt = new Date().toISOString(); });
+        break;
+      case 'middle':
+        const minY = Math.min(...toAlign.map(el => el.y));
+        const maxY = Math.max(...toAlign.map(el => el.y + (el.height || 0)));
+        target = (minY + maxY) / 2;
+        toAlign.forEach(el => { el.y = target - (el.height || 0) / 2; el.updatedAt = new Date().toISOString(); });
+        break;
+    }
+
+    // Update elements in storage
+    toAlign.forEach(el => elements.set(el.id, el));
+
+    // Broadcast update
+    broadcast({
+      type: 'elements_synced',
+      count: toAlign.length,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({
+      success: true,
+      message: `Aligned ${toAlign.length} elements to ${alignment}`,
+      alignedCount: toAlign.length
+    });
+
+  } catch (error) {
+    logger.error('Align error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Distribute elements evenly
+app.post('/api/elements/distribute', (req: Request, res: Response) => {
+  try {
+    const { elementIds, direction } = req.body;
+
+    if (!Array.isArray(elementIds) || elementIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'elementIds array is required'
+      });
+    }
+
+    const validDirections = ['horizontal', 'vertical'];
+    if (!direction || !validDirections.includes(direction)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid direction. Must be one of: ${validDirections.join(', ')}`
+      });
+    }
+
+    // Get elements to distribute
+    const toDistribute: ServerElement[] = [];
+    for (const id of elementIds) {
+      const el = elements.get(id);
+      if (el) toDistribute.push(el);
+    }
+
+    if (toDistribute.length < 3) {
+      return res.status(400).json({
+        success: false,
+        error: 'At least 3 elements are required for distribution'
+      });
+    }
+
+    if (direction === 'horizontal') {
+      // Sort by x position
+      toDistribute.sort((a, b) => a.x - b.x);
+      const first = toDistribute[0]!;
+      const last = toDistribute[toDistribute.length - 1]!;
+      const totalWidth = (last.x + (last.width || 0)) - first.x;
+      const totalElementWidth = toDistribute.reduce((sum, el) => sum + (el.width || 0), 0);
+      const gap = (totalWidth - totalElementWidth) / (toDistribute.length - 1);
+      
+      let currentX = first.x;
+      toDistribute.forEach((el, i) => {
+        if (i > 0) {
+          el.x = currentX;
+          el.updatedAt = new Date().toISOString();
+        }
+        currentX += (el.width || 0) + gap;
+      });
+    } else {
+      // Sort by y position
+      toDistribute.sort((a, b) => a.y - b.y);
+      const first = toDistribute[0]!;
+      const last = toDistribute[toDistribute.length - 1]!;
+      const totalHeight = (last.y + (last.height || 0)) - first.y;
+      const totalElementHeight = toDistribute.reduce((sum, el) => sum + (el.height || 0), 0);
+      const gap = (totalHeight - totalElementHeight) / (toDistribute.length - 1);
+      
+      let currentY = first.y;
+      toDistribute.forEach((el, i) => {
+        if (i > 0) {
+          el.y = currentY;
+          el.updatedAt = new Date().toISOString();
+        }
+        currentY += (el.height || 0) + gap;
+      });
+    }
+
+    // Update elements in storage
+    toDistribute.forEach(el => elements.set(el.id, el));
+
+    // Broadcast update
+    broadcast({
+      type: 'elements_synced',
+      count: toDistribute.length,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({
+      success: true,
+      message: `Distributed ${toDistribute.length} elements ${direction}ly`,
+      distributedCount: toDistribute.length
+    });
+
+  } catch (error) {
+    logger.error('Distribute error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Lock/unlock elements
+app.post('/api/elements/lock', (req: Request, res: Response) => {
+  try {
+    const { elementIds, locked } = req.body;
+
+    if (!Array.isArray(elementIds) || elementIds.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'elementIds array is required'
+      });
+    }
+
+    const updatedElements: ServerElement[] = [];
+    for (const id of elementIds) {
+      const el = elements.get(id);
+      if (el) {
+        el.locked = locked;
+        el.updatedAt = new Date().toISOString();
+        elements.set(id, el);
+        updatedElements.push(el);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `${locked ? 'Locked' : 'Unlocked'} ${updatedElements.length} elements`,
+      updatedCount: updatedElements.length
+    });
+
+  } catch (error) {
+    logger.error('Lock error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
 // Serve the frontend
 app.get('/', (req: Request, res: Response) => {
   const htmlFile = path.join(__dirname, '../dist/frontend/index.html');

@@ -149,6 +149,7 @@ function App(): JSX.Element {
   // Sync state management
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('idle')
   const [lastSyncTime, setLastSyncTime] = useState<Date | null>(null)
+  const [fetchStatus, setFetchStatus] = useState<SyncStatus>('idle')
 
   // WebSocket connection
   useEffect(() => {
@@ -254,6 +255,50 @@ function App(): JSX.Element {
       }
     } catch (error) {
       console.error('Error loading existing elements:', error)
+    }
+  }
+
+  // Fetch elements from backend (replaces canvas with backend state)
+  const fetchFromBackend = async (): Promise<void> => {
+    if (!excalidrawAPI) {
+      console.warn('Excalidraw API not available')
+      return
+    }
+
+    setFetchStatus('syncing')
+
+    try {
+      const response = await fetch('/api/elements')
+      const result: ApiResponse = await response.json()
+
+      if (result.success && result.elements) {
+        const cleanedElements = result.elements.map(cleanElementForExcalidraw)
+        const validatedElements = validateAndFixBindings(cleanedElements)
+        const convertedElements = convertToExcalidrawElements(validatedElements, { regenerateIds: false })
+        
+        excalidrawAPI.updateScene({
+          elements: convertedElements,
+          captureUpdate: CaptureUpdateAction.IMMEDIATELY
+        })
+        
+        setFetchStatus('success')
+        console.log(`Fetched ${result.elements.length} elements from backend`)
+        
+        // Reset status after 2 seconds
+        setTimeout(() => setFetchStatus('idle'), 2000)
+      } else {
+        // No elements in backend - clear canvas
+        excalidrawAPI.updateScene({
+          elements: [],
+          captureUpdate: CaptureUpdateAction.IMMEDIATELY
+        })
+        setFetchStatus('success')
+        console.log('Backend has no elements, canvas cleared')
+        setTimeout(() => setFetchStatus('idle'), 2000)
+      }
+    } catch (error) {
+      setFetchStatus('error')
+      console.error('Fetch error:', error)
     }
   }
 
@@ -501,6 +546,7 @@ function App(): JSX.Element {
               className={`btn-primary ${syncStatus === 'syncing' ? 'btn-loading' : ''}`}
               onClick={syncToBackend}
               disabled={syncStatus === 'syncing' || !excalidrawAPI}
+              title="Push canvas elements to backend (replaces backend state)"
             >
               {syncStatus === 'syncing' && <span className="spinner"></span>}
               {syncStatus === 'syncing' ? 'Syncing...' : 'Sync to Backend'}
@@ -512,7 +558,7 @@ function App(): JSX.Element {
                 <span className="sync-success">✅ Synced</span>
               )}
               {syncStatus === 'error' && (
-                <span className="sync-error">❌ Sync Failed</span>
+                <span className="sync-error">❌ Failed</span>
               )}
               {lastSyncTime && syncStatus === 'idle' && (
                 <span className="sync-time">
