@@ -151,6 +151,7 @@ class ServerConfig:
 
     # Process management
     canvas_auto_start: bool = True
+    enable_canvas_sync: bool = True
     startup_timeout_seconds: int = 30
     startup_retry_delay_seconds: float = 1.0
     graceful_shutdown_timeout_seconds: float = 10.0
@@ -354,6 +355,9 @@ class Config:
         )
         self.server.canvas_auto_start = (
             os.getenv("CANVAS_AUTO_START", "true").lower() != "false"
+        )
+        self.server.enable_canvas_sync = (
+            os.getenv("ENABLE_CANVAS_SYNC", "true").lower() != "false"
         )
 
         # Retry configuration from environment

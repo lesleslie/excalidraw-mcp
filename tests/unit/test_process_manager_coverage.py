@@ -70,7 +70,7 @@ class TestProcessManagerCoverage:
         with (
             patch.object(
                 process_manager,
-                "_get_project_root",
+                "_find_server_js",
                 side_effect=Exception("Test exception"),
             ),
             patch("excalidraw_mcp.process_manager.logger") as mock_logger,

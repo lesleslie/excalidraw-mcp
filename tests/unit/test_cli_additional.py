@@ -12,9 +12,9 @@ from excalidraw_mcp.cli import (
     _stop_process,
     find_canvas_server_process,
     find_mcp_server_process,
-    logs_impl,
-    start_mcp_server_impl,
-    stop_mcp_server_impl,
+    logs,
+    serve,
+    stop,
 )
 
 
@@ -55,33 +55,12 @@ class TestCLIModuleAdditional:
         result = find_canvas_server_process()
         assert result is mock_proc_normal
 
-    @patch("excalidraw_mcp.cli.find_mcp_server_process")
-    @patch("excalidraw_mcp.cli.rprint")
-    @patch("excalidraw_mcp.server.main")
-    @patch("excalidraw_mcp.cli.asyncio.run")
-    def test_start_mcp_server_impl_with_foreground_and_monitoring_false(
-        self, mock_asyncio_run, mock_server_main, mock_rprint, mock_find_proc
-    ):
-        """Test start_mcp_server_impl with foreground and monitoring=False."""
-        mock_find_proc.return_value = None  # Not running
-
-        # Mock server.main to avoid actually starting the server
-        mock_server_main.return_value = None
-
-        # Call the function
-        start_mcp_server_impl(background=False, monitoring=False)
-
-        # Verify asyncio.run was called (it's called twice in the function for different paths)
-        assert mock_asyncio_run.called
-        # Verify server.main was mocked and would have been called
-        # (we don't assert it was called because the import happens inside the function)
-
     @patch("excalidraw_mcp.cli._stop_process")
     @patch("excalidraw_mcp.cli.find_mcp_server_process")
     @patch("excalidraw_mcp.cli.find_canvas_server_process")
     @patch("excalidraw_mcp.cli.rprint")
-    def test_stop_mcp_server_impl_with_force(self, mock_rprint, mock_find_canvas, mock_find_mcp, mock_stop_process):
-        """Test stop_mcp_server_impl with force option."""
+    def test_stop_with_force(self, mock_rprint, mock_find_canvas, mock_find_mcp, mock_stop_process):
+        """Test stop command with force option."""
         mock_mcp_proc = Mock()
         mock_canvas_proc = Mock()
         mock_find_mcp.return_value = mock_mcp_proc
@@ -91,7 +70,7 @@ class TestCLIModuleAdditional:
             "Canvas server - killed",
         ]
 
-        stop_mcp_server_impl(force=True)
+        stop(force=True)
 
         assert mock_stop_process.call_count == 2
 
@@ -172,26 +151,26 @@ class TestCLIModuleAdditional:
     @patch("excalidraw_mcp.cli._find_log_file")
     @patch("excalidraw_mcp.cli._show_missing_log_message")
     @patch("excalidraw_mcp.cli._follow_log_output")
-    def test_logs_impl_follow(self, mock_follow, mock_show_missing, mock_find_log_file):
-        """Test logs_impl with follow option."""
+    def test_logs_follow(self, mock_follow, mock_show_missing, mock_find_log_file):
+        """Test logs command with follow option."""
         mock_log_file = Mock()
         mock_find_log_file.return_value = mock_log_file
 
         # Since _follow_log_output runs an infinite loop, we need to mock it to avoid hanging
         mock_follow.side_effect = KeyboardInterrupt()
 
-        logs_impl(follow=True)
+        logs(follow=True)
 
         mock_follow.assert_called_once_with(mock_log_file)
 
     @patch("excalidraw_mcp.cli._find_log_file")
     @patch("excalidraw_mcp.cli._show_recent_log_lines")
-    def test_logs_impl_with_lines(self, mock_show_lines, mock_find_log_file):
-        """Test logs_impl with specific number of lines."""
+    def test_logs_with_lines(self, mock_show_lines, mock_find_log_file):
+        """Test logs command with specific number of lines."""
         mock_log_file = Mock()
         mock_find_log_file.return_value = mock_log_file
 
-        logs_impl(lines=25)
+        logs(lines=25)
 
         mock_show_lines.assert_called_once_with(mock_log_file, 25)
 

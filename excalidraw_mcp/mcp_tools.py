@@ -518,12 +518,16 @@ class MCPToolsManager:
             logger.error(f"PNG conversion failed: {e}")
             return {"success": False, "error": f"PNG conversion failed: {e}"}
 
-    async def export_json(self) -> dict[str, Any]:
+    async def export_json(self, request: dict[str, Any] | None = None) -> dict[str, Any]:
         """Export the canvas as Excalidraw JSON format.
+        
+        Args:
+            request: Optional request dict (ignored, for MCP client compatibility)
         
         Returns the complete Excalidraw-compatible JSON that can be
         opened in Excalidraw or saved as a .excalidraw file.
         """
+        _ = request  # Unused, for MCP client compatibility
         try:
             await self._ensure_canvas_available()
 
@@ -546,12 +550,16 @@ class MCPToolsManager:
             logger.error(f"JSON export failed: {e}")
             return {"success": False, "error": f"JSON export failed: {e}"}
 
-    async def get_scene(self) -> dict[str, Any]:
+    async def get_scene(self, request: dict[str, Any] | None = None) -> dict[str, Any]:
         """Get the full scene data including elements and app state.
+        
+        Args:
+            request: Optional request dict (ignored, for MCP client compatibility)
         
         Returns complete scene information including all elements,
         application state, and metadata.
         """
+        _ = request  # Unused, for MCP client compatibility
         try:
             await self._ensure_canvas_available()
 
@@ -618,20 +626,25 @@ class MCPToolsManager:
                     "message": result.get("message", "Import completed"),
                 }
             else:
+                error_msg = result.get("error", "Failed to import elements") if result else "Failed to import elements"
                 return {
                     "success": False,
-                    "error": result.get("error", "Failed to import elements"),
+                    "error": error_msg,
                 }
 
         except Exception as e:
             logger.error(f"Import failed: {e}")
             return {"success": False, "error": f"Import failed: {e}"}
 
-    async def clear_canvas(self) -> dict[str, Any]:
+    async def clear_canvas(self, request: dict[str, Any] | None = None) -> dict[str, Any]:
         """Clear all elements from the canvas.
+        
+        Args:
+            request: Optional request dict (ignored, for MCP client compatibility)
         
         This permanently deletes all elements. Use with caution.
         """
+        _ = request  # Unused, for MCP client compatibility
         try:
             await self._ensure_canvas_available()
 
