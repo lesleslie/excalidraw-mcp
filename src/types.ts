@@ -136,6 +136,29 @@ export interface ServerElement extends Omit<ExcalidrawElementBase, 'id'> {
   label?: {
     text: string;
   };
+  // Arrow/Line specific properties
+  points?: number[][];
+  startBinding?: {
+    elementId: string;
+    focus?: number;
+    gap?: number;
+  };
+  endBinding?: {
+    elementId: string;
+    focus?: number;
+    gap?: number;
+  };
+  start?: {
+    id: string;
+    type?: string;
+  };
+  end?: {
+    id: string;
+    type?: string;
+  };
+  elbowed?: boolean;
+  startArrowhead?: string | null;
+  endArrowhead?: string | null;
 }
 
 // API Response types

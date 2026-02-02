@@ -5,6 +5,9 @@ import { createServer } from 'http';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const dagre = require('@dagrejs/dagre');
 import logger from './utils/logger.js';
 import {
   elements,
@@ -105,7 +108,30 @@ const CreateElementSchema = z.object({
     text: z.string()
   }).optional(),
   fontSize: z.number().optional(),
-  fontFamily: z.string().optional()
+  fontFamily: z.string().optional(),
+  // Arrow/Line specific properties
+  points: z.array(z.array(z.number())).optional(),
+  startBinding: z.object({
+    elementId: z.string(),
+    focus: z.number().optional(),
+    gap: z.number().optional()
+  }).optional(),
+  endBinding: z.object({
+    elementId: z.string(),
+    focus: z.number().optional(),
+    gap: z.number().optional()
+  }).optional(),
+  start: z.object({
+    id: z.string(),
+    type: z.string().optional()
+  }).optional(),
+  end: z.object({
+    id: z.string(),
+    type: z.string().optional()
+  }).optional(),
+  elbowed: z.boolean().optional(),
+  startArrowhead: z.string().nullable().optional(),
+  endArrowhead: z.string().nullable().optional()
 });
 
 const UpdateElementSchema = z.object({
@@ -664,6 +690,154 @@ app.post('/api/elements/distribute', (req: Request, res: Response) => {
 
   } catch (error) {
     logger.error('Distribute error:', error);
+    res.status(500).json({
+      success: false,
+      error: (error as Error).message
+    });
+  }
+});
+
+// Auto-layout elements using Dagre (directed graph layout)
+app.post('/api/elements/layout', (req: Request, res: Response) => {
+  try {
+    const { 
+      elementIds, 
+      direction = 'TB',  // TB (top-bottom), BT, LR, RL
+      nodeSpacing = 50,
+      rankSpacing = 100,
+      align = 'UL'  // UL, UR, DL, DR, or undefined for center
+    } = req.body;
+
+    // If elementIds provided, only layout those elements
+    // Otherwise, layout all non-arrow elements and reconnect arrows
+    let nodesToLayout: ServerElement[] = [];
+    let arrowsToUpdate: ServerElement[] = [];
+
+    if (elementIds && Array.isArray(elementIds) && elementIds.length > 0) {
+      for (const id of elementIds) {
+        const el = elements.get(id);
+        if (el) {
+          if (el.type === 'arrow' || el.type === 'line') {
+            arrowsToUpdate.push(el);
+          } else {
+            nodesToLayout.push(el);
+          }
+        }
+      }
+    } else {
+      // Layout all elements
+      for (const el of elements.values()) {
+        if (el.type === 'arrow' || el.type === 'line') {
+          arrowsToUpdate.push(el);
+        } else {
+          nodesToLayout.push(el);
+        }
+      }
+    }
+
+    if (nodesToLayout.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'No elements to layout (excluding arrows/lines)'
+      });
+    }
+
+    // Create Dagre graph
+    const g = new dagre.graphlib.Graph();
+    g.setGraph({
+      rankdir: direction,
+      nodesep: nodeSpacing,
+      ranksep: rankSpacing,
+      align: align
+    });
+    g.setDefaultEdgeLabel(() => ({}));
+
+    // Add nodes - use element dimensions
+    for (const el of nodesToLayout) {
+      g.setNode(el.id, {
+        width: el.width || 100,
+        height: el.height || 50,
+        element: el
+      });
+    }
+
+    // Add edges from arrows that have startBinding/endBinding or start/end IDs
+    for (const arrow of arrowsToUpdate) {
+      // Check for bound arrows (using startBinding/endBinding or start/end)
+      const startId = arrow.startBinding?.elementId || arrow.start?.id;
+      const endId = arrow.endBinding?.elementId || arrow.end?.id;
+      
+      if (startId && endId && g.hasNode(startId) && g.hasNode(endId)) {
+        g.setEdge(startId, endId, { arrowId: arrow.id });
+      }
+    }
+
+    // Run layout algorithm
+    dagre.layout(g);
+
+    // Apply new positions to nodes
+    const updatedNodes: ServerElement[] = [];
+    for (const nodeId of g.nodes()) {
+      const node = g.node(nodeId);
+      if (node && node.element) {
+        const el = node.element as ServerElement;
+        // Dagre returns center coordinates, convert to top-left
+        el.x = node.x - (node.width / 2);
+        el.y = node.y - (node.height / 2);
+        el.updatedAt = new Date().toISOString();
+        elements.set(el.id, el);
+        updatedNodes.push(el);
+      }
+    }
+
+    // Update arrow points to connect to new node positions
+    const updatedArrows: ServerElement[] = [];
+    for (const arrow of arrowsToUpdate) {
+      const startId = arrow.startBinding?.elementId || arrow.start?.id;
+      const endId = arrow.endBinding?.elementId || arrow.end?.id;
+      
+      if (startId && endId) {
+        const startEl = elements.get(startId);
+        const endEl = elements.get(endId);
+        
+        if (startEl && endEl) {
+          // Calculate connection points (center of each element)
+          const startCenterX = startEl.x + (startEl.width || 100) / 2;
+          const startCenterY = startEl.y + (startEl.height || 50) / 2;
+          const endCenterX = endEl.x + (endEl.width || 100) / 2;
+          const endCenterY = endEl.y + (endEl.height || 50) / 2;
+
+          // Update arrow position and points
+          arrow.x = startCenterX;
+          arrow.y = startCenterY;
+          arrow.points = [
+            [0, 0],
+            [endCenterX - startCenterX, endCenterY - startCenterY]
+          ];
+          arrow.updatedAt = new Date().toISOString();
+          elements.set(arrow.id, arrow);
+          updatedArrows.push(arrow);
+        }
+      }
+    }
+
+    // Broadcast update
+    broadcast({
+      type: 'elements_synced',
+      count: updatedNodes.length + updatedArrows.length,
+      timestamp: new Date().toISOString()
+    });
+
+    res.json({
+      success: true,
+      message: `Laid out ${updatedNodes.length} nodes and updated ${updatedArrows.length} arrows`,
+      direction,
+      nodeCount: updatedNodes.length,
+      arrowCount: updatedArrows.length
+    });
+
+  } catch (error) {
+    logger.error('Layout error:', error);
     res.status(500).json({
       success: false,
       error: (error as Error).message
