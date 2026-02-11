@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 import uuid
+from datetime import datetime, UTC
 from typing import Any
 
 from mcp_common.websocket import (
@@ -46,6 +47,22 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         diagram_manager: Diagram manager instance
         host: Server host address
         port: Server port number (default: 3042)
+
+    Example:
+        >>> from excalidraw_mcp import DiagramManager
+        >>> from excalidraw_mcp.websocket import ExcalidrawWebSocketServer
+        >>>
+        >>> diagram_mgr = DiagramManager()
+        >>> server = ExcalidrawWebSocketServer(diagram_manager=diagram_mgr)
+        >>> await server.start()
+
+    With TLS:
+        >>> server = ExcalidrawWebSocketServer(
+        ...     diagram_manager=diagram_mgr,
+        ...     cert_file="/path/to/cert.pem",
+        ...     key_file="/path/to/key.pem"
+        ... )
+        >>> await server.start()
     """
 
     def __init__(
@@ -56,6 +73,17 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         max_connections: int = 100,
         message_rate_limit: int = 60,
         require_auth: bool = False,
+        # TLS parameters
+        ssl_context: Any = None,
+        cert_file: str | None = None,
+        key_file: str | None = None,
+        ca_file: str | None = None,
+        tls_enabled: bool = False,
+        verify_client: bool = False,
+        auto_cert: bool = False,
+        # Metrics parameters
+        enable_metrics: bool = False,
+        metrics_port: int = 9097,
     ):
         """Initialize Excalidraw WebSocket server.
 
@@ -66,6 +94,15 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             max_connections: Maximum concurrent connections
             message_rate_limit: Messages per second per connection
             require_auth: Require JWT authentication for connections
+            ssl_context: Pre-configured SSL context
+            cert_file: Path to TLS certificate file (PEM format)
+            key_file: Path to TLS private key file (PEM format)
+            ca_file: Path to CA file for client verification
+            tls_enabled: Enable TLS (generates self-signed cert if no cert provided)
+            verify_client: Verify client certificates
+            auto_cert: Auto-generate self-signed certificate for development
+            enable_metrics: Enable Prometheus metrics collection
+            metrics_port: Port for Prometheus metrics server (default: 9097)
         """
         authenticator = get_authenticator()
 
@@ -76,10 +113,24 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             message_rate_limit=message_rate_limit,
             authenticator=authenticator,
             require_auth=require_auth,
+            ssl_context=ssl_context,
+            cert_file=cert_file,
+            key_file=key_file,
+            ca_file=ca_file,
+            tls_enabled=tls_enabled,
+            verify_client=verify_client,
+            auto_cert=auto_cert,
+            server_name="excalidraw",
+            enable_metrics=enable_metrics,
+            metrics_port=metrics_port,
         )
 
         self.diagram_manager = diagram_manager
-        logger.info(f"ExcalidrawWebSocketServer initialized: {host}:{port}")
+
+        tls_mode = "WSS" if tls_enabled or ssl_context else "WS"
+        logger.info(
+            f"ExcalidrawWebSocketServer initialized: {host}:{port} ({tls_mode})"
+        )
 
     async def on_connect(self, websocket: Any, connection_id: str) -> None:
         """Handle new WebSocket connection.
@@ -91,7 +142,10 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         user = getattr(websocket, "user", None)
         user_id = user.get("user_id") if user else "anonymous"
 
-        logger.info(f"Client connected: {connection_id} (user: {user_id})")
+        tls_mode = "WSS" if self.ssl_context else "WS"
+        logger.info(
+            f"Client connected: {connection_id} (user: {user_id}, mode: {tls_mode})"
+        )
 
         # Send welcome message
         welcome = WebSocketProtocol.create_event(
@@ -101,6 +155,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 "server": "excalidraw",
                 "message": "Connected to Excalidraw collaboration",
                 "authenticated": user is not None,
+                "tls_mode": tls_mode,
             },
         )
         await websocket.send(WebSocketProtocol.encode(welcome))
@@ -379,5 +434,4 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         Returns:
             ISO 8601 formatted timestamp
         """
-        from datetime import datetime, UTC
         return datetime.now(UTC).isoformat()
