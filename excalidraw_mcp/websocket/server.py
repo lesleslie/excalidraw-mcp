@@ -21,6 +21,9 @@ from mcp_common.websocket import (
 )
 from mcp_common.websocket.protocol import EventTypes
 
+# Import authentication
+from excalidraw_mcp.websocket.auth import get_authenticator
+
 logger = logging.getLogger(__name__)
 
 
@@ -52,6 +55,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         port: int = 3042,
         max_connections: int = 100,
         message_rate_limit: int = 60,
+        require_auth: bool = False,
     ):
         """Initialize Excalidraw WebSocket server.
 
@@ -61,12 +65,17 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             port: Server port number
             max_connections: Maximum concurrent connections
             message_rate_limit: Messages per second per connection
+            require_auth: Require JWT authentication for connections
         """
+        authenticator = get_authenticator()
+
         super().__init__(
             host=host,
             port=port,
             max_connections=max_connections,
             message_rate_limit=message_rate_limit,
+            authenticator=authenticator,
+            require_auth=require_auth,
         )
 
         self.diagram_manager = diagram_manager
@@ -79,7 +88,10 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             websocket: WebSocket connection object
             connection_id: Unique connection identifier
         """
-        logger.info(f"Client connected: {connection_id}")
+        user = getattr(websocket, "user", None)
+        user_id = user.get("user_id") if user else "anonymous"
+
+        logger.info(f"Client connected: {connection_id} (user: {user_id})")
 
         # Send welcome message
         welcome = WebSocketProtocol.create_event(
@@ -88,6 +100,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 "connection_id": connection_id,
                 "server": "excalidraw",
                 "message": "Connected to Excalidraw collaboration",
+                "authenticated": user is not None,
             },
         )
         await websocket.send(WebSocketProtocol.encode(welcome))
@@ -125,8 +138,22 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             websocket: WebSocket connection object
             message: Request message
         """
+        # Get authenticated user from connection
+        user = getattr(websocket, "user", None)
+
         if message.event == "subscribe":
             channel = message.data.get("channel")
+
+            # Check authorization for this channel
+            if user and not self._can_subscribe_to_channel(user, channel):
+                error = WebSocketProtocol.create_error(
+                    error_code="FORBIDDEN",
+                    error_message=f"Not authorized to subscribe to {channel}",
+                    correlation_id=message.correlation_id,
+                )
+                await websocket.send(WebSocketProtocol.encode(error))
+                return
+
             if channel:
                 connection_id = getattr(websocket, "id", str(uuid.uuid4()))
                 await self.join_room(channel, connection_id)
@@ -172,6 +199,35 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             message: Event message
         """
         logger.debug(f"Received client event: {message.event}")
+
+    def _can_subscribe_to_channel(self, user: dict[str, Any], channel: str) -> bool:
+        """Check if user can subscribe to channel.
+
+        Args:
+            user: User payload from JWT
+            channel: Channel name
+
+        Returns:
+            True if authorized, False otherwise
+        """
+        permissions = user.get("permissions", [])
+
+        # Admin can subscribe to any channel
+        if "excalidraw:admin" in permissions:
+            return True
+
+        # Check channel-specific permissions
+        if channel.startswith("diagram:"):
+            return "excalidraw:read" in permissions
+
+        if channel.startswith("cursor:"):
+            return "excalidraw:read" in permissions
+
+        if channel.startswith("presence:"):
+            return "excalidraw:read" in permissions
+
+        # Default: deny
+        return False
 
     async def _get_diagram_status(self, diagram_id: str) -> dict[str, Any]:
         """Get diagram status from diagram manager.
