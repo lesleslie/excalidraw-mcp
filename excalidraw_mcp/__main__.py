@@ -17,7 +17,7 @@ from excalidraw_mcp.server import mcp
 class ExcalidrawConfig(OneiricMCPConfig):
     """Excalidraw MCP Server Configuration."""
 
-    http_port: int = 3042
+    http_port: int = 3032
     http_host: str = "127.0.0.1"
     enable_http_transport: bool = True
 

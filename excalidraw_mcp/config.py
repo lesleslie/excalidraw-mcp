@@ -285,6 +285,34 @@ class LoggingConfig:
 
 
 @dataclass
+class WebSocketConfig:
+    """WebSocket server configuration."""
+
+    # Server settings
+    enabled: bool = True
+    host: str = "127.0.0.1"
+    port: int = 3042
+    max_connections: int = 100
+    message_rate_limit: int = 60  # messages per second per connection
+
+    # TLS settings
+    tls_enabled: bool = False
+    cert_file: str | None = None
+    key_file: str | None = None
+    ca_file: str | None = None
+    verify_client: bool = False
+    auto_cert: bool = False
+
+    # Metrics
+    enable_metrics: bool = False
+    metrics_port: int = 9097
+
+    # Authentication
+    auth_enabled: bool = False
+    jwt_secret: str = ""
+
+
+@dataclass
 class MCPConfig:
     """MCP server configuration."""
 
@@ -303,6 +331,7 @@ class Config:
         self.performance = PerformanceConfig()
         self.logging = LoggingConfig()
         self.monitoring = MonitoringConfig()
+        self.websocket = WebSocketConfig()
         self.mcp = MCPConfig()
         self._load_from_pyproject()
         self._load_from_environment()
@@ -441,6 +470,51 @@ class Config:
             with suppress(ValueError):
                 self.monitoring.memory_threshold_percent = float(memory_threshold)
 
+    def _load_websocket_config_from_environment(self) -> None:
+        """Load WebSocket configuration from environment variables."""
+        from contextlib import suppress
+
+        # WebSocket enabled
+        self.websocket.enabled = (
+            os.getenv("WEBSOCKET_ENABLED", "true").lower() == "true"
+        )
+
+        # WebSocket host and port
+        ws_host = os.getenv("WEBSOCKET_HOST")
+        if ws_host:
+            self.websocket.host = ws_host
+
+        ws_port = os.getenv("WEBSOCKET_PORT")
+        if ws_port:
+            with suppress(ValueError):
+                self.websocket.port = int(ws_port)
+
+        # WebSocket authentication
+        self.websocket.auth_enabled = (
+            os.getenv("WEBSOCKET_AUTH_ENABLED", "false").lower() == "true"
+        )
+        self.websocket.jwt_secret = os.getenv(
+            "WEBSOCKET_JWT_SECRET", self.websocket.jwt_secret
+        )
+
+        # WebSocket TLS
+        self.websocket.tls_enabled = (
+            os.getenv("WEBSOCKET_TLS_ENABLED", "false").lower() == "true"
+        )
+        self.websocket.cert_file = os.getenv("WEBSOCKET_CERT_FILE")
+        self.websocket.key_file = os.getenv("WEBSOCKET_KEY_FILE")
+        self.websocket.ca_file = os.getenv("WEBSOCKET_CA_FILE")
+
+        # WebSocket metrics
+        self.websocket.enable_metrics = (
+            os.getenv("WEBSOCKET_METRICS_ENABLED", "false").lower() == "true"
+        )
+
+        ws_metrics_port = os.getenv("WEBSOCKET_METRICS_PORT")
+        if ws_metrics_port:
+            with suppress(ValueError):
+                self.websocket.metrics_port = int(ws_metrics_port)
+
     def _load_from_environment(self) -> None:
         """Load configuration from environment variables."""
         self._load_security_config_from_environment()
@@ -448,6 +522,7 @@ class Config:
         self._load_performance_config_from_environment()
         self._load_logging_config_from_environment()
         self._load_monitoring_config_from_environment()
+        self._load_websocket_config_from_environment()
 
     def _validate_security_config(self, errors: list[str]) -> None:
         """Validate security configuration values."""

@@ -7,9 +7,10 @@ and helper functions for secure WebSocket connections.
 from __future__ import annotations
 
 import logging
+
 from mcp_common.websocket.tls import (
-    get_tls_config_from_env,
     create_ssl_context,
+    get_tls_config_from_env,
 )
 
 logger = logging.getLogger(__name__)

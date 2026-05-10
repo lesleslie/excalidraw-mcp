@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import logging
 import uuid
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any
 
 from mcp_common.websocket import (
@@ -60,7 +60,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         >>> server = ExcalidrawWebSocketServer(
         ...     diagram_manager=diagram_mgr,
         ...     cert_file="/path/to/cert.pem",
-        ...     key_file="/path/to/key.pem"
+        ...     key_file="/path/to/key.pem",
         ... )
         >>> await server.start()
     """
@@ -184,9 +184,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         else:
             logger.warning(f"Unhandled message type: {message.type}")
 
-    async def _handle_request(
-        self, websocket: Any, message: WebSocketMessage
-    ) -> None:
+    async def _handle_request(self, websocket: Any, message: WebSocketMessage) -> None:
         """Handle request message (expects response).
 
         Args:
@@ -214,8 +212,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 await self.join_room(channel, connection_id)
 
                 response = WebSocketProtocol.create_response(
-                    message,
-                    {"status": "subscribed", "channel": channel}
+                    message, {"status": "subscribed", "channel": channel}
                 )
                 await websocket.send(WebSocketProtocol.encode(response))
 
@@ -226,8 +223,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 await self.leave_room(channel, connection_id)
 
                 response = WebSocketProtocol.create_response(
-                    message,
-                    {"status": "unsubscribed", "channel": channel}
+                    message, {"status": "unsubscribed", "channel": channel}
                 )
                 await websocket.send(WebSocketProtocol.encode(response))
 
@@ -296,11 +292,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         try:
             if hasattr(self.diagram_manager, "get_diagram"):
                 diagram = await self.diagram_manager.get_diagram(diagram_id)
-                return {
-                    "diagram_id": diagram_id,
-                    "status": "found",
-                    "diagram": diagram
-                }
+                return {"diagram_id": diagram_id, "status": "found", "diagram": diagram}
             else:
                 return {"diagram_id": diagram_id, "status": "not_found"}
         except Exception as e:
@@ -335,12 +327,8 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         """
         event = WebSocketProtocol.create_event(
             EventTypes.DIAGRAM_CREATED,
-            {
-                "diagram_id": diagram_id,
-                "timestamp": self._get_timestamp(),
-                **metadata
-            },
-            room=f"diagram:{diagram_id}"
+            {"diagram_id": diagram_id, "timestamp": self._get_timestamp(), **metadata},
+            room=f"diagram:{diagram_id}",
         )
         await self.broadcast_to_room(f"diagram:{diagram_id}", event)
 
@@ -355,12 +343,8 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         """
         event = WebSocketProtocol.create_event(
             EventTypes.DIAGRAM_UPDATED,
-            {
-                "diagram_id": diagram_id,
-                "timestamp": self._get_timestamp(),
-                **metadata
-            },
-            room=f"diagram:{diagram_id}"
+            {"diagram_id": diagram_id, "timestamp": self._get_timestamp(), **metadata},
+            room=f"diagram:{diagram_id}",
         )
         await self.broadcast_to_room(f"diagram:{diagram_id}", event)
 
@@ -382,7 +366,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 "position": position,
                 "timestamp": self._get_timestamp(),
             },
-            room=f"cursor:{diagram_id}"
+            room=f"cursor:{diagram_id}",
         )
         await self.broadcast_to_room(f"cursor:{diagram_id}", event)
 
@@ -404,13 +388,11 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 "user_info": user_info,
                 "timestamp": self._get_timestamp(),
             },
-            room=f"presence:{diagram_id}"
+            room=f"presence:{diagram_id}",
         )
         await self.broadcast_to_room(f"presence:{diagram_id}", event)
 
-    async def broadcast_user_left(
-        self, diagram_id: str, user_id: str
-    ) -> None:
+    async def broadcast_user_left(self, diagram_id: str, user_id: str) -> None:
         """Broadcast user left event.
 
         Args:
@@ -424,7 +406,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
                 "user_id": user_id,
                 "timestamp": self._get_timestamp(),
             },
-            room=f"presence:{diagram_id}"
+            room=f"presence:{diagram_id}",
         )
         await self.broadcast_to_room(f"presence:{diagram_id}", event)
 

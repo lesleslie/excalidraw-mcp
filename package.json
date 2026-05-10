@@ -7,7 +7,7 @@
     "url": "https://github.com/lesleslie/excalidraw_mcp/issues"
   },
   "dependencies": {
-    "@excalidraw/excalidraw": "^0.18.0",
+    "@excalidraw/excalidraw": "^0.17.6",
     "@modelcontextprotocol/sdk": "latest",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",

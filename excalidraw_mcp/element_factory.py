@@ -84,6 +84,8 @@ class ElementFactory:
             element["text"] = element_data.get("text", "")
             element["fontSize"] = self._get_optional_float(element_data, "fontSize", 16)
             element["fontFamily"] = element_data.get("fontFamily", "Cascadia, Consolas")
+            element["textAlign"] = element_data.get("textAlign", "left")
+            element["verticalAlign"] = element_data.get("verticalAlign", "top")
 
         # Visual properties
         self._add_visual_properties(element, element_data)
@@ -93,6 +95,14 @@ class ElementFactory:
             self._add_shape_properties(element, element_data)
         elif element_type in ("line", "arrow"):
             self._add_line_properties(element, element_data)
+        elif element_type == "draw":
+            self._add_draw_properties(element, element_data)
+        elif element_type == "image":
+            self._add_image_properties(element, element_data)
+        elif element_type == "frame":
+            self._add_frame_properties(element, element_data)
+        elif element_type in ("embeddable", "magicframe"):
+            self._add_embeddable_properties(element, element_data)
 
     def _add_visual_properties(
         self, element: dict[str, Any], element_data: dict[str, Any]
@@ -128,6 +138,55 @@ class ElementFactory:
             element["width"] = 100.0
         if element["height"] is None:
             element["height"] = 0.0
+
+        # Arrow-specific properties
+        if element["type"] == "arrow":
+            element["arrowhead"] = element_data.get("arrowhead", "arrow")
+            element["startArrowhead"] = element_data.get("startArrowhead", None)
+            element["endArrowhead"] = element_data.get("endArrowhead", "arrow")
+
+    def _add_draw_properties(
+        self, element: dict[str, Any], element_data: dict[str, Any]
+    ) -> None:
+        """Add properties specific to freedraw/hand-drawn elements."""
+        # Freedraw elements contain stroke data
+        element["points"] = element_data.get("points", [[0, 0], [100, 100]])
+        element["isComplete"] = element_data.get("isComplete", True)
+        element["roundness"] = element_data.get("roundness", None)
+        # Draw elements are typically stroke-only
+        element["backgroundColor"] = "transparent"
+
+    def _add_image_properties(
+        self, element: dict[str, Any], element_data: dict[str, Any]
+    ) -> None:
+        """Add properties specific to image elements."""
+        element["fileId"] = element_data.get("fileId", "")
+        element["status"] = element_data.get("status", "saved")
+        element["scale"] = self._get_optional_float(element_data, "scale", 1.0)
+        element["x"] = float(element_data.get("x", 0))
+        element["y"] = float(element_data.get("y", 0))
+        element["width"] = self._get_optional_float(element_data, "width", 300.0)
+        element["height"] = self._get_optional_float(element_data, "height", 200.0)
+
+    def _add_frame_properties(
+        self, element: dict[str, Any], element_data: dict[str, Any]
+    ) -> None:
+        """Add properties specific to frame elements."""
+        element["name"] = element_data.get("name", "")
+        element["children"] = element_data.get("children", [])
+        # Frames are visual containers, typically transparent
+        element["backgroundColor"] = "transparent"
+
+    def _add_embeddable_properties(
+        self, element: dict[str, Any], element_data: dict[str, Any]
+    ) -> None:
+        """Add properties specific to embeddable and magic frame elements."""
+        element["type"] = "embeddable"  # Both use embeddable type
+        element["seed"] = element_data.get("seed", "")
+        # Embeddables have specific dimensions
+        element["width"] = self._get_optional_float(element_data, "width", 800.0)
+        element["height"] = self._get_optional_float(element_data, "height", 600.0)
+        element["scale"] = self._get_optional_float(element_data, "scale", 1.0)
 
     def _get_optional_float(
         self, data: dict[str, Any], key: str, default: float | None = None

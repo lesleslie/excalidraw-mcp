@@ -1,0 +1,25 @@
+{
+  "server_name": "excalidraw-mcp",
+  "timestamp": "2026-04-17T17-01-00",
+  "version": "1.0",
+  "components": {
+    "server": {
+      "status": "started",
+      "timestamp": "2026-04-17T17:01:00Z",
+      "config": {
+        "http_port": 3032,
+        "http_host": "127.0.0.1",
+        "debug": false,
+        "enable_http_transport": true
+      }
+    },
+    "excalidraw": {
+      "status": "initialized",
+      "timestamp": "2026-04-17T17:01:00Z"
+    }
+  },
+  "metadata": {
+    "system_time": 1776470460.2894342,
+    "python_version": "3.13"
+  }
+}

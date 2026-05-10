@@ -21,6 +21,24 @@ from .monitoring.supervisor import MonitoringSupervisor
 # Initialize FastMCP server
 mcp = FastMCP("Excalidraw MCP Server")
 
+
+# HTTP health endpoint for Claude Code compatibility
+@mcp.custom_route("/health", methods=["GET"])
+async def health_check(request: Any) -> Any:
+    """HTTP health check endpoint for Claude Code `mcp list` compatibility."""
+    from starlette.responses import JSONResponse
+
+    return JSONResponse({"status": "ok", "service": "excalidraw", "version": "0.34.0"})
+
+
+@mcp.custom_route("/healthz", methods=["GET"])
+async def healthz_check(request: Any) -> Any:
+    """Kubernetes-style health check endpoint."""
+    from starlette.responses import JSONResponse
+
+    return JSONResponse({"status": "ok"})
+
+
 # Register MCP tools
 from .mcp_tools import MCPToolsManager
 
@@ -158,8 +176,28 @@ def init_background_services() -> None:
     logger.info("Background services initialized")
 
 
-# Export ASGI app for uvicorn (standardized startup pattern)
-http_app = mcp.http_app
+# Global server instance for lazy initialization
+_mcp_instance: FastMCP | None = None
+
+
+def get_app() -> FastMCP:
+    """Get or create the FastMCP server instance (lazy initialization)."""
+    global _mcp_instance
+    if _mcp_instance is None:
+        _mcp_instance = mcp
+    return _mcp_instance
+
+
+def __getattr__(name: str) -> Any:
+    """Lazy attribute access for uvicorn compatibility.
+
+    Enables `uvicorn excalidraw_mcp.server:http_app --factory` pattern.
+    """
+    if name == "app":
+        return get_app()
+    if name == "http_app":
+        return get_app().http_app
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
 if __name__ == "__main__":

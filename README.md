@@ -1,16 +1,30 @@
 # Excalidraw MCP Server: AI-Powered Live Visual Diagramming
 
 [![Code style: crackerjack](https://img.shields.io/badge/code%20style-crackerjack-000042)](https://github.com/lesleslie/crackerjack)
+[![Runtime: oneiric](https://img.shields.io/badge/runtime-oneiric-6e5494)](https://github.com/lesleslie/oneiric)
+[![Framework: FastMCP](https://img.shields.io/badge/framework-FastMCP-0ea5e9)](https://github.com/jlowin/fastmcp)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![Python: 3.13+](https://img.shields.io/badge/python-3.13%2B-green)](https://www.python.org/downloads/)
-![Coverage](https://img.shields.io/badge/coverage-77.1%25-yellow)
 
 > **🙏 Acknowledgments**
 > This project is based on and extends the excellent work from [yctimlin/mcp_excalidraw](https://github.com/yctimlin/mcp_excalidraw).
 > Special thanks to the original contributors for creating the foundation that made this enhanced version possible.
 
-A **dual-language MCP (Model Context Protocol) server** that combines **Excalidraw's powerful drawing capabilities** with AI integration, enabling AI agents like Claude to create and manipulate diagrams in real-time on a live canvas.
+A dual-language MCP server that combines Excalidraw canvas manipulation with AI-driven tool access for live diagram creation.
 
-**Features Python FastMCP server with TypeScript canvas server for optimal performance and maintainability.**
+It uses a Python FastMCP server plus a TypeScript canvas server for separation of protocol handling, canvas state, and browser updates.
+
+## Quick Links
+
+- [What This System Does](#-what-this-system-does)
+- [Architecture Overview](#-architecture-overview)
+- [Key Features](#-key-features)
+- [Usage Guide](#-usage-guide)
+- [Development](#development)
+
+## Quality & CI
+
+Crackerjack is used as the standard quality-control and CI/CD gate for the Python side of this repo. Pair it with the existing TypeScript build and test checks for cross-stack changes.
 
 ## 🚀 What This System Does
 

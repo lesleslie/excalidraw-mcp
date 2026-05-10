@@ -11,6 +11,7 @@ Excalidraw MCP couples a Python FastMCP backend with a TypeScript canvas stack. 
 - `npm run dev` runs TypeScript watch mode plus Vite for iterative UI work; `npm run build` compiles frontend + server assets.
 - `npm run canvas` starts only the built canvas server; `npm run production` rebuilds and boots both services.
 - `uv run pytest` executes the Python suite (coverage reports emitted to `htmlcov/` and `coverage.xml`).
+- Use Crackerjack-aligned Python quality checks alongside the existing Node and TypeScript validation flow for CI-sensitive changes.
 
 ## Coding Style & Naming Conventions
 

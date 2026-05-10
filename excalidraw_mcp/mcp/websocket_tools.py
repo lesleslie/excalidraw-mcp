@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from typing import Any
+
 from fastmcp import FastMCP
 
 
@@ -29,7 +30,7 @@ def register_websocket_tools(
                 "status": "stopped",
                 "host": "127.0.0.1",
                 "port": 3042,
-                "server": "excalidraw"
+                "server": "excalidraw",
             }
 
         return {
@@ -96,7 +97,7 @@ def register_websocket_tools(
         test_event = WebSocketProtocol.create_event(
             "test.event",
             {"message": "Test event from Excalidraw WebSocket"},
-            room=channel
+            room=channel,
         )
 
         await websocket_server.broadcast_to_room(channel, test_event)
@@ -104,7 +105,7 @@ def register_websocket_tools(
         return {
             "status": "broadcast",
             "channel": channel,
-            "subscribers": len(websocket_server.connection_rooms.get(channel, set()))
+            "subscribers": len(websocket_server.connection_rooms.get(channel, set())),
         }
 
     @server.tool()
