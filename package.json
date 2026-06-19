@@ -1,4 +1,9 @@
 {
+  "allowScripts": {
+    "esbuild@0.25.12": true,
+    "fsevents@2.3.3": true,
+    "unrs-resolver@1.12.2": true
+  },
   "author": {
     "email": "les@wedgwoodwebworks.com",
     "name": "lesleslie"
@@ -40,10 +45,10 @@
     "@vitejs/plugin-react": "^4.6.0",
     "concurrently": "^9.2.0",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^30.0.5",
+    "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.0.5",
     "supertest": "^7.1.4",
-    "ts-jest": "^29.4.1",
+    "ts-jest": "^29.1.2",
     "typescript": "^5.8.3",
     "vite": "^6.3.5"
   },

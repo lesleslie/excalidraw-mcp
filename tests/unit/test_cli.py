@@ -28,6 +28,7 @@ class TestCLIModule:
         """Test get_process_manager function."""
         # Clear any existing instance
         import excalidraw_mcp.cli as cli_module
+
         cli_module._process_manager = None
 
         # Get the manager
@@ -42,6 +43,7 @@ class TestCLIModule:
         """Test get_monitoring_supervisor function."""
         # Clear any existing instance
         import excalidraw_mcp.cli as cli_module
+
         cli_module._monitoring_supervisor = None
 
         # Get the supervisor
@@ -211,7 +213,12 @@ class TestCLIModule:
     @patch("excalidraw_mcp.cli.Config")
     @patch("excalidraw_mcp.cli.ServerPanels")
     def test_status_impl_no_processes(
-        self, mock_server_panels, mock_config, mock_rprint, mock_find_canvas, mock_find_mcp
+        self,
+        mock_server_panels,
+        mock_config,
+        mock_rprint,
+        mock_find_canvas,
+        mock_find_mcp,
     ):
         """Test status_impl when no processes are running."""
         mock_find_mcp.return_value = None

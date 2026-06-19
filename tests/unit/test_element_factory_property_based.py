@@ -1,7 +1,8 @@
 """Property-based tests for ElementFactory using Hypothesis."""
 
-import pytest
-from hypothesis import given, strategies as st, settings
+from hypothesis import given, settings
+from hypothesis import strategies as st
+
 from excalidraw_mcp.element_factory import ElementFactory
 
 
@@ -9,17 +10,43 @@ class TestPropertyBasedElementCreation:
     """Property-based tests for element creation."""
 
     @given(
-        element_type=st.sampled_from([
-            "rectangle", "ellipse", "diamond", "text", "line", "arrow",
-            "draw", "image", "frame", "embeddable"
-        ]),
-        x=st.floats(min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False),
-        y=st.floats(min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False),
-        width=st.one_of(st.none(), st.floats(min_value=0, max_value=5000, allow_nan=False, allow_infinity=False)),
-        height=st.one_of(st.none(), st.floats(min_value=0, max_value=5000, allow_nan=False, allow_infinity=False)),
+        element_type=st.sampled_from(
+            [
+                "rectangle",
+                "ellipse",
+                "diamond",
+                "text",
+                "line",
+                "arrow",
+                "draw",
+                "image",
+                "frame",
+                "embeddable",
+            ]
+        ),
+        x=st.floats(
+            min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False
+        ),
+        y=st.floats(
+            min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False
+        ),
+        width=st.one_of(
+            st.none(),
+            st.floats(
+                min_value=0, max_value=5000, allow_nan=False, allow_infinity=False
+            ),
+        ),
+        height=st.one_of(
+            st.none(),
+            st.floats(
+                min_value=0, max_value=5000, allow_nan=False, allow_infinity=False
+            ),
+        ),
     )
     @settings(max_examples=20)
-    def test_element_creation_preserves_coordinates(self, element_type, x, y, width, height):
+    def test_element_creation_preserves_coordinates(
+        self, element_type, x, y, width, height
+    ):
         """Test that element creation preserves coordinate values."""
         element_data = {
             "type": element_type,
@@ -39,12 +66,20 @@ class TestPropertyBasedElementCreation:
             assert element["height"] == height
 
     @given(
-        stroke_width=st.floats(min_value=0, max_value=50, allow_nan=False, allow_infinity=False),
-        opacity=st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
-        roughness=st.floats(min_value=0, max_value=3, allow_nan=False, allow_infinity=False),
+        stroke_width=st.floats(
+            min_value=0, max_value=50, allow_nan=False, allow_infinity=False
+        ),
+        opacity=st.floats(
+            min_value=0, max_value=100, allow_nan=False, allow_infinity=False
+        ),
+        roughness=st.floats(
+            min_value=0, max_value=3, allow_nan=False, allow_infinity=False
+        ),
     )
     @settings(max_examples=20)
-    def test_visual_properties_converted_to_float(self, stroke_width, opacity, roughness):
+    def test_visual_properties_converted_to_float(
+        self, stroke_width, opacity, roughness
+    ):
         """Test that visual properties are converted to floats."""
         factory = ElementFactory()
         element_data = {
@@ -65,7 +100,9 @@ class TestPropertyBasedElementCreation:
 
     @given(
         text=st.text(min_size=0, max_size=1000),
-        font_size=st.floats(min_value=8, max_value=200, allow_nan=False, allow_infinity=False),
+        font_size=st.floats(
+            min_value=8, max_value=200, allow_nan=False, allow_infinity=False
+        ),
     )
     @settings(max_examples=20)
     def test_text_element_preserves_content(self, text, font_size):
@@ -85,7 +122,12 @@ class TestPropertyBasedElementCreation:
     @given(
         points=st.lists(
             st.lists(
-                st.floats(min_value=-5000, max_value=5000, allow_nan=False, allow_infinity=False),
+                st.floats(
+                    min_value=-5000,
+                    max_value=5000,
+                    allow_nan=False,
+                    allow_infinity=False,
+                ),
                 min_size=2,
                 max_size=2,
             ),
@@ -108,7 +150,9 @@ class TestPropertyBasedElementCreation:
         assert element["points"] == points
 
     @given(
-        scale=st.floats(min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False),
+        scale=st.floats(
+            min_value=0.1, max_value=10, allow_nan=False, allow_infinity=False
+        ),
         file_id=st.text(min_size=1, max_size=100),
     )
     @settings(max_examples=20)
@@ -129,8 +173,12 @@ class TestPropertyBasedElementCreation:
 
     @given(
         element_id=st.uuids().map(lambda u: str(u)),
-        x=st.floats(min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False),
-        y=st.floats(min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False),
+        x=st.floats(
+            min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False
+        ),
+        y=st.floats(
+            min_value=-10000, max_value=10000, allow_nan=False, allow_infinity=False
+        ),
     )
     @settings(max_examples=20)
     def test_update_data_converts_coordinates(self, element_id, x, y):
@@ -177,11 +225,15 @@ class TestPropertyBasedValidation:
 
     @given(
         width=st.one_of(
-            st.floats(min_value=0, max_value=10000, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0, max_value=10000, allow_nan=False, allow_infinity=False
+            ),
             st.none(),
         ),
         height=st.one_of(
-            st.floats(min_value=0, max_value=10000, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=0, max_value=10000, allow_nan=False, allow_infinity=False
+            ),
             st.none(),
         ),
     )
@@ -203,13 +255,23 @@ class TestPropertyBasedValidation:
             assert result["height"] == height
 
     @given(
-        stroke_width=st.floats(min_value=0, max_value=50, allow_nan=False, allow_infinity=False),
-        opacity=st.floats(min_value=0, max_value=100, allow_nan=False, allow_infinity=False),
-        roughness=st.floats(min_value=0, max_value=3, allow_nan=False, allow_infinity=False),
-        font_size=st.floats(min_value=8, max_value=200, allow_nan=False, allow_infinity=False),
+        stroke_width=st.floats(
+            min_value=0, max_value=50, allow_nan=False, allow_infinity=False
+        ),
+        opacity=st.floats(
+            min_value=0, max_value=100, allow_nan=False, allow_infinity=False
+        ),
+        roughness=st.floats(
+            min_value=0, max_value=3, allow_nan=False, allow_infinity=False
+        ),
+        font_size=st.floats(
+            min_value=8, max_value=200, allow_nan=False, allow_infinity=False
+        ),
     )
     @settings(max_examples=20)
-    def test_valid_numeric_ranges_accepted(self, stroke_width, opacity, roughness, font_size):
+    def test_valid_numeric_ranges_accepted(
+        self, stroke_width, opacity, roughness, font_size
+    ):
         """Test that valid numeric ranges are accepted."""
         factory = ElementFactory()
         element_data = {
@@ -232,28 +294,45 @@ class TestPropertyBasedElementIdGeneration:
     """Property-based tests for element ID generation."""
 
     @given(
-        element_type=st.sampled_from([
-            "rectangle", "ellipse", "diamond", "text", "line", "arrow",
-            "draw", "image", "frame", "embeddable"
-        ]),
+        element_type=st.sampled_from(
+            [
+                "rectangle",
+                "ellipse",
+                "diamond",
+                "text",
+                "line",
+                "arrow",
+                "draw",
+                "image",
+                "frame",
+                "embeddable",
+            ]
+        ),
     )
     @settings(max_examples=10)
     def test_elements_have_unique_ids(self, element_type):
         """Test that created elements have unique IDs."""
         factory = ElementFactory()
-        elements = [
-            factory.create_element({"type": element_type})
-            for _ in range(10)
-        ]
+        elements = [factory.create_element({"type": element_type}) for _ in range(10)]
 
         ids = [elem["id"] for elem in elements]
         assert len(ids) == len(set(ids)), "All element IDs should be unique"
 
     @given(
-        element_type=st.sampled_from([
-            "rectangle", "ellipse", "diamond", "text", "line", "arrow",
-            "draw", "image", "frame", "embeddable"
-        ]),
+        element_type=st.sampled_from(
+            [
+                "rectangle",
+                "ellipse",
+                "diamond",
+                "text",
+                "line",
+                "arrow",
+                "draw",
+                "image",
+                "frame",
+                "embeddable",
+            ]
+        ),
     )
     @settings(max_examples=10)
     def test_elements_have_timestamps(self, element_type):
@@ -276,7 +355,9 @@ class TestPropertyBasedOptionalFloats:
     @given(
         value=st.one_of(
             st.integers(min_value=-1000, max_value=1000),
-            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False
+            ),
             st.none(),
         ),
     )
@@ -297,9 +378,13 @@ class TestPropertyBasedOptionalFloats:
     @given(
         value=st.one_of(
             st.integers(min_value=-1000, max_value=1000),
-            st.floats(min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False),
+            st.floats(
+                min_value=-1000, max_value=1000, allow_nan=False, allow_infinity=False
+            ),
         ),
-        default=st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+        default=st.floats(
+            min_value=-100, max_value=100, allow_nan=False, allow_infinity=False
+        ),
     )
     @settings(max_examples=20)
     def test_optional_float_with_default(self, value, default):
@@ -311,7 +396,9 @@ class TestPropertyBasedOptionalFloats:
         assert result == float(value)
 
     @given(
-        default=st.floats(min_value=-100, max_value=100, allow_nan=False, allow_infinity=False),
+        default=st.floats(
+            min_value=-100, max_value=100, allow_nan=False, allow_infinity=False
+        ),
     )
     @settings(max_examples=20)
     def test_optional_float_missing_key_uses_default(self, default):

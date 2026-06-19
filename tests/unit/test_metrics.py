@@ -286,12 +286,12 @@ class TestMetricsModule:
         prometheus_output = collector.get_prometheus_format()
 
         # Check that the output contains expected Prometheus format elements
-        assert 'test_counter 5.0' in prometheus_output
-        assert 'test_gauge 10.0' in prometheus_output
-        assert '# HELP test_counter Test counter help' in prometheus_output
-        assert '# TYPE test_counter counter' in prometheus_output
-        assert '# HELP test_gauge Test gauge help' in prometheus_output
-        assert '# TYPE test_gauge gauge' in prometheus_output
+        assert "test_counter 5.0" in prometheus_output
+        assert "test_gauge 10.0" in prometheus_output
+        assert "# HELP test_counter Test counter help" in prometheus_output
+        assert "# TYPE test_counter counter" in prometheus_output
+        assert "# HELP test_gauge Test gauge help" in prometheus_output
+        assert "# TYPE test_gauge gauge" in prometheus_output
 
     @patch("excalidraw_mcp.monitoring.metrics.config")
     def test_reset_all_metrics(self, mock_config):
@@ -342,7 +342,9 @@ class TestMetricsModule:
     async def test_start_and_stop_collection(self, mock_config):
         """Test start_collection and stop_collection methods."""
         mock_config.monitoring.metrics_enabled = True
-        mock_config.monitoring.metrics_collection_interval_seconds = 0.1  # Fast interval for testing
+        mock_config.monitoring.metrics_collection_interval_seconds = (
+            0.1  # Fast interval for testing
+        )
 
         collector = MetricsCollector()
 
@@ -360,8 +362,12 @@ class TestMetricsModule:
     async def test_collection_loop(self, mock_config):
         """Test the collection loop."""
         mock_config.monitoring.metrics_enabled = True
-        mock_config.monitoring.metrics_collection_interval_seconds = 0.01  # Very fast for testing
-        mock_config.monitoring.resource_monitoring_enabled = False  # Disable to avoid process issues
+        mock_config.monitoring.metrics_collection_interval_seconds = (
+            0.01  # Very fast for testing
+        )
+        mock_config.monitoring.resource_monitoring_enabled = (
+            False  # Disable to avoid process issues
+        )
 
         collector = MetricsCollector()
 

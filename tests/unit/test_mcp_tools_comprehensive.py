@@ -1,9 +1,11 @@
 """Comprehensive tests for MCPToolsManager with mocked dependencies."""
 
-import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from excalidraw_mcp.mcp_tools import MCPToolsManager
+
+import pytest
+
 from excalidraw_mcp.element_factory import ElementFactory
+from excalidraw_mcp.mcp_tools import MCPToolsManager
 
 
 @pytest.fixture
@@ -51,7 +53,7 @@ class TestMCPToolsManagerInitialization:
 
     def test_manager_registers_tools(self, mock_mcp):
         """Test that manager registers all tools."""
-        manager = MCPToolsManager(mock_mcp)
+        MCPToolsManager(mock_mcp)
 
         # Check that mcp.tool was called for each expected tool
         expected_tools = [
@@ -130,7 +132,9 @@ class TestSyncToCanvas:
     """Test _sync_to_canvas method."""
 
     @pytest.mark.asyncio
-    async def test_sync_create_operation(self, manager, mock_process_manager, mock_http_client):
+    async def test_sync_create_operation(
+        self, manager, mock_process_manager, mock_http_client
+    ):
         """Test sync for create operation."""
         data = {"type": "rectangle", "x": 10}
 
@@ -148,7 +152,9 @@ class TestSyncToCanvas:
 
         assert result is not None
         # ID should be popped from data
-        mock_http_client.put_json.assert_called_once_with("/api/elements/elem123", {"x": 20})
+        mock_http_client.put_json.assert_called_once_with(
+            "/api/elements/elem123", {"x": 20}
+        )
 
     @pytest.mark.asyncio
     async def test_sync_delete_operation(self, manager, mock_http_client):
@@ -181,7 +187,9 @@ class TestSyncToCanvas:
     async def test_sync_handles_exceptions(self, manager, mock_process_manager):
         """Test that sync handles exceptions gracefully."""
         with patch("excalidraw_mcp.mcp_tools.http_client") as mock_http_client:
-            mock_http_client.post_json = AsyncMock(side_effect=Exception("Connection error"))
+            mock_http_client.post_json = AsyncMock(
+                side_effect=Exception("Connection error")
+            )
 
             with pytest.raises(RuntimeError, match="Failed to sync create"):
                 await manager._sync_to_canvas("create", {})
@@ -202,7 +210,9 @@ class TestCreateElement:
         assert "Created" in result["message"]
 
     @pytest.mark.asyncio
-    async def test_create_element_with_pydantic_request(self, manager, mock_http_client):
+    async def test_create_element_with_pydantic_request(
+        self, manager, mock_http_client
+    ):
         """Test element creation with Pydantic request."""
         request = MagicMock()
         request.model_dump = MagicMock(return_value={"type": "rectangle", "x": 10})

@@ -372,7 +372,7 @@ CMD ["python", "-m", "excalidraw_mcp", "websocket"]
 ### Phase 2 Enhancements (Future)
 - Message batching for high-frequency updates
 - Cursor position interpolation and smoothing
-- Operational transformation (OT) for conflict resolution
+- Operational transformation (TO) for conflict resolution
 - Conflict-free replicated data types (CRDTs)
 - Persistent connection recovery
 - Message replay for late joiners

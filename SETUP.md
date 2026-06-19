@@ -13,11 +13,14 @@ This project provides a dual-language MCP server for Claude Code integration wit
 
 ### Setup Dependencies
 
+> **Note**: `node_modules/` is not included in the repository. You must run `npm install`
+> to restore Node.js dependencies from `package-lock.json` before building.
+
 ```bash
 # Install Python dependencies
 uv sync
 
-# Install Node.js dependencies
+# Install Node.js dependencies (restores from package-lock.json)
 npm install
 
 # Build TypeScript canvas server
@@ -39,7 +42,7 @@ npm run production
 **Setup Steps:**
 
 1. **Clone Repository** → `git clone https://github.com/lesleslie/excalidraw-mcp.git`
-1. **Install Dependencies** → `uv sync && npm install`
+1. **Install Dependencies** → `uv sync && npm install` (`node_modules/` is not in the repo)
 1. **Build Project** → `npm run build`
 1. **Start Server** → `uv run python excalidraw_mcp/server.py`
 1. **Access Canvas** → Open http://localhost:3031

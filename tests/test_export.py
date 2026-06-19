@@ -9,9 +9,7 @@ from excalidraw_mcp.export import SceneExporter, export_scene
 @pytest.mark.asyncio
 async def test_export_scene_to_json():
     """Test exporting scene to JSON format."""
-    elements = [
-        {"type": "rectangle", "x": 10, "y": 20, "width": 100, "height": 50}
-    ]
+    elements = [{"type": "rectangle", "x": 10, "y": 20, "width": 100, "height": 50}]
 
     json_data = await export_scene(elements, format="json")
 
@@ -96,7 +94,9 @@ def test_element_factory_creates_all_types():
         element = factory.create_element(element_data)
 
         assert element is not None
-        assert element["type"] == expected_type, f"Expected {expected_type}, got {element['type']} for input {input_type}"
+        assert element["type"] == expected_type, (
+            f"Expected {expected_type}, got {element['type']} for input {input_type}"
+        )
         assert "id" in element
         assert "createdAt" in element
         assert "updatedAt" in element

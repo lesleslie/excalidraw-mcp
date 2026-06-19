@@ -209,10 +209,14 @@ class TestAlertsModule:
         manager = AlertManager()
 
         # Test simple condition
-        result = manager._safe_eval_condition("cpu_percent >= 80.0", {"cpu_percent": 85.0})
+        result = manager._safe_eval_condition(
+            "cpu_percent >= 80.0", {"cpu_percent": 85.0}
+        )
         assert result is True
 
-        result = manager._safe_eval_condition("cpu_percent >= 80.0", {"cpu_percent": 75.0})
+        result = manager._safe_eval_condition(
+            "cpu_percent >= 80.0", {"cpu_percent": 75.0}
+        )
         assert result is False
 
         # Test condition with boolean operators

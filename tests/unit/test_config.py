@@ -135,7 +135,10 @@ class TestConfig:
 
             # Test security config
             assert config.security.auth_enabled is True
-            assert config.security.jwt_secret == "test-secret-minimum-32-characters-long-for-validation"
+            assert (
+                config.security.jwt_secret
+                == "test-secret-minimum-32-characters-long-for-validation"
+            )
             assert "http://localhost:3000" in config.security.allowed_origins
             assert "http://localhost:3001" in config.security.allowed_origins
 

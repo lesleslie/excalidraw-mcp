@@ -1,8 +1,10 @@
 """Comprehensive tests for SceneExporter covering all export formats and error scenarios."""
 
-import pytest
 import json
-from excalidraw_mcp.export import SceneExporter, export_scene, ExportFormat
+
+import pytest
+
+from excalidraw_mcp.export import ExportFormat, SceneExporter, export_scene
 
 
 class TestSceneExporterInitialization:
@@ -563,11 +565,7 @@ class TestConvenienceFunction:
         elements = [{"type": "rectangle"}]
 
         result = await export_scene(
-            elements,
-            format="svg",
-            width=1920,
-            height=1080,
-            background="#f0f0f0"
+            elements, format="svg", width=1920, height=1080, background="#f0f0f0"
         )
 
         svg_text = result.decode("utf-8")
@@ -612,9 +610,7 @@ class TestEdgeCases:
         """Test export with zero dimensions."""
         elements = [{"type": "rectangle"}]
 
-        result = await exporter.export_scene(
-            elements, format="svg", width=0, height=0
-        )
+        result = await exporter.export_scene(elements, format="svg", width=0, height=0)
 
         # Should still work
         assert result is not None
@@ -645,10 +641,7 @@ class TestEdgeCases:
     @pytest.mark.asyncio
     async def test_many_elements(self, exporter):
         """Test export with many elements."""
-        elements = [
-            {"type": "rectangle", "x": i * 10, "y": 0}
-            for i in range(100)
-        ]
+        elements = [{"type": "rectangle", "x": i * 10, "y": 0} for i in range(100)]
 
         result = await exporter.export_scene(elements, format="json")
 

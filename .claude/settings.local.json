@@ -1,5 +1,10 @@
 {
+  "enableAllProjectMcpServers": true,
   "permissions": {
+    "additionalDirectories": [
+      "/Users/les/.claude/agents",
+      "/Users/les/.claude"
+    ],
     "allow": [
       "WebSearch",
       "Bash(rm:*)",
@@ -71,12 +76,7 @@
       "Skill(tools:workflow:config-validate)",
       "mcp__excalidraw__batch_create_elements"
     ],
-    "deny": [],
     "ask": [],
-    "additionalDirectories": [
-      "/Users/les/.claude/agents",
-      "/Users/les/.claude"
-    ]
-  },
-  "enableAllProjectMcpServers": true
+    "deny": []
+  }
 }

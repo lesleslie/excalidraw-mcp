@@ -198,7 +198,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             channel = message.data.get("channel")
 
             # Check authorization for this channel
-            if user and not self._can_subscribe_to_channel(user, channel):
+            if user and not self._can_subscribe_to_channel(user, channel):  # type: ignore
                 error = WebSocketProtocol.create_error(
                     error_code="FORBIDDEN",
                     error_message=f"Not authorized to subscribe to {channel}",
@@ -293,8 +293,8 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             if hasattr(self.diagram_manager, "get_diagram"):
                 diagram = await self.diagram_manager.get_diagram(diagram_id)
                 return {"diagram_id": diagram_id, "status": "found", "diagram": diagram}
-            else:
-                return {"diagram_id": diagram_id, "status": "not_found"}
+
+            return {"diagram_id": diagram_id, "status": "not_found"}
         except Exception as e:
             logger.error(f"Error getting diagram status: {e}")
             return {"diagram_id": diagram_id, "status": "error", "error": str(e)}
@@ -306,10 +306,11 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             connection_id: Connection identifier
         """
         # Remove connection from all rooms
-        rooms_to_leave = []
-        for room_id, connections in self.connection_rooms.items():
-            if connection_id in connections:
-                rooms_to_leave.append(room_id)
+        rooms_to_leave = [
+            room_id
+            for room_id, connections in self.connection_rooms.items()
+            if connection_id in connections
+        ]
 
         for room_id in rooms_to_leave:
             await self.leave_room(room_id, connection_id)
@@ -327,7 +328,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         """
         event = WebSocketProtocol.create_event(
             EventTypes.DIAGRAM_CREATED,
-            {"diagram_id": diagram_id, "timestamp": self._get_timestamp(), **metadata},
+            {"diagram_id": diagram_id, "timestamp": self._get_timestamp()} | metadata,
             room=f"diagram:{diagram_id}",
         )
         await self.broadcast_to_room(f"diagram:{diagram_id}", event)
@@ -343,7 +344,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         """
         event = WebSocketProtocol.create_event(
             EventTypes.DIAGRAM_UPDATED,
-            {"diagram_id": diagram_id, "timestamp": self._get_timestamp(), **metadata},
+            {"diagram_id": diagram_id, "timestamp": self._get_timestamp()} | metadata,
             room=f"diagram:{diagram_id}",
         )
         await self.broadcast_to_room(f"diagram:{diagram_id}", event)

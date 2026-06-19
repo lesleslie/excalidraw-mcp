@@ -1,7 +1,7 @@
 """Comprehensive tests for ElementFactory covering all validation and creation logic."""
 
 import pytest
-from datetime import datetime, UTC
+
 from excalidraw_mcp.element_factory import ElementFactory
 
 
@@ -14,7 +14,13 @@ class TestElementFactoryCreation:
 
     def test_create_rectangle_basic(self, factory):
         """Test basic rectangle creation."""
-        element_data = {"type": "rectangle", "x": 10, "y": 20, "width": 100, "height": 50}
+        element_data = {
+            "type": "rectangle",
+            "x": 10,
+            "y": 20,
+            "width": 100,
+            "height": 50,
+        }
         element = factory.create_element(element_data)
 
         assert element["type"] == "rectangle"
@@ -459,7 +465,9 @@ class TestElementFactoryValidation:
     def test_validate_invalid_stroke_width_type(self, factory):
         """Test invalid stroke width type."""
         with pytest.raises(ValueError, match="strokeWidth must be a number"):
-            factory.validate_element_data({"type": "rectangle", "strokeWidth": "invalid"})
+            factory.validate_element_data(
+                {"type": "rectangle", "strokeWidth": "invalid"}
+            )
 
     def test_validate_opacity_out_of_range(self, factory):
         """Test opacity validation."""
@@ -549,7 +557,9 @@ class TestOptionalFloatConversion:
 
     def test_get_optional_float_with_invalid_string(self, factory):
         """Test invalid string returns default."""
-        result = factory._get_optional_float({"value": "invalid"}, "value", default=10.0)
+        result = factory._get_optional_float(
+            {"value": "invalid"}, "value", default=10.0
+        )
         assert result == 10.0
 
     def test_get_optional_float_with_none(self, factory):

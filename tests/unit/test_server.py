@@ -20,6 +20,7 @@ class TestServerModule:
         """Test get_process_manager function."""
         # Clear any existing instance
         import excalidraw_mcp.server as server_module
+
         server_module.process_manager = None
 
         # Get the manager
@@ -33,6 +34,7 @@ class TestServerModule:
         """Test get_monitoring_supervisor function."""
         # Clear any existing instance
         import excalidraw_mcp.server as server_module
+
         server_module.monitoring_supervisor = None
 
         # Get the supervisor
@@ -47,7 +49,9 @@ class TestServerModule:
     @patch("excalidraw_mcp.server.init_background_services")
     @patch("excalidraw_mcp.server.mcp")
     @patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", True)
-    def test_main_with_serverpanels(self, mock_mcp, mock_init, mock_logger, mock_serverpanels):
+    def test_main_with_serverpanels(
+        self, mock_mcp, mock_init, mock_logger, mock_serverpanels
+    ):
         """Test main function with ServerPanels available."""
         # Mock the mcp.run method to avoid actually starting the server
         mock_mcp.run = Mock()

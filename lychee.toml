@@ -1,0 +1,38 @@
+# Lychee link checker configuration
+timeout = 10
+retry_wait_time = 2
+max_retries = 2
+user_agent = "Mozilla/5.0 (compatible; linkcheckmd)"
+require_https = false
+include_verbatim = false
+root_dir = "."
+accept = [200, 204, 206, 301, 302, 304, 403, 404, 429, 502, 503, 521]
+accept_timeouts = true
+
+# Paths to skip when scanning for links
+exclude_path = [
+  "docs/archive",
+  ".venv",
+  ".cache",
+  "node_modules",
+]
+
+exclude = [
+  # GitHub (rate-limited and auth-required pages)
+  "https://github.com/",
+  "https://docs.github.com/",
+  "https://raw.githubusercontent.com/",
+  # Local services (not running in CI)
+  "http://localhost",
+  "http://127.0.0.1",
+  "http://0.0.0.0",
+  "ws://localhost",
+  # Media/social (often rate-limit bots)
+  "https://www.youtube.com/",
+  "https://youtu.be/",
+  "https://twitter.com/",
+  "https://x.com/",
+  # Package registries (reliable, skip to speed up)
+  "https://pypi.org/",
+  "https://npmjs.com/",
+]

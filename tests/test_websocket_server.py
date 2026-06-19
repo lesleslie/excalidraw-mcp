@@ -11,8 +11,9 @@ including:
 - Message handling and routing
 """
 
+from unittest.mock import AsyncMock, MagicMock
+
 import pytest
-from unittest.mock import MagicMock, AsyncMock
 
 from excalidraw_mcp.websocket import ExcalidrawWebSocketServer
 
@@ -109,11 +110,7 @@ async def test_broadcast_cursor_moved():
     server.connection_rooms["cursor:diag789"] = {"test_conn"}
 
     # Broadcast cursor moved event
-    await server.broadcast_cursor_moved(
-        "diag789",
-        "user123",
-        {"x": 150, "y": 200}
-    )
+    await server.broadcast_cursor_moved("diag789", "user123", {"x": 150, "y": 200})
 
     # Verify message was sent
     assert mock_client.send.called
@@ -136,9 +133,7 @@ async def test_broadcast_user_joined():
 
     # Broadcast user joined event
     await server.broadcast_user_joined(
-        "diag999",
-        "user456",
-        {"name": "Test User", "color": "#FF5733"}
+        "diag999", "user456", {"name": "Test User", "color": "#FF5733"}
     )
 
     # Verify message was sent
@@ -216,7 +211,9 @@ async def test_on_disconnect_leaves_rooms():
 async def test_get_diagram_status():
     """Test getting diagram status."""
     diagram_manager = AsyncMock()
-    diagram_manager.get_diagram = AsyncMock(return_value={"id": "test123", "title": "Test"})
+    diagram_manager.get_diagram = AsyncMock(
+        return_value={"id": "test123", "title": "Test"}
+    )
 
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
@@ -236,6 +233,7 @@ async def test_get_diagram_status():
 @pytest.mark.asyncio
 async def test_get_diagram_status_not_found():
     """Test getting status when diagram manager has no get_diagram method."""
+
     # Create a mock object without the get_diagram method
     class SimpleManager:
         pass

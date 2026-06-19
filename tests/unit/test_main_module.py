@@ -21,7 +21,9 @@ class TestMainModule:
     @patch("excalidraw_mcp.__main__.BaseOneiricServerMixin.__init__", return_value=None)
     @patch("excalidraw_mcp.__main__.mcp")
     @patch("excalidraw_mcp.__main__.create_runtime_components")
-    def test_excalidraw_mcp_server_init(self, mock_create_runtime, mock_mcp, mock_base_init):
+    def test_excalidraw_mcp_server_init(
+        self, mock_create_runtime, mock_mcp, mock_base_init
+    ):
         """Test ExcalidrawMCPServer initialization."""
         config = ExcalidrawConfig()
         mock_runtime = Mock()
@@ -38,7 +40,9 @@ class TestMainModule:
     @patch("excalidraw_mcp.__main__.create_runtime_components")
     @patch("excalidraw_mcp.__main__.mcp")
     @pytest.mark.asyncio
-    async def test_excalidraw_mcp_server_startup(self, mock_mcp, mock_create_runtime, mock_config):
+    async def test_excalidraw_mcp_server_startup(
+        self, mock_mcp, mock_create_runtime, mock_config
+    ):
         """Test ExcalidrawMCPServer startup method."""
         config = ExcalidrawConfig()
         mock_runtime = AsyncMock()
@@ -59,7 +63,9 @@ class TestMainModule:
     @patch("excalidraw_mcp.__main__.mcp")
     @patch("excalidraw_mcp.__main__.print")
     @pytest.mark.asyncio
-    async def test_excalidraw_mcp_server_shutdown(self, mock_print, mock_mcp, mock_create_runtime):
+    async def test_excalidraw_mcp_server_shutdown(
+        self, mock_print, mock_mcp, mock_create_runtime
+    ):
         """Test ExcalidrawMCPServer shutdown method."""
         config = ExcalidrawConfig()
         mock_runtime = AsyncMock()
@@ -98,22 +104,30 @@ class TestMainModule:
     @patch("excalidraw_mcp.__main__.mcp")
     @patch("excalidraw_mcp.__main__.HealthStatus")
     @pytest.mark.asyncio
-    async def test_excalidraw_mcp_server_health_check(self, mock_health_status, mock_mcp, mock_create_runtime, mock_config):
+    async def test_excalidraw_mcp_server_health_check(
+        self, mock_health_status, mock_mcp, mock_create_runtime, mock_config
+    ):
         """Test ExcalidrawMCPServer health_check method."""
         config = ExcalidrawConfig()
         mock_runtime = Mock()
         mock_component_health = Mock()
         mock_health_response = Mock()
 
-        mock_runtime.health_monitor.create_component_health.return_value = mock_component_health
-        mock_runtime.health_monitor.create_health_response.return_value = mock_health_response
+        mock_runtime.health_monitor.create_component_health.return_value = (
+            mock_component_health
+        )
+        mock_runtime.health_monitor.create_health_response.return_value = (
+            mock_health_response
+        )
         mock_create_runtime.return_value = mock_runtime
         mock_config.server = True  # Simulate that server is configured
 
         server = ExcalidrawMCPServer(config)
 
         # Mock the _build_health_components method to return the expected value
-        with patch.object(server, '_build_health_components', new_callable=AsyncMock) as mock_build_health:
+        with patch.object(
+            server, "_build_health_components", new_callable=AsyncMock
+        ) as mock_build_health:
             mock_build_health.return_value = [mock_component_health]
 
             # Call health_check

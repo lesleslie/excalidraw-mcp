@@ -154,7 +154,10 @@ class TestProcessManagerCoverage:
             mock_logger.error.assert_called()
             # The error message should contain "died during startup" or "failed to become healthy"
             error_calls = [str(call) for call in mock_logger.error.call_args_list]
-            assert any("died during startup" in call or "failed to become healthy" in call for call in error_calls)
+            assert any(
+                "died during startup" in call or "failed to become healthy" in call
+                for call in error_calls
+            )
 
     @pytest.mark.asyncio
     async def test_wait_for_health_success(self, process_manager):

@@ -49,7 +49,9 @@ class TestServerModuleAdditional:
     @patch("excalidraw_mcp.server.init_background_services")
     @patch("excalidraw_mcp.server.mcp")
     @patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", True)
-    def test_main_with_serverpanels_enabled(self, mock_mcp, mock_init, mock_logger, mock_serverpanels):
+    def test_main_with_serverpanels_enabled(
+        self, mock_mcp, mock_init, mock_logger, mock_serverpanels
+    ):
         """Test main function with ServerPanels enabled."""
         # Mock the mcp.run method to avoid actually starting the server
         mock_mcp.run = Mock()
@@ -120,6 +122,7 @@ class TestServerModuleAdditional:
         # Make requests.get raise an exception (canvas not running)
         # Use the specific exception types that the function catches
         import requests
+
         mock_requests_get.side_effect = requests.ConnectionError("Connection refused")
 
         # Mock the Path object
@@ -178,5 +181,6 @@ class TestServerModuleAdditional:
     def test_http_app_property(self):
         """Test that http_app property is accessible."""
         from excalidraw_mcp.server import http_app
+
         # Just ensure it exists and doesn't raise an exception
         assert http_app is not None

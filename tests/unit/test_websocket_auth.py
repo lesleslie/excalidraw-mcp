@@ -3,19 +3,19 @@
 from __future__ import annotations
 
 import os
-import sys
+
 import pytest
 
 # Set environment variables before importing the modules
 os.environ["EXCALIDRAW_AUTH_ENABLED"] = "false"
 
+
 from excalidraw_mcp.websocket.auth import (
-    get_authenticator,
     generate_token,
+    get_authenticator,
     verify_token,
 )
 from excalidraw_mcp.websocket.server import ExcalidrawWebSocketServer
-from mcp_common.websocket import WebSocketProtocol
 
 
 @pytest.mark.unit
@@ -29,10 +29,11 @@ class TestExcalidrawWebSocketAuth:
 
         # Reload module to pick up env var change
         import importlib
+
         import excalidraw_mcp.websocket.auth
+
         importlib.reload(excalidraw_mcp.websocket.auth)
 
-        from excalidraw_mcp.websocket.auth import get_authenticator
         authenticator = get_authenticator()
         assert authenticator is None
 
@@ -131,7 +132,9 @@ class TestExcalidrawWebSocketAuthenticationIntegration:
 
         # Reload module to pick up env var change
         import importlib
+
         import excalidraw_mcp.websocket.auth
+
         importlib.reload(excalidraw_mcp.websocket.auth)
 
         server = ExcalidrawWebSocketServer(
@@ -146,6 +149,7 @@ class TestExcalidrawWebSocketAuthenticationIntegration:
 
             # Create client with invalid token
             from mcp_common.websocket import WebSocketClient
+
             client = WebSocketClient(
                 uri="ws://127.0.0.1:3046",
                 token="invalid-token",

@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "excalidraw-mcp"
-version = "0.35.8"
+version = "0.35.9"
 description = "Unofficial MCP server for Excalidraw diagram management with canvas sync"
 readme = "README.md"
 classifiers = [
@@ -24,16 +24,16 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
-    "fastmcp>=2.11.3",
+    "fastmcp>=3.4.2",
     "httpx[http2]>=0.28.1",
-    "oneiric>=0.3.6",
-    "pydantic>=2.11.7",
-    "psutil>=6.1.1",
-    "pyjwt>=2.10.1",
-    "cryptography>=45.0.6",
-    "typer>=0.15.1",
-    "rich>=13.9.4",
-    "mcp-common>=0.4.7",
+    "oneiric>=0.13.3",
+    "pydantic>=2.13.4",
+    "psutil>=7.2.2",
+    "pyjwt>=2.13.0",
+    "cryptography>=49.0.0",
+    "typer>=0.26.7",
+    "rich>=15.0.0",
+    "mcp-common>=0.16.4",
 ]
 
 [project.license]
@@ -261,10 +261,10 @@ exclude-deps = [
 
 [dependency-groups]
 dev = [
-    "pytest>=8.4.1",
-    "pytest-asyncio>=1.1.0",
-    "pytest-cov>=6.2.1",
-    "pytest-mock>=3.14.1",
-    "respx>=0.22.0",
-    "session-buddy>=0.1.3",
+    "pytest>=9.1.0",
+    "pytest-asyncio>=1.4.0",
+    "pytest-cov>=7.1.0",
+    "pytest-mock>=3.15.1",
+    "respx>=0.23.1",
+    "session-buddy>=0.19.17",
 ]

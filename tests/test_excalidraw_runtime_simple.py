@@ -83,8 +83,8 @@ async def test_excalidraw_health_check():
 
     # Verify response structure
     assert health_response is not None
-    assert hasattr(health_response, 'status')
-    assert hasattr(health_response, 'components')
+    assert hasattr(health_response, "status")
+    assert hasattr(health_response, "components")
     assert len(health_response.components) > 0
 
 
@@ -114,7 +114,7 @@ def test_cli_factory_creation():
         name="excalidraw-mcp",
         use_subcommands=True,
         legacy_flags=False,
-        description="Excalidraw MCP Server - Diagram management via Excalidraw API"
+        description="Excalidraw MCP Server - Diagram management via Excalidraw API",
     )
 
     # Verify factory configuration

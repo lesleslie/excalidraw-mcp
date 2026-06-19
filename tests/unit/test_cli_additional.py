@@ -27,7 +27,9 @@ class TestCLIModuleAdditional:
         # Create a mock process that raises AccessDenied
         mock_proc_access_denied = Mock()
         mock_proc_access_denied.info = Mock()
-        mock_proc_access_denied.info.__getitem__ = Mock(side_effect=psutil.AccessDenied())
+        mock_proc_access_denied.info.__getitem__ = Mock(
+            side_effect=psutil.AccessDenied()
+        )
 
         # Create a mock process that works normally
         mock_proc_normal = Mock()
@@ -44,7 +46,9 @@ class TestCLIModuleAdditional:
         # Create a mock process that raises AccessDenied
         mock_proc_access_denied = Mock()
         mock_proc_access_denied.info = Mock()
-        mock_proc_access_denied.info.__getitem__ = Mock(side_effect=psutil.AccessDenied())
+        mock_proc_access_denied.info.__getitem__ = Mock(
+            side_effect=psutil.AccessDenied()
+        )
 
         # Create a mock process that works normally
         mock_proc_normal = Mock()
@@ -80,7 +84,9 @@ class TestCLIModuleAdditional:
     @patch("excalidraw_mcp.cli.find_mcp_server_process")
     @patch("excalidraw_mcp.cli.find_canvas_server_process")
     @patch("excalidraw_mcp.cli.rprint")
-    def test_stop_mcp_server_impl_with_force(self, mock_rprint, mock_find_canvas, mock_find_mcp, mock_stop_process):
+    def test_stop_mcp_server_impl_with_force(
+        self, mock_rprint, mock_find_canvas, mock_find_mcp, mock_stop_process
+    ):
         """Test stop_mcp_server_impl with force option."""
         mock_mcp_proc = Mock()
         mock_canvas_proc = Mock()
@@ -235,6 +241,7 @@ class TestCLIModuleAdditional:
         with patch("builtins.print"):
             # Run for a short time then interrupt
             import threading
+
             def run_follow():
                 _follow_log_output(mock_file)
 

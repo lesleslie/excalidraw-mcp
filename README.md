@@ -124,7 +124,7 @@ cd excalidraw-mcp
 # Install Python dependencies
 uv sync
 
-# Install Node.js dependencies and build
+# Install Node.js dependencies from package-lock.json (node_modules not in repo)
 npm install
 npm run build
 ```

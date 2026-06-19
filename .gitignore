@@ -141,6 +141,8 @@ tests/archived/
 # Archived test/debug scripts
 tests/archived/
 
+node_modules/
+
 # Backup Files (added by gitignore audit)
 # ============================================================================
 *.backup

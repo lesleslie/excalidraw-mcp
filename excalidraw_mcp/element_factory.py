@@ -142,7 +142,7 @@ class ElementFactory:
         # Arrow-specific properties
         if element["type"] == "arrow":
             element["arrowhead"] = element_data.get("arrowhead", "arrow")
-            element["startArrowhead"] = element_data.get("startArrowhead", None)
+            element["startArrowhead"] = element_data.get("startArrowhead")
             element["endArrowhead"] = element_data.get("endArrowhead", "arrow")
 
     def _add_draw_properties(
@@ -152,7 +152,7 @@ class ElementFactory:
         # Freedraw elements contain stroke data
         element["points"] = element_data.get("points", [[0, 0], [100, 100]])
         element["isComplete"] = element_data.get("isComplete", True)
-        element["roundness"] = element_data.get("roundness", None)
+        element["roundness"] = element_data.get("roundness")
         # Draw elements are typically stroke-only
         element["backgroundColor"] = "transparent"
 

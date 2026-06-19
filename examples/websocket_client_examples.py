@@ -7,7 +7,6 @@ the Excalidraw WebSocket server for real-time diagram collaboration.
 from __future__ import annotations
 
 import asyncio
-import json
 from typing import Any
 
 from mcp_common.websocket.client import WebSocketClient
@@ -50,7 +49,9 @@ async def monitor_diagram_collaboration(
                 elif event == "diagram.updated":
                     print(f"Diagram updated: {data.get('diagram_id')}")
                 elif event == "cursor.moved":
-                    print(f"Cursor moved: user={data.get('user_id')} pos={data.get('position')}")
+                    print(
+                        f"Cursor moved: user={data.get('user_id')} pos={data.get('position')}"
+                    )
                 elif event == "user.joined":
                     print(f"User joined: {data.get('user_info')}")
                 elif event == "user.left":
@@ -82,11 +83,14 @@ async def broadcast_diagram_update(
         await client.connect()
 
         # Send diagram update event
-        await client.send_event("diagram.updated", {
-            "diagram_id": diagram_id,
-            "elements": elements,
-            "timestamp": asyncio.get_event_loop().time(),
-        })
+        await client.send_event(
+            "diagram.updated",
+            {
+                "diagram_id": diagram_id,
+                "elements": elements,
+                "timestamp": asyncio.get_event_loop().time(),
+            },
+        )
 
         print(f"Broadcast diagram update for {diagram_id}")
 
@@ -119,11 +123,14 @@ async def broadcast_cursor_position(
         await client.send_request("subscribe", {"channel": f"cursor:{diagram_id}"})
 
         # Broadcast cursor position
-        await client.send_event("cursor.moved", {
-            "diagram_id": diagram_id,
-            "user_id": user_id,
-            "position": position,
-        })
+        await client.send_event(
+            "cursor.moved",
+            {
+                "diagram_id": diagram_id,
+                "user_id": user_id,
+                "position": position,
+            },
+        )
 
         print(f"Broadcast cursor position for user {user_id}")
 
@@ -156,11 +163,14 @@ async def join_collaboration_session(
         await client.send_request("subscribe", {"channel": f"presence:{diagram_id}"})
 
         # Broadcast user joined event
-        await client.send_event("user.joined", {
-            "diagram_id": diagram_id,
-            "user_id": user_id,
-            "user_info": user_info,
-        })
+        await client.send_event(
+            "user.joined",
+            {
+                "diagram_id": diagram_id,
+                "user_id": user_id,
+                "user_info": user_info,
+            },
+        )
 
         print(f"Joined collaboration session for diagram {diagram_id}")
 
@@ -171,10 +181,13 @@ async def join_collaboration_session(
 
     except KeyboardInterrupt:
         # Send user left event
-        await client.send_event("user.left", {
-            "diagram_id": diagram_id,
-            "user_id": user_id,
-        })
+        await client.send_event(
+            "user.left",
+            {
+                "diagram_id": diagram_id,
+                "user_id": user_id,
+            },
+        )
         print("\nLeft collaboration session")
     finally:
         await client.disconnect()

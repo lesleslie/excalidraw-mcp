@@ -11,7 +11,9 @@ from excalidraw_mcp.config import Config
 def test_config_validation_token_expiration_positive():
     """Test validation passes for positive token expiration."""
     with patch.dict(
-        os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret-minimum-32-chars-long"}, clear=False
+        os.environ,
+        {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret-minimum-32-chars-long"},
+        clear=False,
     ):
         config = Config()
         config.security.token_expiration_hours = 1  # Positive value
@@ -22,7 +24,9 @@ def test_config_validation_token_expiration_positive():
 def test_config_validation_token_expiration_zero():
     """Test validation fails for zero token expiration."""
     with patch.dict(
-        os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret-minimum-32-chars-long"}, clear=False
+        os.environ,
+        {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret-minimum-32-chars-long"},
+        clear=False,
     ):
         with pytest.raises(ValueError) as exc_info:
             config = Config()
@@ -35,7 +39,9 @@ def test_config_validation_token_expiration_zero():
 def test_config_validation_token_expiration_negative():
     """Test validation fails for negative token expiration."""
     with patch.dict(
-        os.environ, {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret-minimum-32-chars-long"}, clear=False
+        os.environ,
+        {"AUTH_ENABLED": "true", "JWT_SECRET": "test-secret-minimum-32-chars-long"},
+        clear=False,
     ):
         with pytest.raises(ValueError) as exc_info:
             config = Config()
