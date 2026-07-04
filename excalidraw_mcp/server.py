@@ -18,6 +18,11 @@ SERVERPANELS_AVAILABLE = importlib.util.find_spec("mcp_common.ui") is not None
 from .config import SECURITY_AVAILABLE
 from .monitoring.supervisor import MonitoringSupervisor
 
+# Server transport defaults (shared with cli.py to avoid duplication)
+MCP_TRANSPORT = "http"
+MCP_HOST = "localhost"
+MCP_PORT = 3032
+
 # Initialize FastMCP server
 mcp = FastMCP("Excalidraw MCP Server")
 
@@ -127,7 +132,7 @@ def main() -> None:
         init_background_services()
 
         # Run the FastMCP server in HTTP mode
-        mcp.run(transport="http", host="localhost", port=3032)
+        mcp.run(transport=MCP_TRANSPORT, host=MCP_HOST, port=MCP_PORT)
 
     except KeyboardInterrupt:
         logger.info("Server interrupted by user")
