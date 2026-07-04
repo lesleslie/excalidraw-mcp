@@ -143,7 +143,7 @@ def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> 
                             mcp as mcp_server,
                         )
 
-                        init_background_services()
+                        await asyncio.to_thread(init_background_services)
                         await mcp_server.run_async(
                             transport=MCP_TRANSPORT,
                             host=MCP_HOST,
