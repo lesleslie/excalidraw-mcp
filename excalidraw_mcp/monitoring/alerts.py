@@ -243,10 +243,6 @@ class AlertManager:
             return self._eval_unary_op(node, operators, context)
         elif isinstance(node, ast.Constant):
             return self._eval_constant(node)
-        elif isinstance(node, ast.Num):  # For Python < 3.8
-            return node.n
-        elif isinstance(node, ast.Str):  # For Python < 3.8
-            return node.s
         elif isinstance(node, ast.Name):
             if context is None:
                 raise ValueError("Context required for name evaluation")
