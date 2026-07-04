@@ -135,10 +135,20 @@ def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> 
 
                     # Keep the process running
                     try:
-                        # Import and run the main server
-                        from excalidraw_mcp.server import main
+                        from excalidraw_mcp.server import (
+                            MCP_HOST,
+                            MCP_PORT,
+                            MCP_TRANSPORT,
+                            init_background_services,
+                            mcp as mcp_server,
+                        )
 
-                        await main()  # type: ignore
+                        init_background_services()
+                        await mcp_server.run_async(
+                            transport=MCP_TRANSPORT,
+                            host=MCP_HOST,
+                            port=MCP_PORT,
+                        )
                     finally:
                         await supervisor.stop()
 
@@ -147,7 +157,7 @@ def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> 
                 # Start without monitoring
                 from excalidraw_mcp.server import main
 
-                asyncio.run(main())  # type: ignore
+                main()
 
     except KeyboardInterrupt:
         rprint("\n[yellow]Shutting down MCP server...[/yellow]")
