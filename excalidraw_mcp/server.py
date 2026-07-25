@@ -10,6 +10,7 @@ import logging
 from typing import Any
 
 from fastmcp import FastMCP
+from mcp_common.health import register_http_health_route
 
 # Check ServerPanels availability (Phase 3.3 M2: improved pattern)
 SERVERPANELS_AVAILABLE = importlib.util.find_spec("mcp_common.ui") is not None
@@ -22,14 +23,7 @@ from .monitoring.supervisor import MonitoringSupervisor
 mcp = FastMCP("Excalidraw MCP Server")
 
 
-# HTTP health endpoint for Claude Code compatibility
-@mcp.custom_route("/health", methods=["GET"])
-async def health_check(request: Any) -> Any:
-    """HTTP health check endpoint for Claude Code `mcp list` compatibility."""
-    from starlette.responses import JSONResponse
-
-    return JSONResponse({"status": "ok", "service": "excalidraw", "version": "0.34.0"})
-
+register_http_health_route(mcp, service_name="excalidraw", version="0.34.0")
 
 @mcp.custom_route("/healthz", methods=["GET"])
 async def healthz_check(request: Any) -> Any:
