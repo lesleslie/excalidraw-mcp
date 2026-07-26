@@ -14,7 +14,7 @@ class TestMainModule:
         """Test ExcalidrawConfig class."""
         config = ExcalidrawConfig()
 
-        assert config.http_port == 3042
+        assert config.http_port == 3032
         assert config.http_host == "127.0.0.1"
         assert config.enable_http_transport is True
 

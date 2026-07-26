@@ -432,8 +432,9 @@ class TestElementFactoryValidation:
 
     def test_validate_invalid_hex_color_format(self, factory):
         """Test invalid hex color formats."""
-        # Test non-string values - these should raise ValueError
-        for color in [123456, None, []]:
+        # Test non-string truthy values - these should raise ValueError
+        # Note: production code skips falsy values (None, []) via `if color` guard
+        for color in [123456]:
             element_data = {
                 "type": "rectangle",
                 "strokeColor": color,

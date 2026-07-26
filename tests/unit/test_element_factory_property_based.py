@@ -48,6 +48,7 @@ class TestPropertyBasedElementCreation:
         self, element_type, x, y, width, height
     ):
         """Test that element creation preserves coordinate values."""
+        factory = ElementFactory()
         element_data = {
             "type": element_type,
             "x": x,
@@ -107,6 +108,7 @@ class TestPropertyBasedElementCreation:
     @settings(max_examples=20)
     def test_text_element_preserves_content(self, text, font_size):
         """Test that text elements preserve text content and font size."""
+        factory = ElementFactory()
         element_data = {
             "type": "text",
             "text": text,

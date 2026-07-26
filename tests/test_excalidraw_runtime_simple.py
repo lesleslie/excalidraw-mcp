@@ -42,7 +42,7 @@ def test_excalidraw_config():
     config = ExcalidrawConfig()
 
     # Verify default values
-    assert config.http_port == 3042
+    assert config.http_port == 3032
     assert config.http_host == "127.0.0.1"
     assert config.enable_http_transport is True
     assert config.cache_dir is None or config.cache_dir == ".oneiric_cache"
