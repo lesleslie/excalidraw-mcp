@@ -23,7 +23,7 @@ try:
     SERVERPANELS_AVAILABLE = True
 except ImportError:
     SERVERPANELS_AVAILABLE = False
-    ServerPanels = None  # type: ignore
+    ServerPanels = None  # ty: ignore[invalid-assignment]
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor
@@ -138,7 +138,7 @@ def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> 
                         # Import and run the main server
                         from excalidraw_mcp.server import main
 
-                        await main()  # type: ignore
+                        await main()  # ty: ignore[invalid-await]
                     finally:
                         await supervisor.stop()
 
@@ -147,7 +147,7 @@ def start_mcp_server_impl(background: bool = False, monitoring: bool = True) -> 
                 # Start without monitoring
                 from excalidraw_mcp.server import main
 
-                asyncio.run(main())  # type: ignore
+                asyncio.run(main())  # ty: ignore[invalid-argument-type]
 
     except KeyboardInterrupt:
         rprint("\n[yellow]Shutting down MCP server...[/yellow]")

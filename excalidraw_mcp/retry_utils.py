@@ -242,7 +242,7 @@ def retry_decorator(
 
         # Check if function is async
         if asyncio.iscoroutinefunction(func):
-            return async_wrapper  # type: ignore
+            return async_wrapper  # ty: ignore[invalid-return-type]
         return wrapper
 
     return decorator

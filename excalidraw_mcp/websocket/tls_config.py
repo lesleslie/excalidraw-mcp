@@ -53,10 +53,10 @@ def load_ssl_context(
     if not cert_file and not key_file:
         config = get_websocket_tls_config()
         if config["tls_enabled"]:
-            cert_file = config["cert_file"]  # type: ignore
-            key_file = config["key_file"]  # type: ignore
-            ca_file = config["ca_file"]  # type: ignore
-            verify_client = config.get("verify_client", False)  # type: ignore
+            cert_file = config["cert_file"]  # ty: ignore[invalid-assignment]
+            key_file = config["key_file"]  # ty: ignore[invalid-assignment]
+            ca_file = config["ca_file"]  # ty: ignore[invalid-assignment]
+            verify_client = config.get("verify_client", False)  # ty: ignore[invalid-assignment]
 
     # Create SSL context if files provided
     ssl_context = None

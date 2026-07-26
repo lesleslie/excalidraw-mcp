@@ -198,7 +198,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
             channel = message.data.get("channel")
 
             # Check authorization for this channel
-            if user and not self._can_subscribe_to_channel(user, channel):  # type: ignore
+            if user and not self._can_subscribe_to_channel(user, channel):  # ty: ignore[invalid-argument-type]
                 error = WebSocketProtocol.create_error(
                     error_code="FORBIDDEN",
                     error_message=f"Not authorized to subscribe to {channel}",
