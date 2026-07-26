@@ -259,7 +259,7 @@ npm run canvas
 curl -i -N -H "Connection: Upgrade" \
      -H "Upgrade: websocket" \
      -H "Sec-WebSocket-Version: 13" \
-     -H "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+     -H "Sec-WebSocket-Key: AAAAAAAAAAAAAAAAAAAAAA==" \
      http://localhost:3031
 ```
 
@@ -343,7 +343,7 @@ curl --include \
      --header "Connection: Upgrade" \
      --header "Upgrade: websocket" \
      --header "Sec-WebSocket-Version: 13" \
-     --header "Sec-WebSocket-Key: SGVsbG8sIHdvcmxkIQ==" \
+     --header "Sec-WebSocket-Key: AAAAAAAAAAAAAAAAAAAAAA==" \
      http://localhost:3031
 ```
 
