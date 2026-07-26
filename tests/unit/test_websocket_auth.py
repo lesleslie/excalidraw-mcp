@@ -113,7 +113,7 @@ class TestExcalidrawWebSocketAuthenticationIntegration:
         server = ExcalidrawWebSocketServer(
             diagram_manager=None,
             host="127.0.0.1",
-            port=3043,  # Use different port for testing
+            port=3091,  # Use port unlikely to collide with running services
             require_auth=False,
         )
 
@@ -140,7 +140,7 @@ class TestExcalidrawWebSocketAuthenticationIntegration:
         server = ExcalidrawWebSocketServer(
             diagram_manager=None,
             host="127.0.0.1",
-            port=3046,
+            port=3092,
             require_auth=True,
         )
 
@@ -151,7 +151,7 @@ class TestExcalidrawWebSocketAuthenticationIntegration:
             from mcp_common.websocket import WebSocketClient
 
             client = WebSocketClient(
-                uri="ws://127.0.0.1:3046",
+                uri="ws://127.0.0.1:3092",
                 token="invalid-token",
                 reconnect=False,
             )
