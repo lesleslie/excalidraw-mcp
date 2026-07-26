@@ -30,7 +30,7 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
     """Excalidraw MCP Server with Oneiric integration."""
 
     def __init__(self, config: ExcalidrawConfig) -> None:
-        self.config = config  # type: ignore[assignment]  # ty: ignore[invalid-argument-type]
+        self.config = config  # type: ignore[assignment]  # ty: ignore[invalid-assignment]
         self.mcp = mcp  # Use the existing FastMCP instance
         # Update global config with Oneiric settings
         self._update_global_config()
