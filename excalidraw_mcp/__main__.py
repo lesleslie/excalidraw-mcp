@@ -30,7 +30,7 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
     """Excalidraw MCP Server with Oneiric integration."""
 
     def __init__(self, config: ExcalidrawConfig) -> None:
-        self.config = config  # type: ignore[assignment]
+        self.config = config  # type: ignore[assignment]  # ty: ignore[invalid-argument-type]
         self.mcp = mcp  # Use the existing FastMCP instance
         # Update global config with Oneiric settings
         self._update_global_config()
@@ -46,8 +46,8 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
         from excalidraw_mcp.config import config as global_config
 
         # Type ignore: server attributes are dynamically set by the config system
-        global_config.server.express_host = self.config.http_host  # type: ignore[union-attr]
-        global_config.server.express_port = self.config.http_port  # type: ignore[union-attr]
+        global_config.server.express_host = self.config.http_host  # type: ignore[union-attr]  # ty: ignore[unresolved-attribute]
+        global_config.server.express_port = self.config.http_port  # type: ignore[union-attr]  # ty: ignore[unresolved-attribute]
 
     async def startup(self) -> None:
         """Server startup lifecycle hook."""
@@ -68,7 +68,7 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
         )
 
         print("✅ Excalidraw MCP Server started successfully")
-        print(f"   Listening on {self.config.http_host}:{self.config.http_port}")  # type: ignore[union-attr]
+        print(f"   Listening on {self.config.http_host}:{self.config.http_port}")  # type: ignore[union-attr]  # ty: ignore[unresolved-attribute]
         print(f"   Cache directory: {self.runtime.cache_dir}")
         print("   Snapshot manager: Initialized")
         print("   Cache manager: Initialized")
