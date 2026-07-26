@@ -28,7 +28,7 @@ class SceneExporter:
     def _check_playwright(self) -> None:
         """Check if Playwright is available for PNG rendering."""
         try:
-            from playwright.sync_api import sync_playwright  # type: ignore
+            from playwright.sync_api import sync_playwright
 
             self.playwright_available = True
             self.sync_playwright = sync_playwright
@@ -108,7 +108,7 @@ class SceneExporter:
                 screenshot_bytes = await page.screenshot(type="png", full_page=False)
 
                 await browser.close()
-                return screenshot_bytes  # type: ignore
+                return screenshot_bytes
 
         except Exception as e:
             logger.error(f"Failed to render PNG: {e}")
@@ -144,7 +144,7 @@ class SceneExporter:
 
         return "\n".join(svg_parts).encode("utf-8")
 
-    def _element_to_svg(self, element: dict[str, Any]) -> str | None:  # type: ignore
+    def _element_to_svg(self, element: dict[str, Any]) -> str | None:
         """Convert a single element to SVG.
 
         Args:

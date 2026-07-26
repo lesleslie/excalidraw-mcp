@@ -155,7 +155,7 @@ class MonitoringSupervisor:
             if health_result.status != HealthStatus.HEALTHY:
                 self.metrics_collector.increment_counter("health_check_failures_total")
 
-            return health_result  # type: ignore
+            return health_result
 
         except Exception as e:
             # Handle circuit breaker or health check errors

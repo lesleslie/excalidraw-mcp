@@ -114,7 +114,7 @@ class CircuitBreaker:
             # Allow limited calls to test recovery
             return self._half_open_calls < self._half_open_max_calls
 
-        return False  # type: ignore
+        return False
 
     def _should_attempt_recovery(self) -> bool:
         """Check if we should attempt recovery from open state."""
