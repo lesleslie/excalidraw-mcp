@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "excalidraw-mcp"
-version = "0.35.9"
+version = "0.36.0"
 description = "Unofficial MCP server for Excalidraw diagram management with canvas sync"
 readme = "README.md"
 classifiers = [

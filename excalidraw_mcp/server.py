@@ -27,6 +27,7 @@ mcp = FastMCP("Excalidraw MCP Server")
 
 register_http_health_route(mcp, service_name="excalidraw", version=__version__)
 
+
 @mcp.custom_route("/healthz", methods=["GET"])
 async def healthz_check(request: Any) -> Any:
     """Kubernetes-style health check endpoint."""

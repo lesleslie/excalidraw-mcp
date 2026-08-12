@@ -28,7 +28,9 @@ class SceneExporter:
     def _check_playwright(self) -> None:
         """Check if Playwright is available for PNG rendering."""
         try:
-            from playwright.sync_api import sync_playwright
+            from playwright.sync_api import (  # ty: ignore[unresolved-import]
+                sync_playwright,
+            )
 
             self.playwright_available = True
             self.sync_playwright = sync_playwright

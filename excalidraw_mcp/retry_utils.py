@@ -15,6 +15,11 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")
 
 
+def _func_name(func: Any) -> str:
+    """Best-effort callable name for logs (callables may not have __name__)."""
+    return getattr(func, "__name__", None) or repr(func)
+
+
 class RetryConfig:
     """Configuration for retry behavior."""
 
@@ -95,7 +100,7 @@ async def retry_async[T](
             # If this is the last attempt, don't retry
             if attempt == retry_config.max_attempts - 1:
                 logger.error(
-                    f"Function {func.__name__} failed after {retry_config.max_attempts} attempts. "
+                    f"Function {_func_name(func)} failed after {retry_config.max_attempts} attempts. "
                     f"Last error: {e}"
                 )
                 raise
@@ -104,7 +109,7 @@ async def retry_async[T](
             delay = calculate_delay(attempt, retry_config, e)
 
             logger.warning(
-                f"Attempt {attempt + 1} of {func.__name__} failed: {e}. "
+                f"Attempt {attempt + 1} of {_func_name(func)} failed: {e}. "
                 f"Retrying in {delay:.2f} seconds..."
             )
 
@@ -165,7 +170,7 @@ def retry_sync[T](
             # If this is the last attempt, don't retry
             if attempt == retry_config.max_attempts - 1:
                 logger.error(
-                    f"Function {func.__name__} failed after {retry_config.max_attempts} attempts. "
+                    f"Function {_func_name(func)} failed after {retry_config.max_attempts} attempts. "
                     f"Last error: {e}"
                 )
                 raise
@@ -174,7 +179,7 @@ def retry_sync[T](
             delay = calculate_delay(attempt, retry_config, e)
 
             logger.warning(
-                f"Attempt {attempt + 1} of {func.__name__} failed: {e}. "
+                f"Attempt {attempt + 1} of {_func_name(func)} failed: {e}. "
                 f"Retrying in {delay:.2f} seconds..."
             )
 
@@ -229,7 +234,7 @@ def retry_decorator(
             async def async_func() -> T:
                 result = func(*args, **kwargs)
                 if asyncio.iscoroutine(result):
-                    coro_result: T = await result
+                    coro_result: T = await result  # ty: ignore[invalid-assignment]
                     return coro_result
                 return result
 
