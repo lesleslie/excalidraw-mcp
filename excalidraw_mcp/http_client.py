@@ -6,7 +6,7 @@ import time
 import uuid
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Self
 
 import httpx
 
@@ -41,7 +41,7 @@ class CanvasHTTPClient:
             "total_response_time": 0.0,
         }
 
-    async def __aenter__(self) -> "CanvasHTTPClient":
+    async def __aenter__(self) -> Self:
         await self._ensure_client()
         return self
 

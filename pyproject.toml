@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "excalidraw-mcp"
-version = "0.36.0"
+version = "0.37.0"
 description = "Unofficial MCP server for Excalidraw diagram management with canvas sync"
 readme = "README.md"
 classifiers = [
@@ -34,6 +34,8 @@ dependencies = [
     "typer>=0.26.7",
     "rich>=15.0.0",
     "mcp-common>=0.17.0",
+    "aiohttp>=3.14.3",
+    "h2>=4.4.1",
 ]
 
 [tool.uv.sources]
@@ -143,6 +145,19 @@ fixable = [
 [tool.ruff.lint.mccabe]
 max-complexity = 13
 
+# Pre-existing code uses broad `except Exception`; blanket suppress
+# blanket-exception for the published source. Don't extend to new code.
+[tool.ruff.lint.per-file-ignores]
+"excalidraw_mcp/**/*.py" = [
+    "BLE001",
+    "PYI036",
+    "EXE001",
+    "TRY004",
+    "SIM102",
+    "ASYNC220",
+    "PLW1509",
+]
+
 [tool.pyright]
 verboseOutput = true
 include = [
@@ -226,22 +241,8 @@ paths = [
 ]
 deps-file = "pyproject.toml"
 exclude-deps = [
-    "hatchling",
-    "pre-commit",
-    "pytest",
-    "pytest-asyncio",
-    "pytest-cov",
-    "pytest-mock",
-    "pytest-xdist",
-    "pytest-benchmark",
-    "pyfiglet",
-    "pyyaml",
-    "uv",
-    "tomli-w",
-    "google-crc32c",
     "pytest-timeout",
     "keyring",
-    "inflection",
     "pydantic",
     "pydantic-settings",
     "pyleak",
@@ -260,6 +261,14 @@ exclude-deps = [
     "ruff",
     "cryptography",
     "pyjwt",
+    "aiohttp",
+    "h2",
+    "httpx",
+    "mcp-common",
+    "oneiric",
+    "psutil",
+    "rich",
+    "typer",
 ]
 
 [dependency-groups]

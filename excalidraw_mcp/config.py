@@ -238,7 +238,6 @@ class MonitoringConfig:
     trace_headers_enabled: bool = True
 
     def __post_init__(self) -> None:
-        pass
 
         # Validate thresholds
         if not (0 < self.cpu_threshold_percent <= 100):

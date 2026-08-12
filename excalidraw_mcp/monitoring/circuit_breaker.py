@@ -37,8 +37,6 @@ class CircuitStats:
 class CircuitBreakerError(Exception):
     """Exception raised when circuit breaker is open."""
 
-    pass
-
 
 class CircuitBreaker:
     """Circuit breaker for canvas server operations."""
