@@ -293,8 +293,7 @@ Add this configuration to your Claude Code `.mcp.json`:
       "command": "uvx",
       "args": ["excalidraw-mcp"],
       "env": {
-        "EXPRESS_SERVER_URL": "http://localhost:3031",
-        "ENABLE_CANVAS_SYNC": "true"
+        "EXPRESS_SERVER_URL": "http://localhost:3031"
       }
     }
   }
@@ -303,21 +302,24 @@ Add this configuration to your Claude Code `.mcp.json`:
 
 ### **Alternative: Local Development Configuration**
 
-For local development, use:
+For local development, use the console-script entry point installed by `uv sync`:
 
 ```json
 {
   "mcpServers": {
     "excalidraw": {
       "command": "uv",
-      "args": ["run", "python", "excalidraw_mcp/server.py"],
-      "cwd": "/absolute/path/to/excalidraw-mcp"
+      "args": ["run", "excalidraw-mcp"],
+      "cwd": "<absolute-path-to-cloned-excalidraw-mcp>"
     }
   }
 }
 ```
 
-**Important**: Replace `/absolute/path/to/excalidraw-mcp` with the actual absolute path to your cloned repository.
+**Important**: Replace `<absolute-path-to-cloned-excalidraw-mcp>` with the actual
+absolute path to your cloned repository. Running `excalidraw_mcp/server.py`
+directly is not a supported entry point — use the `excalidraw-mcp` console
+script (`uv run excalidraw-mcp`) or `uv run python -m excalidraw_mcp` instead.
 
 ## 🔧 Integration with Other Tools
 
@@ -364,16 +366,42 @@ For VS Code MCP extension, add to your settings:
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `EXPRESS_SERVER_URL` | `http://localhost:3031` | Canvas server URL for MCP sync |
-| `ENABLE_CANVAS_SYNC` | `true` | Enable/disable canvas synchronization |
 | `CANVAS_AUTO_START` | `true` | Auto-start canvas server with MCP server |
 | `SYNC_RETRY_ATTEMPTS` | `3` | Number of retry attempts for failed operations |
 | `SYNC_RETRY_DELAY_SECONDS` | `1.0` | Base delay between retry attempts (seconds) |
 | `SYNC_RETRY_MAX_DELAY_SECONDS` | `30.0` | Maximum delay between retry attempts (seconds) |
 | `SYNC_RETRY_EXPONENTIAL_BASE` | `2.0` | Exponential base for backoff calculation |
 | `SYNC_RETRY_JITTER` | `true` | Enable/disable jitter for retry delays |
-| `PORT` | `3031` | Canvas server port |
-| `HOST` | `localhost` | Canvas server host |
-| `DEBUG` | `false` | Enable debug logging |
+| `LOG_LEVEL` | `INFO` | Standard logging level (`DEBUG`/`INFO`/`WARNING`/`ERROR`) |
+| `STRUCTURED_LOGGING` | `true` | Emit structured JSON log records |
+| `JSON_LOGGING` | `false` | Render log records as a single JSON line |
+| `LOG_FILE` | _(unset)_ | Optional path for the rotating log file |
+| `AUDIT_LOG_FILE` | _(unset)_ | Optional path for the tamper-evident audit log |
+| `AUTH_ENABLED` | `false` | Enable JWT-based authentication on the MCP HTTP transport |
+| `JWT_SECRET` | _(unset, required when `AUTH_ENABLED=true`)_ | Shared secret used to sign/verify JWTs |
+| `ALLOWED_ORIGINS` | _(unset)_ | Comma-separated CORS allow-list for the MCP HTTP transport |
+| `MONITORING_ENABLED` | `true` | Enable the in-process monitoring agent |
+| `METRICS_ENABLED` | `true` | Expose Prometheus-style metrics on the MCP server |
+| `ALERTING_ENABLED` | `true` | Send alerts when monitored thresholds are crossed |
+| `CIRCUIT_BREAKER_ENABLED` | `true` | Engage the circuit breaker around outbound HTTP calls |
+| `HEALTH_CHECK_INTERVAL` | `30` | Seconds between background health probes |
+| `CPU_THRESHOLD` | `80.0` | CPU usage percent that triggers a monitoring alert |
+| `MEMORY_THRESHOLD` | `80.0` | RSS memory percent that triggers a monitoring alert |
+| `MAX_ELEMENTS` | `10000` | Maximum elements permitted per canvas |
+| `WEBSOCKET_ENABLED` | `true` | Start the WebSocket collaboration server |
+| `WEBSOCKET_HOST` | `0.0.0.0` | Bind address for the WebSocket server |
+| `WEBSOCKET_PORT` | `3042` | Listen port for the WebSocket server |
+| `WEBSOCKET_METRICS_PORT` | `9097` | Port for the WebSocket Prometheus metrics endpoint |
+| `EXCALIDRAW_AUTH_ENABLED` | `false` | Enable JWT auth on the WebSocket subscription layer |
+| `EXCALIDRAW_JWT_SECRET` | _(unset)_ | JWT secret for the WebSocket subscription layer |
+| `EXCALIDRAW_TOKEN_EXPIRY` | `3600` | JWT lifetime in seconds for the WebSocket layer |
+
+> **Note:** `PORT`, `HOST`, and `DEBUG` are not consumed by the Python MCP server.
+> The canvas server (TypeScript, `src/server.ts`) reads `PORT` (default `3031`) for
+> its Express listener; the Python MCP HTTP transport listens on a fixed
+> `3032` (see `excalidraw_mcp/__main__.py`). Use `EXPRESS_SERVER_URL` to point
+> the Python server at a non-default canvas-server host/port, and `LOG_LEVEL`
+> to control log verbosity.
 
 ## 📊 API Endpoints
 
@@ -412,6 +440,18 @@ The canvas server provides these REST endpoints:
 ### **Resource Access**
 
 - `get_resource` - Access scene, library, theme, or elements data
+
+### **WebSocket Monitoring**
+
+The MCP server also exposes five WebSocket-administration tools (registered by
+`excalidraw_mcp/mcp/websocket_tools.py`). They are available whenever the
+WebSocket collaboration server is enabled:
+
+- `websocket_health_check` - Liveness probe for the WebSocket server
+- `websocket_get_status` - Active connections, rooms, and per-room subscriber counts
+- `websocket_list_rooms` - Enumerate active diagram/cursor/presence/global rooms
+- `websocket_broadcast_test_event` - Publish a synthetic event to a room (development use)
+- `websocket_get_metrics` - Throughput, rate-limit counters, and connection metrics
 
 ## 🏗️ Development Architecture
 
@@ -473,7 +513,7 @@ flowchart TD
     A4 -->|Yes| A6[Check firewall]
 
     SyncCheck -->|No| B1[Python auto-starts<br/>canvas server]
-    SyncCheck -->|Yes| B2{ENABLE_CANVAS_SYNC<br/>= true?}
+    SyncCheck -->|Yes| B2{EXPRESS_SERVER_URL<br/>set?}
 
     B2 -->|No| B3[Set env variable]
     B2 -->|Yes| B4{/health OK?}
@@ -509,7 +549,7 @@ flowchart TD
 ### **Elements Not Syncing**
 
 - Python server automatically manages canvas server
-- Check `ENABLE_CANVAS_SYNC=true` in environment
+- Verify `EXPRESS_SERVER_URL` points at a reachable canvas server
 - Verify canvas server health at `http://localhost:3031/health`
 
 ### **WebSocket Connection Issues**
@@ -650,12 +690,16 @@ This project enforces strict quality standards:
 The Python package is published to PyPI as `excalidraw-mcp`:
 
 ```bash
-# Install from PyPI
+# Install from PyPI (latest published release)
 pip install excalidraw-mcp
 
 # Use with uvx (recommended)
 uvx excalidraw-mcp
 ```
+
+> The `pyproject.toml`/`CHANGELOG.md` version may briefly lead the latest PyPI
+> release while a publish is in flight; in that window prefer `pip install -e .`
+> from a fresh clone over `pip install excalidraw-mcp`.
 
 ### Local Development
 

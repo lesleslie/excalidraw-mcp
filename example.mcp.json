@@ -6,7 +6,6 @@
       ],
       "command": "uvx",
       "env": {
-        "ENABLE_CANVAS_SYNC": "true",
         "EXPRESS_SERVER_URL": "http://localhost:3031"
       }
     }

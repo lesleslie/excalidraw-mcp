@@ -17,7 +17,7 @@ Excalidraw-MCP now includes a complete WebSocket server implementation for real-
 - Package initialization
 - Exports `ExcalidrawWebSocketServer`
 
-**`excalidraw_mcp/websocket/server.py`** (437 lines)
+**`excalidraw_mcp/websocket/server.py`** (420 lines)
 - `ExcalidrawWebSocketServer` class extending `mcp_common.websocket.WebSocketServer`
 - Channel-based room management: `diagram:{id}`, `cursor:{id}`, `presence:{id}`, `global`
 - Async event handlers: `on_connect`, `on_disconnect`, `on_message`
@@ -32,7 +32,7 @@ Excalidraw-MCP now includes a complete WebSocket server implementation for real-
 
 ### 2. Authentication Module
 
-**`excalidraw_mcp/websocket/auth.py`** (98 lines)
+**`excalidraw_mcp/websocket/auth.py`** (100 lines)
 - `get_authenticator()` - Configure JWT authentication from environment
 - `generate_token()` - Create test/development JWT tokens
 - `verify_token()` - Validate JWT tokens
@@ -51,7 +51,7 @@ Excalidraw-MCP now includes a complete WebSocket server implementation for real-
 
 ### 4. MCP Tools Integration
 
-**`excalidraw_mcp/mcp/websocket_tools.py`** (127 lines)
+**`excalidraw_mcp/mcp/websocket_tools.py`** (128 lines)
 - `websocket_health_check()` - Server health status
 - `websocket_get_status()` - Detailed server metrics (connections, rooms)
 - `websocket_list_rooms()` - List active rooms and subscriber counts
@@ -339,7 +339,7 @@ export WEBSOCKET_ENABLED=true
 export WEBSOCKET_HOST=0.0.0.0
 export WEBSOCKET_PORT=3042
 export WEBSOCKET_AUTH_ENABLED=true
-export WEBSOCKET_JWT_SECRET="your-32-character-secret-key-here"
+export WEBSOCKET_JWT_SECRET="<your-32-character-secret-key>"
 export WEBSOCKET_TLS_ENABLED=true
 export WEBSOCKET_CERT_FILE="/etc/ssl/certs/excalidraw.pem"
 export WEBSOCKET_KEY_FILE="/etc/ssl/private/excalidraw-key.pem"

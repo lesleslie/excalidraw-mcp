@@ -75,8 +75,7 @@ uv run python excalidraw_mcp/server.py
     "command": "uvx",
     "args": ["excalidraw-mcp"],
     "env": {
-      "EXPRESS_SERVER_URL": "http://localhost:3031",
-      "ENABLE_CANVAS_SYNC": "true"
+      "EXPRESS_SERVER_URL": "http://localhost:3031"
     }
   }
 }
@@ -124,15 +123,17 @@ uv run python excalidraw_mcp/server.py
 Environment variables:
 
 ```bash
-# Canvas server configuration
+# Canvas server configuration (PORT is read by the TypeScript canvas server,
+# not the Python MCP server)
 PORT=3031
-HOST=localhost
 EXPRESS_SERVER_URL=http://localhost:3031
-ENABLE_CANVAS_SYNC=true
 CANVAS_AUTO_START=true
 
-# Development settings
-DEBUG=false
+# Python MCP server logging
+LOG_LEVEL=INFO
+STRUCTURED_LOGGING=true
+
+# Development settings (DEBUG has no effect; use LOG_LEVEL=DEBUG instead)
 ```
 
 ## Testing & Quality Assurance
@@ -236,8 +237,7 @@ uvx excalidraw-mcp --help
       "command": "uvx",
       "args": ["excalidraw-mcp"],
       "env": {
-        "EXPRESS_SERVER_URL": "http://localhost:3031",
-        "ENABLE_CANVAS_SYNC": "true"
+        "EXPRESS_SERVER_URL": "http://localhost:3031"
       }
     }
   }
@@ -423,7 +423,8 @@ export JEST_VERBOSE=true             # Verbose Jest output
 
 | Issue | Command | Solution |
 |-------|---------|----------|
-| Port conflicts | `lsof -i :3031` | Change `PORT` environment variable |
+| Canvas-server port conflict (3031) | `lsof -i :3031` | Change `PORT` (read by `src/server.ts`); restart canvas server |
+| MCP HTTP transport port conflict (3032) | `lsof -i :3032` | Currently fixed at 3032 in `excalidraw_mcp/__main__.py`; report upstream if you need a different port |
 | MCP not connecting | Check `.mcp.json` | Verify `uvx excalidraw-mcp` configuration |
 | Canvas sync issues | Check `/health` endpoint | Python server auto-starts canvas server |
 | Build failures | `npm run type-check` | Fix TypeScript errors first |
