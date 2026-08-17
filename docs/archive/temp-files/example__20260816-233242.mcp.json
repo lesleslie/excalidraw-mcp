@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "excalidraw": {
+      "args": [
+        "excalidraw-mcp"
+      ],
+      "command": "uvx",
+      "env": {
+        "EXPRESS_SERVER_URL": "http://localhost:3031"
+      }
+    }
+  }
+}

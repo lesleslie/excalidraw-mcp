@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="1.463" timestamp="2026-07-26T08:29:28.378277-07:00" hostname="les-pro"><testcase classname="tests.test_excalidraw_runtime_simple" name="test_excalidraw_config" time="1.230"><failure message="ImportError: cannot import name 'register_http_health_route' from 'mcp_common.health' (/Users/les/Projects/mahavishnu/.venv/lib/python3.13/site-packages/mcp_common/health.py)">tests/test_excalidraw_runtime_simple.py:39: in test_excalidraw_config
-    from excalidraw_mcp.__main__ import ExcalidrawConfig
-excalidraw_mcp/__main__.py:14: in &lt;module&gt;
-    from excalidraw_mcp.server import mcp
-excalidraw_mcp/server.py:13: in &lt;module&gt;
-    from mcp_common.health import register_http_health_route
-E   ImportError: cannot import name 'register_http_health_route' from 'mcp_common.health' (/Users/les/Projects/mahavishnu/.venv/lib/python3.13/site-packages/mcp_common/health.py)</failure></testcase></testsuite></testsuites>
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="0" skipped="0" tests="1" time="2.267" timestamp="2026-08-16T23:31:29.359882-07:00" hostname="les-pro"><testcase classname="tests.test_version_sync" name="test_version_sync" time="0.009" /></testsuite></testsuites>
