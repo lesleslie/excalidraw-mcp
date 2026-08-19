@@ -47,10 +47,11 @@ class TestServerModule:
     @patch("mcp_common.ui.ServerPanels")
     @patch("excalidraw_mcp.server.logger")
     @patch("excalidraw_mcp.server.init_background_services")
+    @patch("excalidraw_mcp.server.create_server")
     @patch("excalidraw_mcp.server.mcp")
     @patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", True)
     def test_main_with_serverpanels(
-        self, mock_mcp, mock_init, mock_logger, mock_serverpanels
+        self, mock_mcp, mock_create_server, mock_init, mock_logger, mock_serverpanels
     ):
         """Test main function with ServerPanels available."""
         # Mock the mcp.run method to avoid actually starting the server
@@ -72,9 +73,12 @@ class TestServerModule:
 
     @patch("excalidraw_mcp.server.logger")
     @patch("excalidraw_mcp.server.init_background_services")
+    @patch("excalidraw_mcp.server.create_server")
     @patch("excalidraw_mcp.server.mcp")
     @patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", False)
-    def test_main_without_serverpanels(self, mock_mcp, mock_init, mock_logger):
+    def test_main_without_serverpanels(
+        self, mock_mcp, mock_create_server, mock_init, mock_logger
+    ):
         """Test main function without ServerPanels available."""
         # Mock the mcp.run method to avoid actually starting the server
         mock_mcp.run = Mock()
@@ -95,9 +99,12 @@ class TestServerModule:
 
     @patch("excalidraw_mcp.server.logger")
     @patch("excalidraw_mcp.server.init_background_services")
+    @patch("excalidraw_mcp.server.create_server")
     @patch("excalidraw_mcp.server.mcp")
     @patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", True)
-    def test_main_keyboard_interrupt(self, mock_mcp, mock_init, mock_logger):
+    def test_main_keyboard_interrupt(
+        self, mock_mcp, mock_create_server, mock_init, mock_logger
+    ):
         """Test main function with KeyboardInterrupt."""
         # Make mcp.run raise KeyboardInterrupt
         mock_mcp.run.side_effect = KeyboardInterrupt()
@@ -110,9 +117,10 @@ class TestServerModule:
 
     @patch("excalidraw_mcp.server.logger")
     @patch("excalidraw_mcp.server.init_background_services")
+    @patch("excalidraw_mcp.server.create_server")
     @patch("excalidraw_mcp.server.mcp")
     @patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", True)
-    def test_main_exception(self, mock_mcp, mock_init, mock_logger):
+    def test_main_exception(self, mock_mcp, mock_create_server, mock_init, mock_logger):
         """Test main function with general exception."""
         # Make mcp.run raise a general exception
         mock_mcp.run.side_effect = RuntimeError("Test error")

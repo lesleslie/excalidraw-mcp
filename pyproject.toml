@@ -33,7 +33,7 @@ dependencies = [
     "cryptography>=49.0.0",
     "typer>=0.26.7",
     "rich>=15.0.0",
-    "mcp-common>=0.17.0",
+    "mcp-common>=0.18.0",
     "aiohttp>=3.14.3",
     "h2>=4.4.1",
 ]

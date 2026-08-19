@@ -97,6 +97,34 @@ When adding or modifying tools:
 - cross-layer changes: validate both the Python MCP side and the canvas API path
 - process-management changes: verify startup, health checks, and shutdown behavior explicitly
 
+## Tool Profile System
+
+excalidraw-mcp adopts the `mcp-common` ToolProfile dispatch (W4.2 — Tier-A trivial). The Python MCP server exposes a configurable subset of tools based on the `EXCALIDRAW_TOOL_PROFILE` environment variable, controlling context consumption while preserving the health probe at every tier.
+
+### Profile Mapping (Tier-A Trivial — 3-tier)
+
+| Profile  | Tools exposed                                                                              | Use case                                       |
+|----------|--------------------------------------------------------------------------------------------|------------------------------------------------|
+| MINIMAL  | `health_check`, `discover_tools`                                                          | Control-plane / health-probe deployments       |
+| STANDARD | All 12 canvas tools + `health_check` + `discover_tools`                                    | Typical LLM client deployments                 |
+| FULL     | All 12 canvas tools + `health_check` + `discover_tools` (default — matches STANDARD)        | Default behavior, no profile gating            |
+
+### Implementation Files
+
+- `excalidraw_mcp/tools/__init__.py` — `register_health_tool(mcp, config)` (MCP `health_check` + HTTP `/health` route) and `register_canvas_tools(mcp, config)` (12 canvas tools via `MCPToolsManager`).
+- `excalidraw_mcp/tools/profiles.py` — `_GROUP_REGISTRY` (SSOT for group keys), `PROFILE_REGISTRATIONS`, `apply_excalidraw_tool_profile(server, config)` async entry point.
+- `excalidraw_mcp/server.py::create_app(config, server)` — async production path that calls `apply_excalidraw_tool_profile`. The caller-supplied `config` is threaded through (NOT re-loaded from env).
+
+### W4.1 Lessons Applied
+
+- **MINIMAL includes the health tool** (NOT just the HTTP `/health` route) — `essential_tool_names={"health_check"}` enforces this at every profile.
+- **Caller-supplied config is preserved** — `create_app(config, server)` threads the config object through to every registration callback. Tests use monkey-patched `Config.__init__` tracking to catch silent re-loads.
+- **Production path uses `_apply_tool_profile` (async), NOT `apply_tool_profile` (sync)** — the sync wrapper raises `RuntimeError` inside an event loop.
+
+### Tests
+
+`tests/unit/test_tool_profile.py` (30 tests) covers structural guards, AST keystone checks, profile semantics, and real production-path tests. See `docs/architecture/tool-profile-rationale.md` for the full rationale.
+
 ## Security & Operations
 
 Configuration such as `AUTH_ENABLED`, `JWT_SECRET`, `ALLOWED_ORIGINS`, and server URLs should remain environment-driven. If you add a new setting, update the config surface, docs, and examples together.

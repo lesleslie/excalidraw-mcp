@@ -37,6 +37,7 @@ def test_main_blocks_execute():
     with (
         patch("excalidraw_mcp.server.mcp") as mock_mcp,
         patch("excalidraw_mcp.server.init_background_services"),
+        patch("excalidraw_mcp.server.create_server"),
         patch("excalidraw_mcp.server.SERVERPANELS_AVAILABLE", False),
     ):
         # Mock the run method to prevent server startup
