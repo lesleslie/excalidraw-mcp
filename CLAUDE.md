@@ -123,7 +123,7 @@ excalidraw-mcp adopts the `mcp-common` ToolProfile dispatch (W4.2 — Tier-A tri
 
 ### Tests
 
-`tests/unit/test_tool_profile.py` (30 tests) covers structural guards, AST keystone checks, profile semantics, and real production-path tests. See `docs/architecture/tool-profile-rationale.md` for the full rationale.
+`tests/unit/test_tool_profile.py` (31 tests) covers structural guards, AST keystone checks, profile semantics, and real production-path tests. See `docs/architecture/tool-profile-rationale.md` for the full rationale.
 
 ## Security & Operations
 
