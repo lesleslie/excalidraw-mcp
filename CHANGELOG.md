@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.38.0] - 2026-08-20
+
+### Added
+
+- excalidraw-mcp: Adopt ToolProfile dispatch (W4.2)
+- excalidraw: Bodai plugin conversion (manifest, mcp.json, slash commands)
+
+### Fixed
+
+- excalidraw-mcp: Apply W4.2 round 1 review Minor items
+- excalidraw-mcp: Clear remaining 53 ruff findings
+- excalidraw-mcp: Ruff auto-fix 25 of 78 findings
+- excalidraw-mcp: Ty errors in cli.py + server.py
+
+### Internal
+
+- excalidraw-mcp: Add crackerjack dev dep + [tool.crackerjack] section + uv sync upgrade
+- excalidraw-mcp: Gitignore .lycheecache (file, not just dir)
+- excalidraw-mcp: Gitignore .lycheecache + .hypothesis
+- excalidraw-mcp: Refresh oneiric + mcp-common deps
+- excalidraw-mcp: Untrack .lycheecache + .hypothesis runtime artifacts
+- Gitignore runtime artifacts + untrack user-authorized cache files (bodai cleanup 2026-08-17)
+- gitignore: Untrack .pyscn/ (bodai 2026-08-20)
+
 ## [0.37.1] - 2026-08-16
 
 ### Documentation
