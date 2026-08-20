@@ -167,3 +167,6 @@ node_modules/
 .coverage*
 *.pyd
 example.mcp.json
+
+# Canonical runtime-artifact patterns (bodai cleanup 2026-08-20)
+.pyscn/
