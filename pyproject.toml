@@ -283,6 +283,7 @@ exclude-deps = [
 
 [dependency-groups]
 dev = [
+    "crackerjack>=0.65.3",
     "pytest>=9.1.0",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
@@ -290,3 +291,10 @@ dev = [
     "respx>=0.23.1",
     "session-buddy>=0.19.17",
 ]
+
+[tool.crackerjack]
+# Baseline configuration (auto-bootstrapped 2026-08-20).
+# Hook stages run on `crackerjack run`; see crackerjack --help for the
+# full lifecycle. refurb_timeout raised from default 300s to 420s because
+# large refactor passes on first run can exceed 5 minutes on cold cache.
+refurb_timeout = 420
