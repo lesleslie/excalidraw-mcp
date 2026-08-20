@@ -20,7 +20,6 @@ class TestMainModule:
         """Test that the main function calls the server main function."""
         # This test verifies the import chain works correctly
         # Note: We can't actually run the main function because it would start the server
-        pass
 
     def test_module_has_correct_docstring(self):
         """Test that the module has the expected docstring."""

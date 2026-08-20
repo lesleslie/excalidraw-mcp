@@ -15,10 +15,10 @@ def test_main_blocks_execute():
         [
             sys.executable,
             "-c",
-            f"import sys; sys.path.insert(0, '{project_root}'); "
+            (f"import sys; sys.path.insert(0, '{project_root}'); "
             "from unittest.mock import patch; "
             "with patch('excalidraw_mcp.server.main') as mock_main: "
-            "    exec(open(f'{project_root}/excalidraw_mcp/__main__.py').read())",
+            "    exec(open(f'{project_root}/excalidraw_mcp/__main__.py').read())"),
         ],
         capture_output=True,
         text=True,
@@ -34,14 +34,14 @@ def test_main_blocks_execute():
         [
             sys.executable,
             "-c",
-            f"import sys; sys.path.insert(0, '{project_root}'); "
+            (f"import sys; sys.path.insert(0, '{project_root}'); "
             "from unittest.mock import patch; "
             "with patch('excalidraw_mcp.server.asyncio.run') as mock_run, "
             "     patch('excalidraw_mcp.server.mcp.run') as mock_mcp_run: "
             "    import excalidraw_mcp.server; "
             "    # Directly execute the main block to cover line 67 "
             "    if hasattr(excalidraw_mcp.server, '__name__'): "
-            "        pass  # The import and check covers the line",
+            "        pass  # The import and check covers the line"),
         ],
         capture_output=True,
         text=True,

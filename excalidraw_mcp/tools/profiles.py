@@ -73,7 +73,7 @@ PROFILE_REGISTRATIONS: dict[
 
 
 def _build_registration_map(
-    config: "Config",
+    config: Config,
 ) -> dict[str, Callable[[FastMCP], Awaitable[None] | None]]:
     """Build the {group_key: register_fn(server)} map from ``_GROUP_REGISTRY``.
 
@@ -107,7 +107,7 @@ def _build_registration_map(
     return mapping
 
 
-def register_all_tool_groups(server: FastMCP, config: "Config") -> None:
+def register_all_tool_groups(server: FastMCP, config: Config) -> None:
     """Bulk register every excalidraw-mcp tool group (called at FULL profile).
 
     Iterates ``_GROUP_REGISTRY`` directly — no name-specific conditionals.
@@ -127,7 +127,7 @@ def register_all_tool_groups(server: FastMCP, config: "Config") -> None:
 
 
 async def apply_excalidraw_tool_profile(
-    server: FastMCP, config: "Config"
+    server: FastMCP, config: Config
 ) -> None:
     """Apply the EXCALIDRAW_TOOL_PROFILE dispatch to ``server`` at startup.
 

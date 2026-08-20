@@ -289,5 +289,5 @@ class TestInputValidationSecurity:
         assert processing_time < 1.0
 
         # Only valid properties should be in the element
-        fake_props = [k for k in element.keys() if k.startswith("fake_prop_")]
+        fake_props = [k for k in element if k.startswith("fake_prop_")]
         assert len(fake_props) == 0

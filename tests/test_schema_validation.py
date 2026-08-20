@@ -218,19 +218,15 @@ class TestFutureModelValidation:
     @pytest.mark.skip(reason="No Pydantic models exist yet")
     def test_element_model_extra_fields_ignored(self) -> None:
         """Test that element models ignore extra fields from API."""
-        pass
 
     @pytest.mark.skip(reason="No Pydantic models exist yet")
     def test_scene_model_extra_fields_ignored(self) -> None:
         """Test that scene models ignore extra fields from API."""
-        pass
 
     @pytest.mark.skip(reason="No Pydantic models exist yet")
     def test_api_response_model_extra_fields_ignored(self) -> None:
         """Test that API response models ignore extra fields."""
-        pass
 
     @pytest.mark.skip(reason="No Pydantic models exist yet")
     def test_websocket_message_model_extra_fields_ignored(self) -> None:
         """Test that WebSocket message models ignore extra fields."""
-        pass

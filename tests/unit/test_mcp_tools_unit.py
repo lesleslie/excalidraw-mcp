@@ -72,7 +72,6 @@ class TestMCPToolsUnit:
         assert mock_mcp.tool.call_count >= 12  # Minimum expected tools
 
         # This test is sufficient - we verified tools are registered
-        pass
 
     @pytest.mark.asyncio
     async def test_ensure_canvas_available_success(self, mcp_tools_manager):

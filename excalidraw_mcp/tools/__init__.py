@@ -35,7 +35,7 @@ __all__ = [
 ]
 
 
-def register_health_tool(mcp: "FastMCP", config: "Config") -> None:
+def register_health_tool(mcp: FastMCP, config: Config) -> None:
     """Register the MCP ``health_check`` tool plus the HTTP ``/health`` route.
 
     Split out from the canvas-registration group so the W0 tool profile
@@ -93,7 +93,7 @@ def register_health_tool(mcp: "FastMCP", config: "Config") -> None:
                     canvas_state = "running"
                 else:
                     canvas_state = "stopped"
-        except Exception:  # noqa: BLE001 - health probes must not raise
+        except Exception:
             canvas_state = "error"
 
         return {
@@ -110,7 +110,7 @@ def register_health_tool(mcp: "FastMCP", config: "Config") -> None:
     )
 
 
-def register_canvas_tools(mcp: "FastMCP", config: "Config") -> None:
+def register_canvas_tools(mcp: FastMCP, config: Config) -> None:
     """Register the 12 canvas MCP tools (elements, groups, locks, batch, resource).
 
     Wraps ``MCPToolsManager`` so the existing tool implementations stay

@@ -273,20 +273,15 @@ class TestCLIModuleAdditional:
         """Test main function with start option."""
         # This is difficult to test directly due to typer integration
         # We'll test the implementation functions instead
-        pass
 
     def test_main_function_stop_option(self):
         """Test main function with stop option."""
-        pass
 
     def test_main_function_restart_option(self):
         """Test main function with restart option."""
-        pass
 
     def test_main_function_status_option(self):
         """Test main function with status option."""
-        pass
 
     def test_main_function_logs_option(self):
         """Test main function with logs option."""
-        pass

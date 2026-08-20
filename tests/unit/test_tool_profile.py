@@ -350,7 +350,7 @@ def test_caller_supplied_config_is_preserved(monkeypatch: pytest.MonkeyPatch) ->
 
     # Run the actual registration (FULL/STANDARD profile behavior)
     server = FastMCP(name="test-server")
-    for _key, fn in mapping.items():
+    for fn in mapping.values():
         fn(server)
 
     assert init_calls == [], (

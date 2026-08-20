@@ -399,7 +399,7 @@ async def rate_limiter_mock():
 
             return False
 
-        def reset(self, identifier: str = None):
+        def reset(self, identifier: str | None = None):
             if identifier:
                 self.requests[identifier].clear()
             else:
@@ -419,7 +419,6 @@ def setup_test_environment():
 
     # Cleanup after test
     # Remove any temporary files, etc.
-    pass
 
 
 # Custom pytest collection hooks
