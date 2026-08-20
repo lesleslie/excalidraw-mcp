@@ -3,8 +3,8 @@ revision = 3
 requires-python = ">=3.13"
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'win32'",
-    "python_full_version == '3.14.*' and sys_platform == 'win32'",
     "python_full_version >= '3.15' and sys_platform != 'win32'",
+    "python_full_version == '3.14.*' and sys_platform == 'win32'",
     "python_full_version == '3.14.*' and sys_platform != 'win32'",
     "python_full_version < '3.14' and sys_platform == 'win32'",
     "python_full_version < '3.14' and sys_platform != 'win32'",
@@ -815,7 +815,7 @@ wheels = [
 
 [[package]]
 name = "crackerjack"
-version = "0.73.5"
+version = "0.74.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "aiofiles" },
@@ -883,9 +883,9 @@ dependencies = [
     { name = "websockets" },
     { name = "zuban" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8f/81/e2f60e326c939929431d67bc3693aae432dbd33c6ff056241776c9454f99/crackerjack-0.73.5.tar.gz", hash = "sha256:2073a9e290693dad0524580c48f678d77d34fd9fd64ea4fa0db28fdbd322fb83", size = 4551814, upload-time = "2026-08-17T20:49:32.461Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/37/ca4eb923b383ad10c04db576d5904bf643a1aa6a5e35420fd75954cf80d3/crackerjack-0.74.0.tar.gz", hash = "sha256:44643c3c7b6aaea1a10e89fd03d839abc2f1f66b9ecad60baedc86099a4079c4", size = 4513213, upload-time = "2026-08-20T22:15:21.01Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e8/d9/00ad1179d0ea249d9a30572069d0cfe1f8e6211cc988593fa7177b0cb6bc/crackerjack-0.73.5-py3-none-any.whl", hash = "sha256:b6526503f32d680353bea70e4b560fb1bb9f4b947ba742566630a64e134114ff", size = 1356457, upload-time = "2026-08-17T20:49:30.014Z" },
+    { url = "https://files.pythonhosted.org/packages/ca/8a/42024ca26538d47c4aeeb89612242df4a058340896d68fc569d1925308fe/crackerjack-0.74.0-py3-none-any.whl", hash = "sha256:2617695775f5222c3095e3b7ca45194cfb9ccae71067b79f5a0de9a09d63e8ef", size = 1364047, upload-time = "2026-08-20T22:15:17.942Z" },
 ]
 
 [[package]]
