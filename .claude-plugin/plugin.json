@@ -1,0 +1,17 @@
+{
+  "author": {
+    "name": "Bodai"
+  },
+  "description": "Bodai plugin for the excalidraw-mcp diagram management server.",
+  "keywords": [
+    "bodai",
+    "mcp",
+    "excalidraw",
+    "diagram",
+    "canvas"
+  ],
+  "mcpServers": "./.mcp.json",
+  "name": "excalidraw",
+  "schema_version": "1.0.0",
+  "version": "0.1.0"
+}
