@@ -119,10 +119,20 @@ filterwarnings = [
 [tool.ruff]
 target-version = "py313"
 line-length = 88
-fix = true
-unsafe-fixes = true
+fix = false
 show-fixes = true
 output-format = "full"
+# Exclude dead-code paths and one-off CLI test scripts that don't belong in
+# the lint domain. docs/archive/test-artifacts/ is captured terminal output
+# frozen for traceability; examples/ is illustrative code. test_excalidraw_cli.py
+# at the repo root is a generated test script that is run by an external harness,
+# not pytest.
+extend-exclude = [
+    "docs/archive/test-artifacts/**",
+    "examples/**",
+    "test_excalidraw_cli.py",
+    "*.egg-info",
+]
 
 [tool.ruff.format]
 docstring-code-format = true

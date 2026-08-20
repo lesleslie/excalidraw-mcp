@@ -57,8 +57,6 @@ def register_health_tool(mcp: FastMCP, config: Config) -> None:
         config: Server configuration (used for service_name/version
             metadata on the HTTP route response).
     """
-    from typing import Any
-
     from mcp_common.health import register_http_health_route
 
     from excalidraw_mcp import __version__

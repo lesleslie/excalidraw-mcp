@@ -19,15 +19,17 @@ def test_cover_final_missing_lines():
         assert hasattr(excalidraw_mcp.__main__, "main")
 
     # Test to cover line 67 in server.py: if __name__ == "__main__": main()
-    with patch("excalidraw_mcp.server.asyncio.run"):
-        with patch("excalidraw_mcp.server.mcp.run"):
-            import excalidraw_mcp.server
+    with (
+        patch("excalidraw_mcp.server.asyncio.run"),
+        patch("excalidraw_mcp.server.mcp.run"),
+    ):
+        import excalidraw_mcp.server
 
-            # Directly test the condition that was missing
-            if excalidraw_mcp.server.__name__ == "__main__":
-                # This covers the missing line by ensuring the condition is evaluated
-                pass  # The evaluation itself improves coverage
+        # Directly test the condition that was missing
+        if excalidraw_mcp.server.__name__ == "__main__":
+            # This covers the missing line by ensuring the condition is evaluated
+            pass  # The evaluation itself improves coverage
 
-            # Verify main function exists
-            assert hasattr(excalidraw_mcp.server, "main")
-            assert callable(excalidraw_mcp.server.main)
+        # Verify main function exists
+        assert hasattr(excalidraw_mcp.server, "main")
+        assert callable(excalidraw_mcp.server.main)

@@ -21,6 +21,7 @@ def test_main_blocks_execute():
             "    exec(open(f'{project_root}/excalidraw_mcp/__main__.py').read())"),
         ],
         capture_output=True,
+        check=False,
         text=True,
         cwd=project_root,
     )
@@ -44,6 +45,7 @@ def test_main_blocks_execute():
             "        pass  # The import and check covers the line"),
         ],
         capture_output=True,
+        check=False,
         text=True,
         cwd=project_root,
     )

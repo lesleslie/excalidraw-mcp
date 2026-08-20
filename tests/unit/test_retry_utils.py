@@ -82,7 +82,7 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
             nonlocal call_count
             call_count += 1
             if call_count < 3:
-                raise Exception("fail")
+                raise AssertionError("fail")
             return "success"
 
         result = await retry_async(mock_func, self.retry_config)
@@ -94,9 +94,9 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
         """Test async retry with all attempts failing."""
 
         async def mock_func():
-            raise Exception("fail")
+            raise AssertionError("fail")
 
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(AssertionError) as context:
             await retry_async(mock_func, self.retry_config)
 
         self.assertEqual(str(context.exception), "fail")
@@ -131,7 +131,7 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
             nonlocal call_count
             call_count += 1
             if call_count < 2:
-                raise Exception("fail")
+                raise AssertionError("fail")
             return "success"
 
         callback_calls = []
@@ -163,7 +163,7 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
             nonlocal call_count
             call_count += 1
             if call_count < 3:
-                raise Exception("fail")
+                raise AssertionError("fail")
             return "success"
 
         result = retry_sync(mock_func, self.retry_config)
@@ -175,9 +175,9 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
         """Test sync retry with all attempts failing."""
 
         def mock_func():
-            raise Exception("fail")
+            raise AssertionError("fail")
 
-        with self.assertRaises(Exception) as context:
+        with self.assertRaises(AssertionError) as context:
             retry_sync(mock_func, self.retry_config)
 
         self.assertEqual(str(context.exception), "fail")
@@ -190,7 +190,7 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
             nonlocal call_count
             call_count += 1
             if call_count < 2:
-                raise Exception("fail")
+                raise AssertionError("fail")
             return "success"
 
         callback_calls = []
@@ -213,7 +213,7 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
             nonlocal call_count
             call_count += 1
             if call_count < 3:
-                raise Exception("fail")
+                raise AssertionError("fail")
             return "success"
 
         result = flaky_function()
@@ -230,7 +230,7 @@ class TestRetryUtils(unittest.IsolatedAsyncioTestCase):
             nonlocal call_count
             call_count += 1
             if call_count < 3:
-                raise Exception("fail")
+                raise AssertionError("fail")
             return "success"
 
         result = await flaky_function()

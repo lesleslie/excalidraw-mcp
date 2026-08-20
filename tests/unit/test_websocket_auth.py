@@ -161,8 +161,8 @@ class TestExcalidrawWebSocketAuthenticationIntegration:
                 await client.connect()
                 # If connection succeeds, auth should have failed
                 assert client.is_authenticated is False
-            except (ConnectionError, Exception):
-                # Expected - connection should be rejected
+            except (ConnectionError, AssertionError):
+                # Expected - connection should be rejected or auth must fail
                 pass
             finally:
                 await client.disconnect()

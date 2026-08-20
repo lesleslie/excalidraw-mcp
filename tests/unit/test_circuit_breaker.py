@@ -1,6 +1,7 @@
 """Tests for the circuit breaker module."""
 
 import asyncio
+import contextlib
 import time
 from unittest.mock import patch
 
@@ -58,9 +59,9 @@ class TestCircuitBreaker:
         """Test failed calls when circuit is closed."""
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
-        with pytest.raises(Exception, match="Test failure"):
+        with pytest.raises(AssertionError, match="Test failure"):
             await circuit_breaker.call(fail_func)
 
         stats = circuit_breaker.get_stats()
@@ -74,11 +75,11 @@ class TestCircuitBreaker:
         """Test circuit opens when failure threshold is reached."""
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         # Fail 3 times to reach threshold
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         # Circuit should now be open
@@ -99,14 +100,14 @@ class TestCircuitBreaker:
         """Test circuit transitions to half-open after recovery timeout."""
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         async def success_func():
             return "recovered"
 
         # Fail to open circuit
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         assert circuit_breaker.is_open
@@ -128,14 +129,14 @@ class TestCircuitBreaker:
         """Test that failure in half-open state reopens circuit."""
 
         async def fail_func():
-            raise Exception("Still failing")
+            raise AssertionError("Still failing")
 
         async def success_func():
             return "success"
 
         # Open the circuit
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         # Simulate recovery timeout
@@ -146,7 +147,7 @@ class TestCircuitBreaker:
         assert circuit_breaker.state == CircuitState.HALF_OPEN
 
         # Fail in half-open state
-        with pytest.raises(Exception):
+        with pytest.raises(AssertionError):
             await circuit_breaker.call(fail_func)
 
         # Circuit should be open again
@@ -160,11 +161,11 @@ class TestCircuitBreaker:
             return "success"
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         # Open circuit
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         # Simulate recovery timeout
@@ -186,16 +187,14 @@ class TestCircuitBreaker:
             return "success"
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         # Make some calls
         await circuit_breaker.call(success_func)
         await circuit_breaker.call(success_func)
 
-        try:
+        with contextlib.suppress(AssertionError):
             await circuit_breaker.call(fail_func)
-        except Exception:
-            pass
 
         stats = circuit_breaker.get_stats()
 
@@ -225,10 +224,10 @@ class TestCircuitBreaker:
 
         # Open circuit first
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         assert circuit_breaker.is_open
@@ -247,11 +246,11 @@ class TestCircuitBreaker:
         """Test resetting circuit breaker to initial state."""
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         # Make some calls and open circuit
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         assert circuit_breaker.is_open
@@ -271,11 +270,11 @@ class TestCircuitBreaker:
         """Test time until recovery calculation."""
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         # Open circuit
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         # Should have time remaining
@@ -296,10 +295,10 @@ class TestCircuitBreaker:
 
         # Open circuit
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         # Open circuit is not healthy
@@ -313,14 +312,14 @@ class TestCircuitBreaker:
             return "sync_success"
 
         def sync_fail():
-            raise Exception("Sync failure")
+            raise AssertionError("Sync failure")
 
         # Test successful sync call
         result = await circuit_breaker.call(sync_success)
         assert result == "sync_success"
 
         # Test failed sync call
-        with pytest.raises(Exception, match="Sync failure"):
+        with pytest.raises(AssertionError, match="Sync failure"):
             await circuit_breaker.call(sync_fail)
 
         stats = circuit_breaker.get_stats()
@@ -362,11 +361,11 @@ class TestCircuitBreaker:
         caplog.set_level(logging.INFO)
 
         async def fail_func():
-            raise Exception("Test failure")
+            raise AssertionError("Test failure")
 
         # Open circuit (should log transition)
         for _ in range(3):
-            with pytest.raises(Exception):
+            with pytest.raises(AssertionError):
                 await circuit_breaker.call(fail_func)
 
         # Check that opening was logged

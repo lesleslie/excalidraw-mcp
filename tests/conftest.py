@@ -240,17 +240,18 @@ def element_factory():
 @pytest.fixture
 async def integration_test_server():
     """Set up a real canvas server for integration tests."""
-    import subprocess
-    import time
+    import asyncio
 
     import httpx
 
     # Start canvas server in test mode
-    process = subprocess.Popen(
-        ["npm", "run", "canvas"],
+    process = await asyncio.create_subprocess_exec(
+        "npm",
+        "run",
+        "canvas",
         env={**os.environ, "PORT": "3033", "NODE_ENV": "test"},
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
     )
 
     # Wait for server to be ready
@@ -261,11 +262,11 @@ async def integration_test_server():
             response = await client.get("http://localhost:3033/health")
             if response.status_code == 200:
                 break
-        except Exception:
-            pass
-        time.sleep(0.5)
+        except httpx.HTTPError:
+            await asyncio.sleep(0.5)
     else:
         process.terminate()
+        await process.wait()
         raise RuntimeError("Integration test server failed to start")
 
     yield "http://localhost:3033"
@@ -273,7 +274,7 @@ async def integration_test_server():
     # Cleanup
     await client.aclose()
     process.terminate()
-    process.wait(timeout=10)
+    await process.wait()
 
 
 @pytest.fixture
