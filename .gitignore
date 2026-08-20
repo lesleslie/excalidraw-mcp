@@ -170,3 +170,7 @@ example.mcp.json
 
 # Canonical runtime-artifact patterns (bodai cleanup 2026-08-20)
 .pyscn/
+
+# lychee + pytest-hypothesis caches (canonical sweep 2026-08-20)
+.lycheecache/
+.hypothesis/
