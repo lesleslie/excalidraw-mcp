@@ -124,9 +124,7 @@ def create_server(config: Any) -> FastMCP:
     return _run_async_safely(create_app(config))
 
 
-async def create_app(
-    config: Any, server: FastMCP | None = None
-) -> FastMCP:
+async def create_app(config: Any, server: FastMCP | None = None) -> FastMCP:
     """Create and configure the MCP server (async production path).
 
     Async because the W0 tool profile dispatch helper is async.
@@ -176,8 +174,7 @@ def run_server(config: Any) -> None:
     """Start the excalidraw MCP server."""
     _server = create_server(config)
     logger.info(
-        "Excalidraw MCP Server starting",
-        endpoint=f"http://{config.mcp.http_host}:{config.mcp.http_port}/mcp",
+        f"Excalidraw MCP Server starting at http://{config.mcp.http_host}:{config.mcp.http_port}/mcp",
     )
 
     _server.run(

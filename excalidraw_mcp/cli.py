@@ -23,7 +23,7 @@ try:
     SERVERPANELS_AVAILABLE = True
 except ImportError:
     SERVERPANELS_AVAILABLE = False
-    ServerPanels = None  # ty: ignore[invalid-assignment]
+    ServerPanels = None
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor

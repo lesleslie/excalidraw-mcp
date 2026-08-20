@@ -126,9 +126,7 @@ def register_all_tool_groups(server: FastMCP, config: Config) -> None:
         getattr(_tools_module, attr_name)(server, config)
 
 
-async def apply_excalidraw_tool_profile(
-    server: FastMCP, config: Config
-) -> None:
+async def apply_excalidraw_tool_profile(server: FastMCP, config: Config) -> None:
     """Apply the EXCALIDRAW_TOOL_PROFILE dispatch to ``server`` at startup.
 
     Async because the W0 helper is async; called from
