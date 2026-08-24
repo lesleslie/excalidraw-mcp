@@ -15,7 +15,7 @@ classifiers = [
     "License :: OSI Approved :: BSD License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: System :: Monitoring",
 ]
@@ -117,7 +117,7 @@ filterwarnings = [
 ]
 
 [tool.ruff]
-target-version = "py313"
+target-version = "py314"
 line-length = 88
 fix = false
 show-fixes = true
@@ -200,7 +200,7 @@ reportPrivateUsage = "warning"
 reportUnnecessaryTypeIgnoreComment = "warning"
 reportUnnecessaryComparison = "warning"
 reportConstantRedefinition = "warning"
-pythonVersion = "3.13"
+pythonVersion = "3.14"
 
 [tool.bandit]
 target = [
@@ -230,7 +230,7 @@ ignore_names = [
 [tool.refurb]
 enable_all = true
 quiet = true
-python_version = "3.13"
+python_version = "3.14"
 
 [tool.complexipy]
 default_pattern = "**/*.py"
