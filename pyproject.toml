@@ -283,7 +283,7 @@ exclude-deps = [
 
 [dependency-groups]
 dev = [
-    "crackerjack>=0.65.3",
+    "crackerjack>=0.75.0",
     "pytest>=9.1.0",
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
