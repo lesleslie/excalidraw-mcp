@@ -59,7 +59,7 @@ def find_mcp_server_process() -> psutil.Process | None:
             cmdline = proc.info["cmdline"]
             if cmdline and any("excalidraw_mcp.server" in arg for arg in cmdline):
                 return proc
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
+        except psutil.NoSuchProcess, psutil.AccessDenied:
             continue
     return None
 
@@ -73,7 +73,7 @@ def find_canvas_server_process() -> psutil.Process | None:
                 "src/server.js" in arg or "dist/server.js" in arg for arg in cmdline
             ):
                 return proc
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
+        except psutil.NoSuchProcess, psutil.AccessDenied:
             continue
     return None
 

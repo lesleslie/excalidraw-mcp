@@ -17,22 +17,22 @@ that shaped the implementation. It lives under `docs/architecture/`
 excalidraw-mcp exposes 12 MCP tools plus 1 health probe plus 1
 `discover_tools` meta-tool (added by the W0 helper):
 
-| Tool name             | Group         | Description                          |
+| Tool name | Group | Description |
 |-----------------------|---------------|--------------------------------------|
-| `create_element`      | canvas_tools  | Create a canvas element              |
-| `update_element`      | canvas_tools  | Update an existing element           |
-| `delete_element`      | canvas_tools  | Delete an element                    |
-| `query_elements`      | canvas_tools  | Query elements from the canvas       |
-| `batch_create_elements` | canvas_tools | Batch-create elements                |
-| `group_elements`      | canvas_tools  | Group multiple elements              |
-| `ungroup_elements`    | canvas_tools  | Ungroup a group                      |
-| `align_elements`      | canvas_tools  | Align elements to a position         |
-| `distribute_elements` | canvas_tools  | Distribute elements evenly           |
-| `lock_elements`       | canvas_tools  | Lock elements (prevent modification) |
-| `unlock_elements`     | canvas_tools  | Unlock elements                      |
-| `get_resource`        | canvas_tools  | Get canvas resources                 |
-| `health_check`        | health_tools  | MCP-level health probe (NEW)         |
-| `discover_tools`      | W0 helper     | Discover registered tools (meta)     |
+| `create_element` | canvas_tools | Create a canvas element |
+| `update_element` | canvas_tools | Update an existing element |
+| `delete_element` | canvas_tools | Delete an element |
+| `query_elements` | canvas_tools | Query elements from the canvas |
+| `batch_create_elements` | canvas_tools | Batch-create elements |
+| `group_elements` | canvas_tools | Group multiple elements |
+| `ungroup_elements` | canvas_tools | Ungroup a group |
+| `align_elements` | canvas_tools | Align elements to a position |
+| `distribute_elements` | canvas_tools | Distribute elements evenly |
+| `lock_elements` | canvas_tools | Lock elements (prevent modification) |
+| `unlock_elements` | canvas_tools | Unlock elements |
+| `get_resource` | canvas_tools | Get canvas resources |
+| `health_check` | health_tools | MCP-level health probe (NEW) |
+| `discover_tools` | W0 helper | Discover registered tools (meta) |
 
 The W4 spec mapping for Tier-A trivial is canonical:
 
@@ -117,6 +117,7 @@ round-1 regression), the test fails loud.
 
 `excalidraw_mcp/tools/__init__.py::register_health_tool(mcp, config)`
 registers ONLY:
+
 - The MCP `health_check` tool (returns `status`, `service`,
   `version`, `canvas` state)
 - The HTTP `/health` route via `mcp_common.health.register_http_health_route`
@@ -137,15 +138,15 @@ helper raises `ValueError` with a clear message.
 
 ## Files Touched
 
-| File                                       | Change                                            |
+| File | Change |
 |--------------------------------------------|---------------------------------------------------|
-| `excalidraw_mcp/tools/__init__.py`         | NEW — `register_health_tool` + `register_canvas_tools` |
-| `excalidraw_mcp/tools/profiles.py`         | NEW — `_GROUP_REGISTRY` + profile dispatch        |
-| `excalidraw_mcp/server.py`                 | MODIFIED — async `create_app(config, server)` + tool profile integration |
-| `tests/unit/test_tool_profile.py`          | NEW — 30 tests covering structural guards, AST keystone checks, and real-path profile tests |
-| `docs/architecture/tool-profile-rationale.md` | NEW — this document                            |
-| `CLAUDE.md`                                | MODIFIED — "Tool Profile System" subsection       |
-| `pyproject.toml`                           | MODIFIED — `mcp-common>=0.18.0`                   |
+| `excalidraw_mcp/tools/__init__.py` | NEW — `register_health_tool` + `register_canvas_tools` |
+| `excalidraw_mcp/tools/profiles.py` | NEW — `_GROUP_REGISTRY` + profile dispatch |
+| `excalidraw_mcp/server.py` | MODIFIED — async `create_app(config, server)` + tool profile integration |
+| `tests/unit/test_tool_profile.py` | NEW — 30 tests covering structural guards, AST keystone checks, and real-path profile tests |
+| `docs/architecture/tool-profile-rationale.md` | NEW — this document |
+| `CLAUDE.md` | MODIFIED — "Tool Profile System" subsection |
+| `pyproject.toml` | MODIFIED — `mcp-common>=0.18.0` |
 
 ## Test Summary
 

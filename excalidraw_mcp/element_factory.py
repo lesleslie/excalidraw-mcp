@@ -197,7 +197,7 @@ class ElementFactory:
             return None
         try:
             return float(value)
-        except (ValueError, TypeError):
+        except ValueError, TypeError:
             logger.warning(f"Invalid float value for {key}: {value}")
             return default
 
@@ -259,7 +259,7 @@ class ElementFactory:
             if coord in element_data:
                 try:
                     float(element_data[coord])
-                except (ValueError, TypeError):
+                except ValueError, TypeError:
                     errors.append(f"Invalid {coord} coordinate: must be a number")
 
     def _validate_dimensions(
@@ -272,7 +272,7 @@ class ElementFactory:
                     value = float(element_data[dimension])
                     if value < 0:
                         errors.append(f"Invalid {dimension}: must be non-negative")
-                except (ValueError, TypeError):
+                except ValueError, TypeError:
                     errors.append(f"Invalid {dimension}: must be a number")
 
     def _is_valid_color(self, color: Any) -> bool:
@@ -313,7 +313,7 @@ class ElementFactory:
                 stroke_width = float(element_data["strokeWidth"])
                 if not (0 <= stroke_width <= 50):
                     errors.append("strokeWidth must be between 0 and 50")
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 errors.append("strokeWidth must be a number")
 
     def _validate_opacity(
@@ -325,7 +325,7 @@ class ElementFactory:
                 opacity = float(element_data["opacity"])
                 if not (0 <= opacity <= 100):
                     errors.append("opacity must be between 0 and 100")
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 errors.append("opacity must be a number")
 
     def _validate_roughness(
@@ -337,7 +337,7 @@ class ElementFactory:
                 roughness = float(element_data["roughness"])
                 if not (0 <= roughness <= 3):
                     errors.append("roughness must be between 0 and 3")
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 errors.append("roughness must be a number")
 
     def _validate_font_size(
@@ -349,7 +349,7 @@ class ElementFactory:
                 font_size = float(element_data["fontSize"])
                 if not (8 <= font_size <= 200):
                     errors.append("fontSize must be between 8 and 200")
-            except (ValueError, TypeError):
+            except ValueError, TypeError:
                 errors.append("fontSize must be a number")
 
     def _validate_numeric_ranges(

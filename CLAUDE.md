@@ -103,11 +103,11 @@ excalidraw-mcp adopts the `mcp-common` ToolProfile dispatch (W4.2 — Tier-A tri
 
 ### Profile Mapping (Tier-A Trivial — 3-tier)
 
-| Profile  | Tools exposed                                                                              | Use case                                       |
+| Profile | Tools exposed | Use case |
 |----------|--------------------------------------------------------------------------------------------|------------------------------------------------|
-| MINIMAL  | `health_check`, `discover_tools`                                                          | Control-plane / health-probe deployments       |
-| STANDARD | All 12 canvas tools + `health_check` + `discover_tools`                                    | Typical LLM client deployments                 |
-| FULL     | All 12 canvas tools + `health_check` + `discover_tools` (default — matches STANDARD)        | Default behavior, no profile gating            |
+| MINIMAL | `health_check`, `discover_tools` | Control-plane / health-probe deployments |
+| STANDARD | All 12 canvas tools + `health_check` + `discover_tools` | Typical LLM client deployments |
+| FULL | All 12 canvas tools + `health_check` + `discover_tools` (default — matches STANDARD) | Default behavior, no profile gating |
 
 ### Implementation Files
 

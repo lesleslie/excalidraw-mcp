@@ -254,7 +254,7 @@ def init_background_services() -> None:
         # Check if canvas server is already running
         requests.get("http://localhost:3031/health", timeout=1)
         logger.info("Canvas server already running")
-    except (requests.RequestException, ConnectionError, OSError):
+    except requests.RequestException, ConnectionError, OSError:
         logger.info("Starting canvas server...")
         # Dynamically resolve project root (deployment-safe)
         project_root = Path(__file__).parent.parent.resolve()
@@ -273,7 +273,7 @@ def init_background_services() -> None:
                 requests.get("http://localhost:3031/health", timeout=1)
                 logger.info("Canvas server is ready")
                 break
-            except (requests.RequestException, ConnectionError, OSError):
+            except requests.RequestException, ConnectionError, OSError:
                 time.sleep(1)
         else:
             logger.warning("Canvas server may not be ready")
