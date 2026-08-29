@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "excalidraw-mcp"
-version = "0.39.0"
+version = "0.39.1"
 description = "Unofficial MCP server for Excalidraw diagram management with canvas sync"
 readme = "README.md"
 classifiers = [
@@ -37,9 +37,6 @@ dependencies = [
     "aiohttp>=3.14.3",
     "h2>=4.4.1",
 ]
-
-[tool.uv.sources]
-mcp-common = { path = "../mcp-common", editable = true }
 
 [project.license]
 text = "BSD-3-CLAUSE"
