@@ -46,7 +46,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
     Attributes:
         diagram_manager: Diagram manager instance
         host: Server host address
-        port: Server port number (default: 3042)
+        port: Server port number (default: 3060)
 
     Example:
         >>> from excalidraw_mcp import DiagramManager
@@ -69,7 +69,7 @@ class ExcalidrawWebSocketServer(WebSocketServer):
         self,
         diagram_manager: Any,
         host: str = "127.0.0.1",
-        port: int = 3042,
+        port: int = 3060,
         max_connections: int = 100,
         message_rate_limit: int = 60,
         require_auth: bool = False,

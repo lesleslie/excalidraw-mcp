@@ -394,7 +394,7 @@ For VS Code MCP extension, add to your settings:
 | `MAX_ELEMENTS` | `10000` | Maximum elements permitted per canvas |
 | `WEBSOCKET_ENABLED` | `true` | Start the WebSocket collaboration server |
 | `WEBSOCKET_HOST` | `0.0.0.0` | Bind address for the WebSocket server |
-| `WEBSOCKET_PORT` | `3042` | Listen port for the WebSocket server |
+| `WEBSOCKET_PORT` | `3060` | Listen port for the WebSocket server |
 | `WEBSOCKET_METRICS_PORT` | `9097` | Port for the WebSocket Prometheus metrics endpoint |
 | `EXCALIDRAW_AUTH_ENABLED` | `false` | Enable JWT auth on the WebSocket subscription layer |
 | `EXCALIDRAW_JWT_SECRET` | _(unset)_ | JWT secret for the WebSocket subscription layer |

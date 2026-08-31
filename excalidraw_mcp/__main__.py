@@ -57,6 +57,25 @@ class ExcalidrawMCPServer(BaseOneiricServerMixin):
         # Initialize runtime components
         await self.runtime.initialize()
 
+        # Register MCP tools via the EXCALIDRAW_TOOL_PROFILE dispatch.
+        # Required because the Oneiric CLI factory path bypasses
+        # ``excalidraw_mcp.server.create_app`` (which would otherwise
+        # call ``apply_excalidraw_tool_profile``); without this call
+        # the bare ``mcp`` singleton ships with 0 tools and
+        # ``tools/list`` returns an empty array. See memory:
+        # excalidraw-mcp-no-tools-oneiric-startup-regression.
+        from excalidraw_mcp.config import Config
+        from excalidraw_mcp.tools.profiles import apply_excalidraw_tool_profile
+
+        # ``apply_excalidraw_tool_profile`` types its second arg as the
+        # module-local ``excalidraw_mcp.config.Config``; both
+        # ``register_health_tool`` and ``register_canvas_tools`` ignore
+        # the value at runtime (canvas-tools docstring: "currently
+        # unused at the tool level"), so a fresh default Config() is
+        # safe and lets us satisfy the type checker without threading
+        # the Oneiric ``ExcalidrawConfig`` through.
+        await apply_excalidraw_tool_profile(self.mcp, Config())
+
         # Create startup snapshot with custom components
         await self._create_startup_snapshot(
             custom_components={

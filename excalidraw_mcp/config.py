@@ -290,7 +290,7 @@ class WebSocketConfig:
     # Server settings
     enabled: bool = True
     host: str = "127.0.0.1"
-    port: int = 3042
+    port: int = 3060
     max_connections: int = 100
     message_rate_limit: int = 60  # messages per second per connection
 
@@ -358,8 +358,8 @@ class Config:
                 self.mcp.http_enabled = mcp_config.get(
                     "http_enabled", self.mcp.http_enabled
                 )
-                self.mcp.http_host = mcp_config.get("mcp_http_host", self.mcp.http_host)
-                self.mcp.http_port = mcp_config.get("mcp_http_port", self.mcp.http_port)
+                self.mcp.http_host = mcp_config.get("http_host", self.mcp.http_host)
+                self.mcp.http_port = mcp_config.get("http_port", self.mcp.http_port)
                 self.mcp.canvas_server_url = mcp_config.get(
                     "canvas_server_url", self.mcp.canvas_server_url
                 )

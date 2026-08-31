@@ -5,7 +5,7 @@ import os
 import tempfile
 from unittest.mock import AsyncMock, Mock
 
-import httpx
+import httpx2 as httpx
 import pytest
 import pytest_asyncio
 
@@ -242,7 +242,7 @@ async def integration_test_server():
     """Set up a real canvas server for integration tests."""
     import asyncio
 
-    import httpx
+    import httpx2 as httpx
 
     # Start canvas server in test mode
     process = await asyncio.create_subprocess_exec(

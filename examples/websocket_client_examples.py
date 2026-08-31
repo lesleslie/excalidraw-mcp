@@ -15,7 +15,7 @@ from mcp_common.websocket.client import WebSocketClient
 async def monitor_diagram_collaboration(
     diagram_id: str,
     host: str = "127.0.0.1",
-    port: int = 3042,
+    port: int = 3060,
 ) -> None:
     """Monitor collaboration events for a specific diagram.
 
@@ -67,7 +67,7 @@ async def broadcast_diagram_update(
     diagram_id: str,
     elements: list[dict[str, Any]],
     host: str = "127.0.0.1",
-    port: int = 3042,
+    port: int = 3060,
 ) -> None:
     """Broadcast a diagram update to all collaborators.
 
@@ -103,7 +103,7 @@ async def broadcast_cursor_position(
     user_id: str,
     position: dict[str, int | float],
     host: str = "127.0.0.1",
-    port: int = 3042,
+    port: int = 3060,
 ) -> None:
     """Broadcast cursor position to diagram collaborators.
 
@@ -143,7 +143,7 @@ async def join_collaboration_session(
     user_id: str,
     user_info: dict[str, Any],
     host: str = "127.0.0.1",
-    port: int = 3042,
+    port: int = 3060,
 ) -> None:
     """Join a diagram collaboration session.
 

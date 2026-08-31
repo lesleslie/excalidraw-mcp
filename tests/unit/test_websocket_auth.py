@@ -69,12 +69,12 @@ class TestExcalidrawWebSocketServer:
         server = ExcalidrawWebSocketServer(
             diagram_manager=None,
             host="127.0.0.1",
-            port=3042,
+            port=3060,
             require_auth=False,
         )
 
         assert server.host == "127.0.0.1"
-        assert server.port == 3042
+        assert server.port == 3060
         assert server.require_auth is False
 
     def test_channel_authorization(self):

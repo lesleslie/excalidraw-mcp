@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "excalidraw-mcp"
-version = "0.39.1"
+version = "0.39.2"
 description = "Unofficial MCP server for Excalidraw diagram management with canvas sync"
 readme = "README.md"
 classifiers = [
@@ -25,7 +25,7 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "fastmcp>=3.4.2",
-    "httpx[http2]>=0.28.1",
+    "httpx2[http2]>=0.28.1",
     "oneiric>=0.16.0",
     "pydantic>=2.13.4",
     "psutil>=7.2.2",
@@ -49,8 +49,8 @@ Homepage = "https://github.com/lesleslie/excalidraw-mcp"
 Repository = "https://github.com/lesleslie/excalidraw-mcp"
 
 [tool.excalidraw-mcp]
-mcp_http_port = 3032
-mcp_http_host = "127.0.0.1"
+http_port = 3032
+http_host = "127.0.0.1"
 canvas_server_url = "http://localhost:3031"
 http_enabled = true
 
@@ -270,7 +270,7 @@ exclude-deps = [
     "pyjwt",
     "aiohttp",
     "h2",
-    "httpx",
+    "httpx2",
     "mcp-common",
     "oneiric",
     "psutil",

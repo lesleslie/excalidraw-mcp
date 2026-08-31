@@ -17,13 +17,13 @@ import typer
 from rich import print as rprint
 
 # Check ServerPanels availability (Phase 3.3 M2: improved pattern)
+ServerPanels: Any = None
 try:
     from mcp_common.ui import ServerPanels
 
     SERVERPANELS_AVAILABLE = True
 except ImportError:
     SERVERPANELS_AVAILABLE = False
-    ServerPanels = None
 
 from excalidraw_mcp.config import Config
 from excalidraw_mcp.monitoring.supervisor import MonitoringSupervisor

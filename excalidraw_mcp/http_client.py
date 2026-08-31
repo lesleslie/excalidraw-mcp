@@ -8,7 +8,7 @@ from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
 from typing import Any, Self
 
-import httpx
+import httpx2 as httpx
 
 from .config import config
 from .retry_utils import RetryConfig, retry_async

@@ -29,14 +29,14 @@ def register_websocket_tools(
             return {
                 "status": "stopped",
                 "host": "127.0.0.1",
-                "port": 3042,
+                "port": 3060,
                 "server": "excalidraw",
             }
 
         return {
             "status": "healthy",
             "host": "127.0.0.1",
-            "port": 3042,
+            "port": 3060,
             "server": "excalidraw",
             "connections": len(websocket_server.connections),
             "rooms": len(websocket_server.connection_rooms),

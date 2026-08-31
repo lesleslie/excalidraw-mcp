@@ -24,11 +24,11 @@ def test_server_initialization():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     assert server.host == "127.0.0.1"
-    assert server.port == 3042
+    assert server.port == 3060
     assert server.max_connections == 100
     assert server.diagram_manager is not None
 
@@ -57,7 +57,7 @@ async def test_broadcast_diagram_created():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Add mock client to diagram room
@@ -79,7 +79,7 @@ async def test_broadcast_diagram_updated():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Add mock client to diagram room
@@ -101,7 +101,7 @@ async def test_broadcast_cursor_moved():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Add mock client to cursor room
@@ -123,7 +123,7 @@ async def test_broadcast_user_joined():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Add mock client to presence room
@@ -147,7 +147,7 @@ async def test_broadcast_user_left():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Add mock client to presence room
@@ -169,7 +169,7 @@ async def test_on_connect_sends_welcome():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Mock websocket
@@ -190,7 +190,7 @@ async def test_on_disconnect_leaves_rooms():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Mock websocket and set up rooms
@@ -218,7 +218,7 @@ async def test_get_diagram_status():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Get diagram status
@@ -243,7 +243,7 @@ async def test_get_diagram_status_not_found():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Get diagram status
@@ -260,7 +260,7 @@ def test_get_timestamp():
     server = ExcalidrawWebSocketServer(
         diagram_manager=diagram_manager,
         host="127.0.0.1",
-        port=3042,
+        port=3060,
     )
 
     # Get timestamp

@@ -2,7 +2,7 @@
 
 **Status**: ✅ COMPLETE
 **Date**: 2026-02-11
-**Port**: 3042
+**Port**: 3060
 **Implementation**: 747 lines of production-ready code
 
 ## Overview
@@ -96,7 +96,7 @@ Excalidraw-MCP now includes a complete WebSocket server implementation for real-
 - Environment variable loading:
   - `WEBSOCKET_ENABLED` - Enable/disable WebSocket server (default: true)
   - `WEBSOCKET_HOST` - Server host (default: 127.0.0.1)
-  - `WEBSOCKET_PORT` - Server port (default: 3042)
+  - `WEBSOCKET_PORT` - Server port (default: 3060)
   - `WEBSOCKET_AUTH_ENABLED` - Require JWT auth (default: false)
   - `WEBSOCKET_JWT_SECRET` - JWT secret for authentication
   - `WEBSOCKET_TLS_ENABLED` - Enable TLS/WSS (default: false)
@@ -297,7 +297,7 @@ tests/test_websocket_server.py::test_get_timestamp PASSED                [100%]
 |----------|-------|---------|-------------|
 | `WEBSOCKET_ENABLED` | bool | true | Enable/disable WebSocket server |
 | `WEBSOCKET_HOST` | string | 127.0.0.1 | Server bind address |
-| `WEBSOCKET_PORT` | int | 3042 | Server port number |
+| `WEBSOCKET_PORT` | int | 3060 | Server port number |
 | `WEBSOCKET_AUTH_ENABLED` | bool | false | Require JWT authentication |
 | `WEBSOCKET_JWT_SECRET` | string | - | JWT secret key |
 | `WEBSOCKET_TLS_ENABLED` | bool | false | Enable TLS/WSS |
@@ -337,7 +337,7 @@ tests/test_websocket_server.py::test_get_timestamp PASSED                [100%]
 ```bash
 export WEBSOCKET_ENABLED=true
 export WEBSOCKET_HOST=0.0.0.0
-export WEBSOCKET_PORT=3042
+export WEBSOCKET_PORT=3060
 export WEBSOCKET_AUTH_ENABLED=true
 export WEBSOCKET_JWT_SECRET="<your-32-character-secret-key>"
 export WEBSOCKET_TLS_ENABLED=true
@@ -357,7 +357,7 @@ COPY pyproject.toml .
 RUN pip install --no-cache-dir -e .
 
 # Expose ports
-EXPOSE 3042 3042/udp 9097
+EXPOSE 3060 3060/udp 9097
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
@@ -404,7 +404,7 @@ The Excalidraw WebSocket server is **production-ready** with:
 
 **Status**: Ready for deployment to production environments.
 
-**Port**: 3042 (configurable via `WEBSOCKET_PORT`)
+**Port**: 3060 (configurable via `WEBSOCKET_PORT`)
 
 **Channels**: `diagram:{id}`, `cursor:{id}`, `presence:{id}`, `global`
 
