@@ -36,12 +36,13 @@ class TestMainModule:
         assert server.mcp is mock_mcp
         assert server.runtime is mock_runtime
 
+    @patch("excalidraw_mcp.tools.profiles.apply_excalidraw_tool_profile", new_callable=AsyncMock)
     @patch("excalidraw_mcp.__main__.config")
     @patch("excalidraw_mcp.__main__.create_runtime_components")
     @patch("excalidraw_mcp.__main__.mcp")
     @pytest.mark.asyncio
     async def test_excalidraw_mcp_server_startup(
-        self, mock_mcp, mock_create_runtime, mock_config
+        self, mock_mcp, mock_create_runtime, mock_config, mock_apply_profile
     ):
         """Test ExcalidrawMCPServer startup method."""
         config = ExcalidrawConfig()
