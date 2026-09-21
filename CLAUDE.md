@@ -131,22 +131,6 @@ Configuration such as `AUTH_ENABLED`, `JWT_SECRET`, `ALLOWED_ORIGINS`, and serve
 
 Keep deep monitoring or deployment runbooks in repo docs, not in this file.
 
-## MCP Backend Wiring Discipline (Cross-repo)
-
-Every MCP server's `/health` endpoint must aggregate per-feed state
-(`healthy | degraded | dead`) and return 503 when any feed is not healthy.
-Every registered tool must have a working data feed exposing
-`feed.entities_count`, `feed.last_updated_timestamp`, `feed.errors_total`,
-`feed.cycles_total`. Every tool registration requires
-`tests/integration/test_<tool>_e2e.py` asserting non-empty results.
-End-to-end smoke tests in CI must spin up the server and assert non-empty
-responses per tool. Monthly cross-repo audit cadence.
-
-Canonical rule: `mahavishnu/.claude/decisions/mcp-backend-wiring-discipline.md`
-(referenced as the source of truth for cross-repo MCP servers).
-
-When adding any new MCP tool to this repo:
-- [ ] Tool registration includes `tests/integration/test_<tool>_e2e.py`.
-- [ ] Data feed exposes the four mandatory metrics.
-- [ ] `/health` aggregator includes this feed's state.
-- [ ] CI smoke test calls this tool and asserts non-empty response.
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.

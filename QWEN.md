@@ -384,3 +384,7 @@ Similar configurations work for Cursor IDE, VS Code MCP Extension, and other MCP
 - Use `uv sync` to install/update Python dependencies
 - Ensure Python 3.13+ is installed
 - Check `uv --version` to verify uv installation
+
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.

@@ -751,3 +751,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - **Excalidraw Team** - For the amazing drawing library
 - **MCP Community** - For the Model Context Protocol specification
+
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.

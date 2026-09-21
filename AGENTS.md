@@ -62,3 +62,7 @@ This is heavy-handed — it also skips `bandit`, `gitleaks`, `pyscn`, etc. Prefe
 ## Security & Configuration Tips
 
 Canvas security settings are environment-driven (`AUTH_ENABLED`, `JWT_SECRET`, `ALLOWED_ORIGINS`, rate-limit knobs). Provide sane defaults for development but never commit real secrets. Update `src/config.ts` when adding new env toggles, and document them in `README.md` and `.env.example`. Ensure CORS and JWT settings of the canvas match the MCP server host you deploy.
+
+Built on [Oneiric](https://github.com/lesleslie/oneiric) for runtime configuration
+and [mcp-common](https://github.com/lesleslie/mcp-common) for the FastMCP
+baseline. [Crackerjack](https://github.com/lesleslie/crackerjack) gates every commit.
