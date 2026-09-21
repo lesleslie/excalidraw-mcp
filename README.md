@@ -26,9 +26,9 @@ It uses a Python FastMCP server plus a TypeScript canvas server for separation o
 
 Crackerjack is used as the standard quality-control and CI/CD gate for the Python side of this repo. Pair it with the existing TypeScript build and test checks for cross-stack changes.
 
-## Installation via Bodai Marketplace
+## Installation via Claude Code marketplace
 
-This repo ships as a Bodai-style Claude Code plugin. Register the local marketplace, then install the plugin — the manifest's `mcpServers` entry points at the colocated `.mcp.json` (HTTP transport, port `3032`) and exposes the three slash commands in `commands/`. The TypeScript canvas server still needs to be running for live updates to flow through to the browser. Use `claude plugin marketplace add /Users/les/Projects/bodai-plugins && claude plugin install excalidraw --marketplace bodai-plugins` after the marketplace entry lands in `bodai-plugins/.claude-plugin/marketplace.json`.
+This repo ships as a Claude Code plugin. Register the [www-mcp-servers marketplace](https://github.com/lesleslie/www-mcp-servers) with Claude Code, then install the plugin — the manifest's `mcpServers` entry points at the colocated `.mcp.json` (HTTP transport, port `3032`) and exposes the three slash commands in `commands/`. The TypeScript canvas server still needs to be running for live updates to flow through to the browser. After the marketplace is registered: `claude plugin install excalidraw --marketplace www-mcp-servers`.
 
 ## 🚀 What This System Does
 

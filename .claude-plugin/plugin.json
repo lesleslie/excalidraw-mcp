@@ -1,10 +1,9 @@
 {
   "author": {
-    "name": "Bodai"
+    "name": "Wedgwood Web Works"
   },
-  "description": "Bodai plugin for the excalidraw-mcp diagram management server.",
+  "description": "Plugin for the excalidraw-mcp diagram management server.",
   "keywords": [
-    "bodai",
     "mcp",
     "excalidraw",
     "diagram",
