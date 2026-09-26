@@ -2,6 +2,7 @@
 
 import asyncio
 import atexit
+import inspect
 import logging
 import os
 import signal
@@ -320,7 +321,7 @@ class CanvasProcessManager:
         """Trigger callbacks from synchronous context, safely handling async callbacks."""
         for callback in callbacks:
             try:
-                if asyncio.iscoroutinefunction(callback):
+                if inspect.iscoroutinefunction(callback):
                     # Check if there's an active event loop
                     try:
                         loop = asyncio.get_running_loop()
@@ -341,7 +342,7 @@ class CanvasProcessManager:
         """Trigger a list of callbacks with error handling."""
         for callback in callbacks:
             try:
-                if asyncio.iscoroutinefunction(callback):
+                if inspect.iscoroutinefunction(callback):
                     await callback(*args)
                 else:
                     callback(*args)

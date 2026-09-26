@@ -29,14 +29,6 @@ from .monitoring.supervisor import MonitoringSupervisor
 mcp = FastMCP("Excalidraw MCP Server")
 
 
-@mcp.custom_route("/healthz", methods=["GET"])
-async def healthz_check(request: Any) -> Any:
-    """Kubernetes-style health check endpoint."""
-    from starlette.responses import JSONResponse
-
-    return JSONResponse({"status": "ok"})
-
-
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

@@ -116,6 +116,7 @@ Thumbs.db
 settings/local.yaml
 settings/repos.yaml
 settings/ecosystem.yaml
+.claude/settings.local.json  # Claude Code per-machine settings (un-tracked by convention)
 .envrc.local
 
 # ============================================================================

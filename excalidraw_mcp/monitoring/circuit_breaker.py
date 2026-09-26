@@ -1,6 +1,7 @@
 """Circuit breaker implementation for preventing cascading failures."""
 
 import asyncio
+import inspect
 import logging
 import time
 from collections.abc import Callable
@@ -82,7 +83,7 @@ class CircuitBreaker:
         # Execute the function
         time.time()
         try:
-            if asyncio.iscoroutinefunction(func):
+            if inspect.iscoroutinefunction(func):
                 result = await func(*args, **kwargs)
             else:
                 result = func(*args, **kwargs)

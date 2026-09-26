@@ -2,6 +2,7 @@
 
 import asyncio
 import functools
+import inspect
 import logging
 import random
 import time
@@ -234,7 +235,7 @@ def retry_decorator(
             async def async_func() -> T:
                 result = func(*args, **kwargs)
                 if asyncio.iscoroutine(result):
-                    coro_result: T = await result  # ty: ignore[invalid-assignment]
+                    coro_result: T = await result
                     return coro_result
                 return result
 
@@ -246,7 +247,7 @@ def retry_decorator(
             )
 
         # Check if function is async
-        if asyncio.iscoroutinefunction(func):
+        if inspect.iscoroutinefunction(func):
             return async_wrapper  # ty: ignore[invalid-return-type]
         return wrapper
 

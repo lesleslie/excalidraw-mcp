@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.39.4] - 2026-09-26
+
+### Changed
+
+- excalidraw-mcp: Revert to mcp_common.health.register_http_health_route (canonical StatusValue in 0.30.0)
+
+### Documentation
+
+- Add docs/assets/images/ + .scratch/ convention
+- CLAUDE.md: Cross-reference MCP backend wiring discipline (Bodai-wide)
+- Consolidate Bodai/Vishnu references to bottom section
+- Drop Bodai integration framing and add substrate note
+- Update FastMCP badge URL to PrefectHQ org (canonical since v3.0 GA)
+
+### Internal
+
+- deps: Bump mcp-common floor to >=0.26.0,<0.27.0 (Phase 2.5)
+- excalidraw-mcp: Refresh uv.lock for mcp-common 0.30.0
+- gitignore: Apply Bodai canonical snippet
+- plugin: Rebadge from Bodai + update install instructions
+
 ## [0.39.3] - 2026-08-31
 
 ### Testing
