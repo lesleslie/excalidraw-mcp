@@ -1042,7 +1042,7 @@ requires-dist = [
     { name = "fastmcp", specifier = ">=3.4.2" },
     { name = "h2", specifier = ">=4.4.1" },
     { name = "httpx2", extras = ["http2"], specifier = ">=0.28.1" },
-    { name = "mcp-common", specifier = ">=0.26.0,<0.27.0" },
+    { name = "mcp-common", specifier = ">=0.30.0" },
     { name = "oneiric", specifier = ">=0.16.0" },
     { name = "psutil", specifier = ">=7.2.2" },
     { name = "pydantic", specifier = ">=2.13.4" },
@@ -2219,12 +2219,14 @@ wheels = [
 
 [[package]]
 name = "mcp-common"
-version = "0.26.0"
+version = "0.30.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "cryptography" },
     { name = "fastmcp" },
+    { name = "httpx2" },
     { name = "oneiric" },
+    { name = "prometheus-client" },
     { name = "psutil" },
     { name = "pydantic" },
     { name = "pydantic-settings" },
@@ -2234,9 +2236,9 @@ dependencies = [
     { name = "typer" },
     { name = "websockets" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/8a/fe/c59133220f225a42e0becc3dc876fb6b781dfb0db156561dbc125a7301e6/mcp_common-0.26.0.tar.gz", hash = "sha256:26fecaacec8df0ff0f70a0246d8892f3b04de2dda2a2c9895411cd44a5072106", size = 1089253, upload-time = "2026-09-14T08:50:14.373Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/ee/e0139b0201352ce005fc518a6bca0c40b75d515d5ed9487e5002d747c7c0/mcp_common-0.30.0.tar.gz", hash = "sha256:119c05b3c30b277854b5f07ffdca603f44f92eb8441ea0079eed35c7bf44f386", size = 1161301, upload-time = "2026-09-26T22:42:31.519Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ea/a4/9ae692cab3f8a444505e070b18b36c4852e7b07d6de696205a07dd2739da/mcp_common-0.26.0-py3-none-any.whl", hash = "sha256:cb303438ccea67782a5411f5900bcfde0a541ed84bfbe343c9475b1ce8074a9b", size = 436579, upload-time = "2026-09-14T08:50:12.864Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/71/7e10ea6e5b69a51a71a89ce872e0c28a91982bb10e49d213ad3c208eef02/mcp_common-0.30.0-py3-none-any.whl", hash = "sha256:fc34aff11a1a6542690b99c596a4b4c502a0c4932ee399e5ef716ef2a93ab183", size = 467296, upload-time = "2026-09-26T22:42:29.99Z" },
 ]
 
 [[package]]
